@@ -1,0 +1,205 @@
+@CHARSET "UTF-8";
+
+<META http-equiv="Content-Style-Type" content="text/css">
+
+<STYLE TYPE="text/css">	broswerignore {
+	}
+
+	BODY {
+		color: #050;
+		background: #EFF url(../images/background.jpg) no-repeat;
+		background-size: 100%;
+		font-family: tahoma, sans-serif;
+		height: 100%;
+	}
+
+	A, A:visited { 
+	    color: #11F;
+	    text-decoration : none;
+	}
+	div.navigation {
+	    width: 140px;
+	    height: 100%;
+	    display: inline;
+	    float: left;
+	    margin-left:0px;
+	    padding-left:0px;
+	}
+	span.nav-key, span.nav-key:hover, span.admin-nav-key {
+	    width: 130px;
+	    height: 40px;
+	    text-align: center;
+	    vertical-align: middle;
+	    font: italic bold 20px tahoma,sans-serif;
+	    color: #050;
+	    background-color: #EFF;
+	    display: block;
+	    border: 1px solid #050;
+	    margin-left:0px;
+	    padding-left:0px;
+	}
+	span.admin-nav-key {
+	    font: italic bold 15px tahoma,sans-serif;
+	}
+	span.nav-key:hover, span.admin-nav-key:hover {
+	    background-color: #DFF;
+	}
+	div.content {
+		display: inline;
+		float: left;
+		padding-left: 10px;
+	}
+	div.content .blog {
+	    width: 500px;
+	    border: 2px solid #050;
+	    max-height: 600px;
+	    min-height: 200px;
+	    background-color: #EFF;
+	    padding: 5px;
+	    display: inline;
+	    float: left;
+	}
+	div.content .blog .addPost {
+	    font: 0.8em tahoma,sans-serif;
+	}
+	div.content .blog .post-title {
+	    font: bold 1.2em tahoma,sans-serif;
+	    margin-top: 10px;
+	}
+	div.content .blog .post-date {
+	    font: 0.8em tahoma,sans-serif;
+	}
+	div.content .blog .post-body {
+	    font: 0.8em tahoma,sans-serif;
+	    border-bottom: 1px solid #050;
+	    padding-bottom: 10px;
+	}
+	div.content .scheduleNotes {
+	    background-color: #EFF;
+	    display: inline;
+	    float: left;
+	}
+	div.content .assignSubFields {
+	    background-color: #EFF;
+	    display: inline;
+	    float: left;
+	}
+	div.content .addPostFields {
+	    background-color: #EFF;
+	    width: 700px;
+	    display: inline;
+	    float: left;
+	}
+	div.content .addPostFields label.blogTitle {
+	    display: block;
+	}
+	div.content .editPlayerFields {
+	    background-color: #EFF;
+	    display: inline;
+	    float: left;
+	}
+	div.utilities {
+	    display: inline;
+	    float: left;
+	    margin-left: 30px;
+	}
+	div.utilities .login {
+	    background-color: #EFF;
+	    border: 2px solid #050;
+	    padding: 5px;
+	}
+	div.utilities .weather {
+	    margin-top: 10px;
+	}
+	div.content div.teams {
+	    width: 500px;
+	    border: 2px solid #050;
+	    background-color: #EFF;
+	    padding: 5px;
+	    display: inline;
+	    float: left;
+	}
+	div.content div.players {
+	    width: 800px;
+	    border: 2px solid #050;
+	    background-color: #EFF;
+	    padding: 5px;
+	    display: inline;
+	    float: left;
+	}
+	div.matchups {
+	    display: inline;
+	    float: left;
+	}
+	div.matchups div.matchDate {
+	    font: bold 1.2em tahoma,sans-serif;
+	    text-align: center;
+	    width: 600px;
+	    border: 2px solid #050;
+	    background-color: #EFF;
+	    margin: 10px;
+	}
+	div.schedule {
+	    border: 2px solid #050;
+	    background-color: #EFF;
+	    padding: 5px;
+	    display: inline;
+	    float: left;
+	}
+	table.statistics {
+	    background-color: #EFF;
+	    padding-top: 20px;
+	}
+	table.login {
+	    background-color: #EFF;
+	    margin-left: 40px;
+	    margin-top: 20px;
+	    padding: 20px;
+	}
+	table.teams, table.players, table.scorecard {
+	    width: 100%;
+	    border: 2px solid #050;
+	    border-collapse: collapse;
+	    background-color: #EFF;
+	}
+	table.matchup, table.handicaps {
+	    width: 600px;
+	    border: 2px solid #050;
+	    border-collapse: collapse;
+	    background-color: #EFF;
+	    margin: 10px;
+	}
+	table.handicaps, table.scorecard {
+	    display: inline;
+	    float: left;
+	}
+	table.teams td, table.players td, table.matchup td, table.handicaps td, table.scorecard td {
+	    vertical-align: top;
+	    border: 1px solid #050;
+	}
+	table.matchup td.hole, table.scorecard td {
+	    vertical-align: middle;
+	    text-align: center;
+	}
+	table.matchup td.player {
+	    width: 210px;
+	}
+	table.matchup td.handicap {
+	    width: 40px;
+	}
+	table.scorecard td.spacer {
+	    height: 10px;
+	}
+	table.scorecard td.course {
+	    font: bold 1.2em tahoma,sans-serif;
+	}
+	table.teams td.noborder, table.players td.noborder, table.matchup td.noborder, table.handicaps td.noborder {
+	    vertical-align: top;
+	}
+	table.teams th, table.players th, table.matchup th, table.handicaps th, table.scorecard th {
+	    border: 1px solid #050;
+	}
+	table.scorecard th {
+	    text-align: right;
+	}
+</STYLE>
