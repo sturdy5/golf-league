@@ -48,13 +48,6 @@ $thisPage = $parts[count($parts) - 1];
         </a>
         <?php 
         }
-        if ($thisPage != "scores.php") {
-        ?>
-        <a href="/working.html">
-            <span class="nav-key">Scores</span>
-        </a>
-        <?php 
-        }
         if ($_SESSION["admin"] == 1) {
         	if ($thisPage != "admin-players.php") {
         		?>

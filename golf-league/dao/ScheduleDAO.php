@@ -34,6 +34,18 @@ class ScheduleDAO {
     const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, startingHole) values ('%s', %s, %s, '%s', 0)";
     const GET_MATCH_SQL = "select * from schedule where id = %s";
 
+    public static function getCurrentSeason() {
+    	$result = @mysql_query(self::GET_SEASON_SQL);
+    	$seasonId = -1;
+    	if ($result) {
+    		$row = mysql_fetch_assoc($result);
+    		$seasonId = $row["id"];
+    	} else {
+    		throw new Exception ("DB : Could not get the current season");
+    	}
+    	return $seasonId;
+    }
+    
     public static function getScheduledDates() {
         $dates = array();
         $seasonId = "none";
@@ -176,6 +188,7 @@ class ScheduleDAO {
                 $matchup->hole = $hole;
                 $matchup->id = $matchId;
                 $matchup->course = $course;
+                $matchup->side = $side;
                 array_push($matchup->teams, $homeTeam);
                 array_push($matchup->teams, $awayTeam);
                  

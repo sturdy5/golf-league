@@ -15,18 +15,24 @@
  */
 class TeamDAO {
 
-    const LOOKUP_TEAMS_SQL = "select * from teams where season = (select id from seasons where startDate <= CURDATE() and endDate >= CURDATE()) order by id asc";
-    const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s";
+    const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by id asc";
+    const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s and season = %s";
     const ADD_TEAM_SQL = "insert into teams (name, players, season) values ('%s', '%s', %s)";
     const DELETE_TEAM_SQL = "delete from teams where id = %s";
     const GET_SEASON_SQL = "select id, startDate, endDate from seasons where startDate < CURDATE() and endDate > CURDATE()";
     const GET_NEXT_SEASON_SQL = "select id, startDate, endDate from seasons where startDate > CURDATE() order by endDate asc limit 0, 1";
+    const CURRENT = -1;
 
-    public static function getAllTeams() {
-
+    public static function getAllTeams($session = self::CURRENT) {
+        if ($session == self::CURRENT) {
+        	$seasonId = ScheduleDAO::getCurrentSeason();
+        } else {
+        	$seasonId = $session;
+        }
         $teams = array();
+        $query = vsprintf(self::LOOKUP_TEAMS_SQL, $seasonId);
 
-        $result = mysql_query(self::LOOKUP_TEAMS_SQL) or die("No teams have been defined");
+        $result = mysql_query($query) or die("No teams have been defined");
         // create team objects from the results and store it in a list to be returned
         while ($row = mysql_fetch_array($result)) {
             $team = new Team();
@@ -54,8 +60,13 @@ class TeamDAO {
         return $teams;
     }
 
-    public static function getTeamById($teamId) {
-        $query = sprintf(self::LOOKUP_TEAM_BY_TEAM_ID_SQL, $teamId);
+    public static function getTeamById($teamId, $session = self::CURRENT) {
+    	if ($session == self::CURRENT) {
+    		$seasonId = ScheduleDAO::getCurrentSeason();
+    	} else {
+    		$seasonId = $session;
+    	}
+        $query = sprintf(self::LOOKUP_TEAM_BY_TEAM_ID_SQL, $teamId, $seasonId);
         $result = mysql_query($query) or die("No teams have been defined for id = $teamId");
         
         // create team objects from the results
