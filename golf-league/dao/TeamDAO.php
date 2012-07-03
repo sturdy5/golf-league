@@ -3,6 +3,7 @@
  * Please add the following as required elements when including this file
 *     - config.inc.php
 *     - dao/PlayerDAO.php
+*     - dao/ScheduleDAO.php
 *     - model/Team.php
 *     - model/Player.php
 */
@@ -16,7 +17,8 @@
 class TeamDAO {
 
     const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by id asc";
-    const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s and season = %s";
+    const LOOKUP_TEAM_BY_PLAYER_ID_SQL = "select * from teams where (players like '%s' or players like '%s') and season = %s";
+    const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s";
     const ADD_TEAM_SQL = "insert into teams (name, players, season) values ('%s', '%s', %s)";
     const DELETE_TEAM_SQL = "delete from teams where id = %s";
     const GET_SEASON_SQL = "select id, startDate, endDate from seasons where startDate < CURDATE() and endDate > CURDATE()";
@@ -30,7 +32,7 @@ class TeamDAO {
         	$seasonId = $session;
         }
         $teams = array();
-        $query = vsprintf(self::LOOKUP_TEAMS_SQL, $seasonId);
+        $query = sprintf(self::LOOKUP_TEAMS_SQL, $seasonId);
 
         $result = mysql_query($query) or die("No teams have been defined");
         // create team objects from the results and store it in a list to be returned
@@ -60,15 +62,10 @@ class TeamDAO {
         return $teams;
     }
 
-    public static function getTeamById($teamId, $session = self::CURRENT) {
-    	if ($session == self::CURRENT) {
-    		$seasonId = ScheduleDAO::getCurrentSeason();
-    	} else {
-    		$seasonId = $session;
-    	}
-        $query = sprintf(self::LOOKUP_TEAM_BY_TEAM_ID_SQL, $teamId, $seasonId);
+    public static function getTeamById($teamId) {
+        $query = sprintf(self::LOOKUP_TEAM_BY_TEAM_ID_SQL, $teamId);
         $result = mysql_query($query) or die("No teams have been defined for id = $teamId");
-        
+
         // create team objects from the results
         $team = new Team();
         if ($result) {
@@ -81,7 +78,7 @@ class TeamDAO {
              * the array won't be of size 1, it will be size 0.
              */
             $team->players = array_filter(explode(",", $row["players"]));
-            
+
             // need to get the actual players for the team
             $newplayers = array();
             foreach($team->players as $player) {
@@ -90,8 +87,29 @@ class TeamDAO {
             }
             $team->players = $newplayers;
         }
-        
+
         return $team;
+    }
+    
+    public static function getTeamIdByPlayerId($playerId, $season = self::CURRENT) {
+    	if ($season == self::CURRENT) {
+    		$seasonId = ScheduleDAO::getCurrentSeason();
+    	} else {
+    		$seasonId = $season;
+    	}
+    	
+    	$query = sprintf(self::LOOKUP_TEAM_BY_PLAYER_ID_SQL, "%,".$playerId, $playerId.",%", $seasonId);
+    	
+    	$result = @mysql_query($query);
+    	$teamId = -1;
+    	if ($result) {
+    		$row = mysql_fetch_array($result);
+    		$teamId = $row["id"];
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	
+    	return $teamId;
     }
 
     public static function addTeamByPlayer($name, $players, $nextSeason = false) {

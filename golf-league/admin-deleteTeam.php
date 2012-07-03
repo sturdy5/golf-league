@@ -1,6 +1,7 @@
 <?php
 require_once('./config.inc.php');
 require_once("./dao/PlayerDAO.php");
+require_once("./dao/ScheduleDAO.php");
 require_once("./dao/TeamDAO.php");
 require_once("./dao/DBUtils.php");
 require_once("./model/Team.php");
@@ -16,10 +17,6 @@ if ($_GET["id"]) {
 if ($teamId == "") {
     echo "Delete failed - contact your system administrator";
 } else {
-    $players = PlayerDAO::getPlayersByTeam($_GET["id"]);
-    foreach ($players as $player) {
-        PlayerDAO::addPlayerToTeam($player->id, null);
-    }
     header("location: admin-teams.php");
 }
 ?>

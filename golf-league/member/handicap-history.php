@@ -6,6 +6,7 @@
     include_once('../utils/phpMyGraph5.0.php');
     require_once('../config.inc.php');
     require_once("../dao/PlayerDAO.php");
+    require_once("../dao/ScheduleDAO.php");
     require_once("../dao/TeamDAO.php");
     require_once("../model/Team.php");
     require_once("../model/Player.php");
@@ -15,6 +16,7 @@
     $cfg['width'] = 500;
     $cfg['height'] = 250;
     $cfg['round-value-range'] = true;
+    $cfg['average-line-visible'] = false;
     
     $playerId = $_SESSION['userid'];
     
@@ -24,11 +26,28 @@
     $firstDate = ArrayUtils::getAssociativeArrayKeyByNumber($handicapHistory, 0);
     $lastDate = ArrayUtils::getAssociativeArrayKeyByNumber($handicapHistory, $count - 1);
     
-    $data = ArrayUtils::createDateRangeArray($firstDate, $secondDate);
+    $dateArray = ArrayUtils::createDateRangeArray($firstDate, $lastDate);
+    $handicapDateArray = array_keys($handicapHistory);
+    
+    $dataArray = array();
+    
+    $previousDate = null;
+    foreach ($handicapDateArray as $handicapDate) {
+    	foreach ($dateArray as $date) {
+    		if ($date <= $handicapDate) {
+    			if (null == $previousDate || $date > $previousDate) {
+    			    $dataArray[$date] = $handicapHistory[$handicapDate];
+    			}
+    		} else {
+    			$previousDate = $handicapDate;
+    			break;
+    		}
+    	}
+    }
     
     //Create phpMyGraph instance
     $graph = new phpMyGraph();
 
     //Parse
-    $graph->parseVerticalLineGraph(array_reverse($handicapHistory), $cfg);
+    $graph->parseVerticalLineGraph($dataArray, $cfg);
 ?>

@@ -1,6 +1,7 @@
 <?php
 include('./header.inc.php');
 require_once("./dao/PlayerDAO.php");
+require_once("./dao/ScheduleDAO.php");
 require_once("./dao/TeamDAO.php");
 require_once("./model/Team.php");
 require_once("./model/Player.php");

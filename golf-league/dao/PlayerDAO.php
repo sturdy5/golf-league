@@ -16,14 +16,11 @@ class PlayerDAO {
     
     const GET_ALL_USERS_SQL = "select * from users order by fulltime desc, lastName asc";
     const GET_USER_BY_ID_SQL = "select * from users where id = %s";
-    const GET_USER_BY_TEAM_SQL = "select * from users where team = %s";
-    const GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL = "select * from users where team is null and fulltime=1 order by lastName asc";
+    const GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL = "select * from users where fulltime=1 order by lastName asc";
     const GET_SUBS_SQL = "select * from users where fulltime=0 and active=1 order by lastName asc, firstName asc";
     const ADD_ADMIN_USER_SQL = "update users set admin=1 where id = %s";
     const REMOVE_ADMIN_USER_SQL = "update users set admin=0 where id = %s";
-    const ADD_USER_TO_TEAM_SQL = "update users set team = '%s' where id = %s";
     const DELETE_USER_SQL = "delete from users where id = %s";
-    const REMOVE_USER_FROM_TEAM_SQL = "update users set team = null where id = %s";
     const UPDATE_USER_SQL = "update users set firstName = '%s', lastName = '%s', email = '%s', phoneNumber = '%s', handicap = %s, fulltime = %s, active = %s, usercontrolled = %s, admin = %s, user = '%s' where id = %s";
     const UPDATE_ACCOUNT_SQL = "update users set firstName = '%s', lastName = '%s', email = '%s', phoneNumber = '%s' where id = %s";
     const CHANGE_PASSWORD_SQL = "update users set password = '%s' where id = %s";
@@ -45,7 +42,6 @@ class PlayerDAO {
         $user->firstName = $row["firstName"];
         $user->lastName = $row["lastName"];
         $user->phoneNumber = $row["phoneNumber"];
-        $user->teamId = $row["team"];
         $user->username = $row["user"];
         $fulltimeIndicator = $row["fulltime"];
         if ($fulltimeIndicator == 1) {
@@ -84,6 +80,8 @@ class PlayerDAO {
         	$user->handicap = ArrayUtils::getAssociativeArrayByNumber($user->handicapHistory, 0);
         }
         
+        $user->teamId = TeamDAO::getTeamIdByPlayerId($id);
+        
         return $user;
     }
     
@@ -113,7 +111,6 @@ class PlayerDAO {
             $user->lastName = $row["lastName"];
             $user->handicap = $row["handicap"];
             $user->phoneNumber = $row["phoneNumber"];
-            $user->teamId = $row["team"];
             $user->username = $row["user"];
             $fulltimeIndicator = $row["fulltime"];
             if ($fulltimeIndicator == 1) {
@@ -148,65 +145,20 @@ class PlayerDAO {
         	if (count($user->handicapHistory) > 0) {
         		$user->handicap = ArrayUtils::getAssociativeArrayByNumber($user->handicapHistory, 0);
         	}
+        	$user->teamId = TeamDAO::getTeamIdByPlayerId($user->id);        	
         }
         
-        return $players;
-    }
-    
-    public static function getPlayersByTeam($teamId) {
-        $players = array();
-        $query = sprintf(self::GET_USER_BY_TEAM_SQL, $teamId);
-        $result = mysql_query($query) or die("Could not get the players associated with the given team id - $teamId");
-        // create a list of players from the results
-        while ($row = mysql_fetch_array($result)) {
-            $user = new Player();
-            $user->id = $row["id"];
-            $user->emailAddress = $row["email"];
-            $user->firstName = $row["firstName"];
-            $user->lastName = $row["lastName"];
-            $user->handicap = $row["handicap"];
-            $user->phoneNumber = $row["phoneNumber"];
-            $user->teamId = $row["team"];
-            $user->username = $row["user"];
-            $fulltimeIndicator = $row["fulltime"];
-            if ($fulltimeIndicator == 1) {
-                $user->fulltime = true;
-            } else {
-                $user->fulltime = false;
-            }
-            $userControlledIndicator = $row["usercontrolled"];
-            if ($userControlledIndicator == 1) {
-                $user->usercontrolled = true;
-            } else {
-                $user->usercontrolled = false;
-            }
-            $adminIndicator = $row["admin"];
-            if ($adminIndicator == 1) {
-                $user->admin = true;
-            } else {
-                $user->admin = false;
-            }
-            $activeIndicator = $row["active"];
-            if ($activeIndicator == 1) {
-                $user->active = true;
-            } else {
-                $user->active = false;
-            }
-            
-            array_push($players, $user);
-        }
-        
-        foreach ($players as $user) {
-        	$user->handicapHistory = self::getHandicapHistory($user->id);
-        	if (count($user->handicapHistory) > 0) {
-        		$user->handicap = ArrayUtils::getAssociativeArrayByNumber($user->handicapHistory, 0);
-        	}
-        }
         return $players;
     }
     
     public static function getFulltimePlayersWithoutTeams() {
-        return self::getPlayers(self::GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL);
+        $fulltimePlayers = self::getPlayers(self::GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL);
+        foreach ($fulltimePlayers as $key=>&$player) {
+        	if ($player->teamId != null) {
+        		unset($fulltimePlayers[$key]);
+        	}
+        }
+        return $fulltimePlayers;
     }
     
     public static function getSubs() {
@@ -215,7 +167,10 @@ class PlayerDAO {
     
     private static function getPlayers($query) {
     	$players = array();
-        $result = mysql_query($query) or die("Could not get the players");
+        $result = @mysql_query($query);
+        if (!$result) {
+        	throw new Exception("DB : " . mysql_error());
+        }
         // create a list of players from the results
         while ($row = mysql_fetch_array($result)) {
             $user = new Player();
@@ -225,7 +180,6 @@ class PlayerDAO {
             $user->lastName = $row["lastName"];
             $user->handicap = $row["handicap"];
             $user->phoneNumber = $row["phoneNumber"];
-            $user->teamId = $row["team"];
             $user->username = $row["user"];
             $fulltimeIndicator = $row["fulltime"];
             if ($fulltimeIndicator == 1) {
@@ -260,6 +214,7 @@ class PlayerDAO {
         	if (count($user->handicapHistory) > 0) {
         		$user->handicap = ArrayUtils::getAssociativeArrayByNumber($user->handicapHistory, 0);
         	}
+        	$user->teamId = TeamDAO::getTeamIdByPlayerId($user->id);
         }
         
         return $players;
@@ -352,14 +307,6 @@ class PlayerDAO {
         if (!$result) {
             throw new Exception("DB - Could not remove an administrator from the database : " . mysql_error());
         }
-    }
-    
-    public static function addPlayerToTeam($playerId, $teamId) {
-        $query = sprintf(self::ADD_USER_TO_TEAM_SQL, $teamId, $playerId);
-        if ($teamId == null) {
-            $query = sprintf(self::REMOVE_USER_FROM_TEAM_SQL, $playerId);
-        }
-        $result = mysql_query($query) or die("Could not add the player specified ($playerId) to the team specified ($teamId)");
     }
     
     public static function addPlayerByAdmin($firstName, $lastName, $email, $phoneNumber, $fullTime) {
