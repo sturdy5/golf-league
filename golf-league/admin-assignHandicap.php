@@ -14,6 +14,7 @@ include('./navigation.inc.php');
 ?>
 
 <div class="content">
+    <a href="/admin/importHandicaps.php">Click here</a> to import the handicaps from an Excel spreadsheet
 <?php 
     $players = PlayerDAO::getAllPlayers();
     if (count($players) > 0) {

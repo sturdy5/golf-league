@@ -43,6 +43,9 @@
 	span.nav-key:hover, span.admin-nav-key:hover {
 	    background-color: #DFF;
 	}
+	div.importHandicaps {
+	    background-color: #EFF;
+	}
 	div.content {
 		display: inline;
 		float: left;
