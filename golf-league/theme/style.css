@@ -43,8 +43,10 @@
 	span.nav-key:hover, span.admin-nav-key:hover {
 	    background-color: #DFF;
 	}
-	div.importHandicaps {
+	span.importHandicaps {
 	    background-color: #EFF;
+	    padding: 5px;
+	    margin-bottom: 10px;
 	}
 	div.content {
 		display: inline;
@@ -164,7 +166,7 @@
 	    border-collapse: collapse;
 	    background-color: #EFF;
 	}
-	table.matchup, table.handicaps {
+	table.matchup, table.handicaps, table.import {
 	    width: 600px;
 	    border: 2px solid #050;
 	    border-collapse: collapse;
@@ -175,7 +177,7 @@
 	    display: inline;
 	    float: left;
 	}
-	table.teams td, table.players td, table.matchup td, table.handicaps td, table.scorecard td {
+	table.teams td, table.players td, table.matchup td, table.handicaps td, table.scorecard td, table.import td {
 	    vertical-align: top;
 	    border: 1px solid #050;
 	}
@@ -195,10 +197,10 @@
 	table.scorecard td.course {
 	    font: bold 1.2em tahoma,sans-serif;
 	}
-	table.teams td.noborder, table.players td.noborder, table.matchup td.noborder, table.handicaps td.noborder {
+	table.teams td.noborder, table.players td.noborder, table.matchup td.noborder, table.handicaps td.noborder, table.import td.noborder {
 	    vertical-align: top;
 	}
-	table.teams th, table.players th, table.matchup th, table.handicaps th, table.scorecard th {
+	table.teams th, table.players th, table.matchup th, table. th, table.scorecard th, table.import th {
 	    border: 1px solid #050;
 	}
 	table.scorecard th {

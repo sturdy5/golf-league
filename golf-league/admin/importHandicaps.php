@@ -74,11 +74,11 @@ if ($fileExists) {
     <script type="text/javascript" src="./../js/selector.js"></script>
 </head>
 <body>
-<div class="importHandicaps">
+<div>
 <?php 
 if ($fileExists) {
 ?>
-	<table class="handicaps">
+	<table class="import">
 		<tr>
 			<th>Name</th>
 			<th>Handicap</th>
@@ -95,9 +95,9 @@ if ($fileExists) {
 <?php 
 } else {
 ?>
-	<p>The format for the excel spreadsheet should be Microsoft Excel XML 2003 with the following layout</p>
+	<span class="importHandicaps">The format for the excel spreadsheet should be Microsoft Excel XML 2003 with the following layout</span>
 	
-	<table class="handicaps">
+	<table class="import">
 	    <tr>
 	        <td>Last Name</td>
 	        <td>First Name</td>
@@ -117,11 +117,11 @@ if ($fileExists) {
 	
     <form enctype="multipart/form-data" action="importHandicaps.php" method="post">
     <input type="hidden" name="MAX_FILE_SIZE" value="2000000" />
-	<table class="handicaps">
+	<table class="import">
 		<tr>
-			<td>Names file:</td>
-			<td><input type="file" name="handicapFile" /></td>
-			<td><input type="submit" value="Upload" /></td>
+			<td class="noborder">Handicaps file:</td>
+			<td class="noborder"><input type="file" name="handicapFile" /></td>
+			<td class="noborder"><input type="submit" value="Upload" /></td>
 		</tr>
 	</table>
 	</form>
