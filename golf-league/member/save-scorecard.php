@@ -13,6 +13,7 @@ require_once("../model/Player.php");
 require_once("../model/Course.php");
 require_once("../model/Hole.php");
 require_once("../model/Scores.php");
+require_once("../model/Tee.php");
 require_once("./../utils/ArrayUtils.php");
 
 // if isset fields, save each field
@@ -85,7 +86,8 @@ if (isset($_POST["matchId"])) {
 			}
 		}
 	}
-	header("location: scorecard.php?matchId=$matchId&success=1");
+	$matchDate = $match->date;
+	header("location: ../schedule.php?matchDate=$matchDate");
 } else {
 	header("location: /index.php");
 }

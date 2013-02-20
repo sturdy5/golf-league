@@ -31,6 +31,11 @@ class PlayerDAO {
 	const GET_LATEST_HANDICAP_SQL = "select * from handicap_history where playerId = %s order by date desc limit 0, 1";
 	const GET_HANDICAP_HISTORY_SQL = "select * from handicap_history where playerId = %s order by date desc";
 	const GET_PASSWORD_HINT_SQL = "select email, password_hint from users where user = '%s'";
+	const GET_PLAYER_TEE_SQL = "select * from tee_history where playerId = %s and seasonId = %s";
+	const UPDATE_PLAYER_TEE_SQL = "update tee_history set teeId = %s where playerId = %s and seasonId = %s";
+	const INSERT_PLAYER_TEE_SQL = "insert into tee_history (teeId, playerId, seasonId) values (%s, %s, %s)";
+	const LAST_N_MATCHES_SQL = "select a.match_id, a.player_id, b.date, c.name from (select distinct match_id, player_id from scores) a, schedule b, courses c where a.match_id = b.id and b.course = c.id and a.player_id = %s order by b.date desc limit 0, %s";
+	const MATCH_SCORE_SQL = "select sum(score) as score from scores where player_id = %s and match_id = %s";
 
 	public static function getPlayer($id) {
 		$query = sprintf(self::GET_USER_BY_ID_SQL, $id);
@@ -406,6 +411,38 @@ class PlayerDAO {
 		if (!$result) {
 			echo("DB : " . mysql_error());
 		}
+	}
+	
+	public static function getLastNScores($playerId, $numberOfScores) {
+		$scores = array();
+		$data1 = DBUtils::escapeData(array($playerId, $numberOfScores));
+		$query = vsprintf(self::LAST_N_MATCHES_SQL, $data1);
+		$result = @mysql_query($query);
+		if ($result) {
+			while ($row = mysql_fetch_array($result)) {
+				$score = new Scores();
+				$score->match = $row["match_id"];
+				$score->matchDate = $row["date"];
+				$score->courseName = $row["name"];
+				array_push($scores, $score);
+			}
+		} else {
+			throw new Exception("DB : " . mysql_error());
+		}
+		
+		foreach ($scores as $score) {
+			$data2 = DBUtils::escapeData(array($playerId, $score->match));
+			$query = vsprintf(self::MATCH_SCORE_SQL, $data2);
+			$result = @mysql_query($query);
+			if ($result) {
+				$row = mysql_fetch_array($result);
+				$score->totalScore = $row["score"];
+			} else {
+				throw new Exception("DB : " . mysql_error());
+			}
+		}
+		
+		return $scores;
 	}
 }
 

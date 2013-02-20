@@ -13,6 +13,7 @@ require_once("../model/Player.php");
 require_once("../model/Course.php");
 require_once("../model/Hole.php");
 require_once("../model/Scores.php");
+require_once("../model/Tee.php");
 require_once("./../utils/ArrayUtils.php");
 include('../validate-admin.php');
 if (!isset($_GET["matchDate"])) {
@@ -102,7 +103,7 @@ foreach ($schedule->matchups as $match) {
     array_push($excelData, $rowData);
 
     $rowData2 = array();
-    array_push($rowData2, $awayteam->players[$awayIndex2]->firstName . " " . $awayteam->players[$awayIndex2]->lastName);
+    array_push($rowData2, $awayteam->players[$awayIndex1]->firstName . " " . $awayteam->players[$awayIndex1]->lastName);
     foreach ($holes as $hole) {
         array_push($rowData2, $away1scores->scores[$hole->number]);
     }

@@ -18,6 +18,8 @@ class ScheduleDAO {
 
     const GET_SEASON_SQL = "select id, startDate, endDate from seasons where startDate < CURDATE() and endDate > CURDATE()";
     const GET_LAST_SEASON_SQL = "select id, startDate, endDate from seasons where endDate < CURDATE() order by endDate desc limit 0, 1";
+    const GET_SEASON_BY_DATE_SQL = "select * from seasons where startDate <= '%s' and endDate >= '%s'";
+    const GET_COURSE_BY_SEASON_SQL = "select courseId from seasons where id = %s";
     const GET_UNIQUE_DATES_SQL = "select distinct s.date, n.notes from schedule s left join schedule_notes n on s.date = n.date where s.date > '%s' and s.date < '%s' order by s.date asc";
     const UPDATE_SCHEDULE_NOTES = "update schedule_notes set notes = '%s' where date = '%s'";
     const ADD_SCHEDULE_NOTES = "insert into schedule_notes (notes, date) values ('%s', '%s')";
@@ -34,6 +36,19 @@ class ScheduleDAO {
     const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, startingHole) values ('%s', %s, %s, '%s', 0)";
     const GET_MATCH_SQL = "select * from schedule where id = %s";
 
+    public static function getSeasonByDate($date) {
+    	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
+    	$result = @mysql_query($query);
+    	$seasonId = -1;
+    	if ($result) { 
+    		$row = mysql_fetch_assoc($result);
+    		$seasonId = $row["id"];
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	return $seasonId;
+    }
+    
     public static function getCurrentSeason() {
     	$result = @mysql_query(self::GET_SEASON_SQL);
     	$seasonId = -1;
@@ -44,6 +59,23 @@ class ScheduleDAO {
     		throw new Exception ("DB : Could not get the current season");
     	}
     	return $seasonId;
+    }
+    
+    public static function getCourseBySeason($seasonId = -1) {
+    	if ($seasonId == -1) {
+    		$seasonId = self::getCurrentSeason();
+    	}
+    	
+    	$query = vsprintf(self::GET_COURSE_BY_SEASON_SQL, array($seasonId));
+    	$result = @mysql_query($query);
+    	$courseId = -1;
+    	if ($result) {
+    		$row = mysql_fetch_array($result);
+    		$courseId = $row["courseId"];
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	return $courseId;
     }
     
     public static function getScheduledDates() {

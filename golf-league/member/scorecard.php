@@ -13,8 +13,9 @@ require_once("../model/Player.php");
 require_once("../model/Course.php");
 require_once("../model/Hole.php");
 require_once("../model/Scores.php");
+require_once("../model/Tee.php");
 require_once("./../utils/ArrayUtils.php");
-include('../validate-member.php');
+//include('../validate-member.php');
 if (!isset($_GET["matchId"])) {
 	header("location: /index.php");
 }

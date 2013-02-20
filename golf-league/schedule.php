@@ -1,16 +1,37 @@
 <?php
-include('./header.inc.php');
+require_once('./config.inc.php');
 require_once("./dao/DBUtils.php");
 require_once("./dao/ScheduleDAO.php");
 require_once("./dao/PlayerDAO.php");
 require_once("./dao/TeamDAO.php");
+require_once("./dao/CourseDAO.php");
 require_once("./model/Schedule.php");
 require_once("./model/ScheduleDate.php");
 require_once("./model/Matchup.php");
 require_once("./model/Team.php");
 require_once("./model/Player.php");
+require_once("./model/Course.php");
+require_once("./model/Hole.php");
+require_once("./model/Tee.php");
 require_once("./utils/ArrayUtils.php");
 ?>
+
+<html>
+<head>
+	<title>Thursday Night Golf League</title>
+	<link href="theme/style.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="./js/selector.js"></script>
+	<style>
+	@media print {
+	    div.navigation {
+	        display:none;
+	    }
+	    div.utilities {
+	        display:none;
+	    }
+	}
+	</style>
+</head>
 
 <?php
 include('./navigation.inc.php');
@@ -46,16 +67,21 @@ function sortMatchupByHole($a, $b) {
 
 $userId = $_SESSION['userid'];
 
-if ($_POST["matchDate"]) {
-	$schedule = ScheduleDAO::getScheduleForDate($_POST["matchDate"]);
+if ($_POST["matchDate"] || $_GET["matchDate"]) {
+    $matchDate = $_POST["matchDate"];
+    if (!isset($matchDate)) {
+        $matchDate = $_GET["matchDate"];
+    }
+	$schedule = ScheduleDAO::getScheduleForDate($matchDate);
+	$seasonId = ScheduleDAO::getSeasonByDate($matchDate);
     usort($schedule->matchups, "sortMatchupByHole");
 ?>
     <div class="matchups">
-        <div class="matchDate"><?=$_POST["matchDate"]?>
+        <div class="matchDate"><?=$matchDate?>
 <?php
             if ($_SESSION["admin"] == 1) { 
 ?>
-            - <a href="admin/export-scores.php?matchDate=<?=$_POST["matchDate"]?>">Export Scores</a>
+            - <a href="admin/export-scores.php?matchDate=<?=$matchDate?>">Export Scores</a>
 <?php 
             }
 ?>
@@ -65,6 +91,12 @@ if ($_POST["matchDate"]) {
 	foreach ($schedule->matchups as $matchup) {
 		$homeTeamId = $matchup->teams[0];
 		$awayTeamId = $matchup->teams[1];
+		$courseId = $matchup->course;
+		$courseTees = CourseDAO::getTees($courseId);
+		$tees = array();
+		for ($i = 0; $i < count($courseTees); $i++) {
+			$tees[$courseTees[$i]->id] = $courseTees[$i];
+		}
 		$hole = $matchup->hole;
 		
 		// get the team information
@@ -108,11 +140,11 @@ if ($_POST["matchDate"]) {
             <th colspan="2"><?=$homeTeam->name?></th>
             <th colspan="2"><?=$awayTeam->name?></th>
 <?php 
-            if (isset($userId) && ($userId == $homeTeam->players[0]->id || $userId == $homeTeam->players[1]->id || $userId == $awayTeam->players[0]->id || $userId == $awayTeam->players[1]->id || $_SESSION["admin"] == 1)) {
+            //if (isset($userId) && ($userId == $homeTeam->players[0]->id || $userId == $homeTeam->players[1]->id || $userId == $awayTeam->players[0]->id || $userId == $awayTeam->players[1]->id || $_SESSION["admin"] == 1)) {
 ?>
                 <td class="hole" rowspan="3"><a href="/member/scorecard.php?matchId=<?=$matchId?>">Score Card</a></td>
 <?php 
-            }
+            //}
 ?>
         </tr>
         <tr>
@@ -136,9 +168,29 @@ if ($_POST["matchDate"]) {
 				$awayIndex1 = 1;
 				$awayIndex2 = 0;
 			}
+			
+			$player1TeeId = PlayerDAO::getPlayerTee($homeTeam->players[$homeIndex1]->id, $seasonId);
+			$player1Tee = $tees[$player1TeeId];
+			
+			$player2TeeId = PlayerDAO::getPlayerTee($awayTeam->players[$awayIndex1]->id, $seasonId);
+			$player2Tee = $tees[$player2TeeId];
+			
+			$player3TeeId = PlayerDAO::getPlayerTee($homeTeam->players[$homeIndex2]->id, $seasonId);
+			$player3Tee = $tees[$player3TeeId];
+			
+			$player4TeeId = PlayerDAO::getPlayerTee($awayTeam->players[$awayIndex2]->id, $seasonId);
+			$player4Tee = $tees[$player4TeeId];
 ?>
             <td class="player">
-                <div><?=$homeTeam->players[$homeIndex1]->firstName?> <?=$homeTeam->players[$homeIndex1]->lastName?></div>
+                <div>
+<?php 
+                    if (isset($player1Tee)) {
+?>
+                        <div class="color-box" style="background-color: <?=$player1Tee->color?>"></div>
+<?php 
+                    }
+?>
+                    <?=$homeTeam->players[$homeIndex1]->firstName?> <?=$homeTeam->players[$homeIndex1]->lastName?></div>
 <?php
                 if ($_SESSION["admin"] == 1) {
                 	if ($homeTeam->players[$homeIndex1]->fulltime) {
@@ -155,7 +207,15 @@ if ($_POST["matchDate"]) {
             </td>
             <td class="handicap"><?=$homeTeam->players[$homeIndex1]->handicap?></td>
             <td class="player">
-                <div><?=$awayTeam->players[$awayIndex1]->firstName?> <?=$awayTeam->players[$awayIndex1]->lastName?></div>
+                <div>
+<?php 
+                    if (isset($player2Tee)) {
+?>
+                        <div class="color-box" style="background-color: <?=$player2Tee->color?>"></div>
+<?php 
+                    }
+?>
+                    <?=$awayTeam->players[$awayIndex1]->firstName?> <?=$awayTeam->players[$awayIndex1]->lastName?></div>
 <?php
                 if ($_SESSION["admin"] == 1) {
                 	if ($awayTeam->players[$awayIndex1]->fulltime) {
@@ -174,7 +234,15 @@ if ($_POST["matchDate"]) {
         </tr>
         <tr>
             <td class="player">
-                <div><?=$homeTeam->players[$homeIndex2]->firstName?> <?=$homeTeam->players[$homeIndex2]->lastName?></div>
+                <div>
+<?php 
+                    if (isset($player3Tee)) {
+?>
+                        <div class="color-box" style="background-color: <?=$player3Tee->color?>"></div>
+<?php 
+                    }
+?>
+                    <?=$homeTeam->players[$homeIndex2]->firstName?> <?=$homeTeam->players[$homeIndex2]->lastName?></div>
 <?php
                 if ($_SESSION["admin"] == 1) {
                 	if ($homeTeam->players[$homeIndex2]->fulltime) {
@@ -191,7 +259,15 @@ if ($_POST["matchDate"]) {
             </td>
             <td class="handicap"><?=$homeTeam->players[$homeIndex2]->handicap?></td>
             <td class="player">
-                <div><?=$awayTeam->players[$awayIndex2]->firstName?> <?=$awayTeam->players[$awayIndex2]->lastName?></div>
+                <div>
+<?php 
+                    if (isset($player4Tee)) {
+?>
+                        <div class="color-box" style="background-color: <?=$player4Tee->color?>"> </div>
+<?php 
+                    }
+?>
+                    <?=$awayTeam->players[$awayIndex2]->firstName?> <?=$awayTeam->players[$awayIndex2]->lastName?></div>
 <?php
                 if ($_SESSION["admin"] == 1) {
                 	if ($awayTeam->players[$awayIndex2]->fulltime) {

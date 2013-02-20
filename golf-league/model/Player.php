@@ -21,6 +21,7 @@ class Player {
     public $newPassword;
     public $username;
     
+    public $teeHistory = array();
     public $handicapHistory = array();
     
 }

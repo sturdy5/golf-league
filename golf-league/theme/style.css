@@ -188,6 +188,12 @@
 	table.matchup td.player {
 	    width: 210px;
 	}
+	table.matchup td.player div.color-box {
+	    width: 10px;
+	    height: 10px;
+	    display: inline-block;
+	    border: 1px black solid;
+	}
 	table.matchup td.handicap {
 	    width: 40px;
 	}

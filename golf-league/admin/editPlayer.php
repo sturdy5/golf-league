@@ -4,11 +4,15 @@ require_once("./../dao/DBUtils.php");
 require_once("./../dao/ScheduleDAO.php");
 require_once("./../dao/PlayerDAO.php");
 require_once("./../dao/TeamDAO.php");
+require_once("./../dao/CourseDAO.php");
 require_once("./../model/Schedule.php");
 require_once("./../model/ScheduleDate.php");
 require_once("./../model/Matchup.php");
 require_once("./../model/Team.php");
 require_once("./../model/Player.php");
+require_once("./../model/Course.php");
+require_once("./../model/Hole.php");
+require_once("./../model/Tee.php");
 require_once("./../utils/ArrayUtils.php");
 include('./../validate-admin.php');
 include('./../navigation.inc.php');
@@ -98,6 +102,7 @@ include('./../navigation.inc.php');
 
 <div class="content">
 <?php
+    $seasonId = ScheduleDAO::getCurrentSeason();
     if (isset($_POST["id"]) && isset($_POST["firstName"]) && isset($_POST["lastName"]) && isset($_POST["email"]) && isset($_POST["phoneNumber"]) && isset($_POST["handicap"]) && isset($_POST["fullTime"]) && isset($_POST["active"]) && isset($_POST["usercontrolled"]) && isset($_POST["admin"]) && isset($_POST["username"]) && isset($_POST["newPassword1"])) {
         $player = new Player();
         $player->id = $_POST["id"];
@@ -118,6 +123,10 @@ include('./../navigation.inc.php');
     	if ($newPassword != "") {
     	    PlayerDAO::changePassword($player->id, $newPassword);
     	}
+    	
+    	if (isset($_POST["teeBox"])) {
+    		PlayerDAO::setPlayerTee($player->id, $_POST["teeBox"], $seasonId);
+    	}
 ?>
         <script type="text/javascript">
             events.push('back');
@@ -125,6 +134,10 @@ include('./../navigation.inc.php');
 <?php
     } else {
         $player = PlayerDAO::getPlayer($_GET["id"]);
+        $courseId = ScheduleDAO::getCourseBySeason($seasonId);
+        $playerTeeId = PlayerDAO::getPlayerTee($player->id, $seasonId);
+        $tees = CourseDAO::getTees($courseId);
+        
         if (null == $player) {
 ?>
         <script type="text/javascript">
@@ -166,6 +179,29 @@ include('./../navigation.inc.php');
     			        <input name="handicap" type="text" size="5" value="<?=$player->handicap?>"/>
     			    </span>
     			</p>
+    		    <p>
+    		        <label for="teeBox" class="playerTitle">Tee Box:</label>
+    		        <span class="textbox">
+    		        	<select name="teeBox" id="teeBox">
+    		        	    <option value="-1">No tee box</option>
+<?php 
+                            foreach ($tees as $tee) {
+?>
+                                <option value="<?=$tee->id?>"
+<?php 
+                                if ($tee->id == $playerTeeId) {
+?>
+                                    selected="selected"
+<?php 
+                                }
+?>
+                                ><?=$tee->name?> (<?=$tee->color?>)</option>
+<?php 
+                            }
+?>
+    		        	</select>    
+    		        </span>
+    		    </p>
     			<p>
     				<label for="fullTime" class="playerTitle">Full Time:</label> 
     				<span class="textbox">
@@ -216,7 +252,7 @@ include('./../navigation.inc.php');
     		    </p>
     			<div id="alignRight">
     				<label for="submit">
-    				    <input name="createPlayerButton" type="button" value="Edit Player" onclick="editPlayer()" />
+    				    <input name="createPlayerButton" type="button" value="Save Player" onclick="editPlayer()" />
     				</label>
     			</div>
     		</fieldset>
