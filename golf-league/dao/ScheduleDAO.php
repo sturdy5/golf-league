@@ -17,6 +17,7 @@
 class ScheduleDAO {
 
     const GET_SEASON_SQL = "select id, startDate, endDate from seasons where startDate < CURDATE() and endDate > CURDATE()";
+    const CREATE_SEASON_SQL = "insert into seasons (startDate, endDate, courseId, team_structure, score_style) values ('%s', '%s', %s, '%s', '%s')";
     const GET_LAST_SEASON_SQL = "select id, startDate, endDate from seasons where endDate < CURDATE() order by endDate desc limit 0, 1";
     const GET_SEASON_BY_DATE_SQL = "select * from seasons where startDate <= '%s' and endDate >= '%s'";
     const GET_COURSE_BY_SEASON_SQL = "select courseId from seasons where id = %s";
@@ -36,6 +37,29 @@ class ScheduleDAO {
     const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, startingHole) values ('%s', %s, %s, '%s', 0)";
     const GET_MATCH_SQL = "select * from schedule where id = %s";
 
+    public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
+    	$data = DBUtils::escapeData(array($startDate, $endDate, $courseId, $teamStructure, $scoreStyle));
+    	$query = vsprintf(self::CREATE_SEASON_SQL, $data);
+    	$result = @mysql_query($query);
+    	
+    	$seasonId = "";
+    	if ($result) {
+    		$seasonId = mysql_insert_id();
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	
+    	// now that the season exists, let's add the dates to the schedule. 
+    	// the first step to that is to get the sides for the course
+    	$sides = CourseDAO::getCourseSides($courseId);
+    	
+    	// now let's assume for now that all scheduled dates will be on Thursdays
+    	// TODO figure out how to determine all of the thursdays between the start date
+    	// and the end date (inclusive).
+    	
+    	return $seasonId;
+    }
+    
     public static function getSeasonByDate($date) {
     	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
     	$result = @mysql_query($query);

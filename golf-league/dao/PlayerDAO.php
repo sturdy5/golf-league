@@ -1,10 +1,11 @@
 <?php
 /*
  * Please add the following as required elements when including this file
-*     - config.inc.php
-*     - model/Player.php
-*     - utils/ArrayUtils.php
-*/
+ *     - config.inc.php
+ *     - model/Player.php
+ *     - model/HandicapMethod.php
+ *     - utils/ArrayUtils.php
+ */
 
 /**
  * This class is used to retrieve all of the information relating to
@@ -27,7 +28,7 @@ class PlayerDAO {
 	const CHANGE_PASSWORD_SQL = "update users set password = '%s' where id = %s";
 	const ADD_USER_BY_ADMIN_SQL = "insert into users (firstName, lastName, email, phoneNumber, fulltime, user, password, active, admin, usercontrolled) values ('%s', '%s', '%s', '%s', %s, 'temp', '%s', 1, 0, 0)";
 	const ASSIGN_USER_HANDICAP_SQL = "update users set handicap = %s where id = %s";
-	const UPDATE_HANDICAP_HISTORY_SQL = "insert into handicap_history (handicap, playerId, date) values (%s, %s, CURDATE())";
+	const UPDATE_HANDICAP_HISTORY_SQL = "insert into handicap_history (handicap, playerId, handicap_method, date) values (%s, %s, '%s', CURDATE())";
 	const GET_LATEST_HANDICAP_SQL = "select * from handicap_history where playerId = %s order by date desc limit 0, 1";
 	const GET_HANDICAP_HISTORY_SQL = "select * from handicap_history where playerId = %s order by date desc";
 	const GET_PASSWORD_HINT_SQL = "select email, password_hint from users where user = '%s'";
@@ -160,6 +161,35 @@ class PlayerDAO {
 			throw new Exception("DB : " . mysql_error());
 		}
 		return $history;
+	}
+	
+	public static function getPlayerTee($playerId, $seasonId) {
+		$tee = -1;
+		$query = vsprintf(self::GET_PLAYER_TEE_SQL, array($playerId, $seasonId));
+		$result = @mysql_query($query);
+		if ($result) {
+			$row = mysql_fetch_array($result);
+			$tee = $row["teeId"];
+		} else {
+			throw new Exception("DB : " . mysql_error());
+		}
+		return $tee;
+	}
+	
+	public static function setPlayerTee($playerId, $teeId, $seasonId) {
+		$data = DBUtils::escapeData(array($teeId, $playerId, $seasonId));
+		$query = vsprintf(self::UPDATE_PLAYER_TEE_SQL, $data);
+		$result = @mysql_query($query);
+		if ($result) {
+			if (mysql_affected_rows() == 0) {
+				$result = @mysql_query(vsprintf(self::INSERT_PLAYER_TEE_SQL, $data));
+				if (!$result) {
+					throw new Exception ("DB : " . mysql_error());
+				}
+			}
+		} else {
+			throw new Exception("DB : " . mysql_error());
+		}
 	}
 
 	public static function getAllPlayers() {
@@ -389,7 +419,7 @@ class PlayerDAO {
 		return $playerId;
 	}
 
-	public static function assignPlayerHandicap($playerId, $handicap) {
+	public static function assignPlayerHandicap($playerId, $handicap, $handicapMethod = HandicapMethod::STRAIGHT) {
 		$data = DBUtils::escapeData(array($handicap, $playerId));
 		$query = vsprintf(self::ASSIGN_USER_HANDICAP_SQL, $data);
 		$result = @mysql_query($query);
@@ -397,6 +427,7 @@ class PlayerDAO {
 			throw new Exception("DB : " . mysql_error());
 		}
 
+		$data = DBUtils::escapeData(array($handicap, $playerId, $handicapMethod));
 		$query = vsprintf(self::UPDATE_HANDICAP_HISTORY_SQL, $data);
 		$result = @mysql_query($query);
 		if (!$result) {

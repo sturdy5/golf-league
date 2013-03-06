@@ -98,6 +98,10 @@ class TeamDAO {
     		$seasonId = $season;
     	}
     	
+    	if ($seasonId == "" || $seasonId == null) {
+    		$seasonId = -1;
+    	}
+    	
     	$query = sprintf(self::LOOKUP_TEAM_BY_PLAYER_ID_SQL, "%,".$playerId, $playerId.",%", $seasonId);
     	
     	$result = @mysql_query($query);
