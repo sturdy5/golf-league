@@ -34,7 +34,7 @@ class ScheduleDAO {
     const REMOVE_SUB_SQL = "delete from schedule_subs where match_id = %s and sub_id = %s";
     const UPDATE_SUBS_SQL = "update schedule_subs set sub_id = %s where match_id = %s and player_id = %s";
     const ASSIGN_HOLE_SQL = "update schedule set startingHole = %s where id = %s";
-    const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, startingHole) values ('%s', %s, %s, '%s', 0)";
+    const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, course, startingHole) values ('%s', %s, %s, '%s', %s, 0)";
     const GET_MATCH_SQL = "select * from schedule where id = %s";
 
     public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
@@ -52,12 +52,48 @@ class ScheduleDAO {
     	// now that the season exists, let's add the dates to the schedule. 
     	// the first step to that is to get the sides for the course
     	$sides = CourseDAO::getCourseSides($courseId);
+    	$numberOfSides = count($sides);
     	
     	// now let's assume for now that all scheduled dates will be on Thursdays
-    	// TODO figure out how to determine all of the thursdays between the start date
-    	// and the end date (inclusive).
+    	$date = new DateTime($startDate);
+    	$stopDate = new DateTime($endDate);
+    	$thursdays = array();
+    	
+    	while ($date <= $stopDate) {
+    		$dayOfWeek = date("w", $date->getTimestamp());
+    		if ($dayOfWeek == 4) {
+    			array_push($thursdays, $date->format("Y-m-d"));
+    		}
+    		$date = $date->modify("+1 day");
+    	}
+    	
+    	$sideIndex = 0;
+    	foreach($thursdays as $thursday) {
+    		// create a match date
+    		$side = $sides[$sideIndex];
+    		$sideIndex++;
+    		if ($sideIndex >= $numberOfSides) {
+    			$sideIndex = 0;
+    		}
+    		self::addMatch($thursday, 0, 0, $side, $courseId);
+    	}
     	
     	return $seasonId;
+    }
+    
+    public static function addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId) {
+    	$data = DBUtils::escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId));
+    	$query = vsprintf(self::ADD_SCHEDULE_SQL, $data);
+    	$result = @mysql_query($query);
+    	 
+    	$matchId = "";
+    	if ($result) {
+    		$matchId = mysql_insert_id();
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	
+    	return $matchId;
     }
     
     public static function getSeasonByDate($date) {

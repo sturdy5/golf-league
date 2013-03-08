@@ -10,9 +10,26 @@ require_once("./model/Team.php");
 require_once("./model/Player.php");
 require_once("./utils/ArrayUtils.php");
 
-$teams = TestDAO::getTeamById(8);
-$player = $teams->players[1];
-echo "$player->firstName $player->lastName : $player->handicap";
+//$teams = TestDAO::getTeamById(8);
+//$player = $teams->players[1];
+//echo "$player->firstName $player->lastName : $player->handicap";
+
+$startDate = "2013-03-14";
+$endDate = "2013-05-20";
+
+$date = new DateTime($startDate);
+$stopDate = new DateTime($endDate);
+
+while ($date <= $stopDate) {
+	// check to see if it is a thursday
+	$dayOfWeek = date("w", $date->getTimestamp());
+	if ($dayOfWeek == 4) {
+		echo $date->format("Y-m-d") . ' is a Thursday';
+		echo "<br/>";
+		
+	}
+	$date = $date->modify("+1 day");
+}
 
 class TestDAO {
 
