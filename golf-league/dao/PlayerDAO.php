@@ -17,7 +17,7 @@ class PlayerDAO {
 
 	const GET_ALL_USERS_SQL = "select * from users order by fulltime desc, lastName asc";
 	const GET_USER_BY_ID_SQL = "select * from users where id = %s";
-	const GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL = "select * from users where fulltime=1 order by lastName asc";
+	const GET_FULLTIME_PLAYERS_SQL = "select * from users where fulltime=1 order by lastName asc";
 	const GET_SUBS_SQL = "select * from users where fulltime=0 and active=1 order by lastName asc, firstName asc";
 	const GET_USER_BY_NAME_SQL = "select * from users where LOWER(firstName) = '%s' and LOWER(lastName) = '%s'";
 	const ADD_ADMIN_USER_SQL = "update users set admin=1 where id = %s";
@@ -183,7 +183,9 @@ class PlayerDAO {
 		if ($result) {
 			if (mysql_affected_rows() == 0) {
 				$result = @mysql_query(vsprintf(self::INSERT_PLAYER_TEE_SQL, $data));
-				if (!$result) {
+				if (!$result) {        	// HARDCODE - only supports 9 hole
+
+        	
 					throw new Exception ("DB : " . mysql_error());
 				}
 			}
@@ -245,12 +247,17 @@ class PlayerDAO {
 	}
 
 	public static function getFulltimePlayersWithoutTeams() {
-		$fulltimePlayers = self::getPlayers(self::GET_FULLTIME_USER_WITHOUT_A_TEAM_SQL);
+		$fulltimePlayers = self::getPlayers(self::GET_FULLTIME_PLAYERS_SQL);
 		foreach ($fulltimePlayers as $key=>&$player) {
 			if ($player->teamId != null) {
 				unset($fulltimePlayers[$key]);
 			}
 		}
+		return $fulltimePlayers;
+	}
+
+	public static function getFulltimePlayers() {
+		$fulltimePlayers = self::getPlayers(self::GET_FULLTIME_PLAYERS_SQL);
 		return $fulltimePlayers;
 	}
 

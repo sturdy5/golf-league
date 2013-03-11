@@ -44,6 +44,15 @@ function removeSub(matchId, subId) {
     document.forms.scheduleForm.action = "removeSub.php";
     document.forms.scheduleForm.submit();
 }
+
+function requestSub(matchId, playerId, playerName) {
+	if (confirm("Are you sure you wish to request a sub for " + playerName + "?")) {
+		document.forms.scheduleForm.matchId.value = matchId;
+		document.forms.scheduleForm.playerId.value = playerId;
+		document.forms.scheduleForm.action = "requestSub.php";
+		document.forms.scheduleForm.submit();
+	}
+}
 </script>
 
 <?php
@@ -60,6 +69,7 @@ if ($_POST["matchDate"] || $_GET["matchDate"]) {
     }
 	$schedule = ScheduleDAO::getScheduleForDate($matchDate);
 	$seasonId = ScheduleDAO::getSeasonByDate($matchDate);
+	$teamStructure = ScheduleDAO::getSeasonTeamStructureByDate($matchDate);
     usort($schedule->matchups, "sortMatchupByHole");
 ?>
     <div class="matchups">
@@ -71,6 +81,8 @@ if ($_POST["matchDate"] || $_GET["matchDate"]) {
 <?php 
             }
 ?>
+            <br/>
+            <?=$schedule->matchups[0]->side?>
         </div>
 <?php
     	
@@ -84,11 +96,28 @@ if ($_POST["matchDate"] || $_GET["matchDate"]) {
 			$tees[$courseTees[$i]->id] = $courseTees[$i];
 		}
 		$hole = $matchup->hole;
+		$side = $matchup->side;
 		
 		// get the team information
-		$homeTeam = TeamDAO::getTeamById($homeTeamId);
-		$awayTeam = TeamDAO::getTeamById($awayTeamId);
-		
+		$homeTeam = null;
+		$awayTeam = null;
+		if ($teamStructure != "INDIVIDUAL") {
+		    $homeTeam = TeamDAO::getTeamById($homeTeamId);
+		    $awayTeam = TeamDAO::getTeamById($awayTeamId);
+		} else {
+            $homeTeam = new Team();
+            $homePlayers = explode("^", $homeTeamId);
+            foreach($homePlayers as $homePlayer) {
+                array_push($homeTeam->players, PlayerDAO::getPlayer($homePlayer));
+            }
+            $homeTeam->name = '';
+            $awayTeam = new Team();
+            $awayPlayers = explode("^", $awayTeamId);
+            foreach($awayPlayers as $awayPlayer) {
+				array_push($awayTeam->players, PlayerDAO::getPlayer($awayPlayer));
+			}
+			$awayTeam->name = '';
+		}
 		// need to check for a sub for each player
 		$matchId = $matchup->id;
 		$playerId = $homeTeam->players[0]->id;

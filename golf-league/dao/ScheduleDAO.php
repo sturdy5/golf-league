@@ -16,9 +16,9 @@
  */
 class ScheduleDAO {
 
-    const GET_SEASON_SQL = "select id, startDate, endDate from seasons where startDate < CURDATE() and endDate > CURDATE()";
+    const GET_SEASON_SQL = "select id, startDate, endDate, team_structure, score_style from seasons where startDate < CURDATE() and endDate > CURDATE()";
     const CREATE_SEASON_SQL = "insert into seasons (startDate, endDate, courseId, team_structure, score_style) values ('%s', '%s', %s, '%s', '%s')";
-    const GET_LAST_SEASON_SQL = "select id, startDate, endDate from seasons where endDate < CURDATE() order by endDate desc limit 0, 1";
+    const GET_LAST_SEASON_SQL = "select id, startDate, endDate, team_structure, score_style from seasons where endDate < CURDATE() order by endDate desc limit 0, 1";
     const GET_SEASON_BY_DATE_SQL = "select * from seasons where startDate <= '%s' and endDate >= '%s'";
     const GET_COURSE_BY_SEASON_SQL = "select courseId from seasons where id = %s";
     const GET_UNIQUE_DATES_SQL = "select distinct s.date, n.notes from schedule s left join schedule_notes n on s.date = n.date where s.date > '%s' and s.date < '%s' order by s.date asc";
@@ -34,7 +34,8 @@ class ScheduleDAO {
     const REMOVE_SUB_SQL = "delete from schedule_subs where match_id = %s and sub_id = %s";
     const UPDATE_SUBS_SQL = "update schedule_subs set sub_id = %s where match_id = %s and player_id = %s";
     const ASSIGN_HOLE_SQL = "update schedule set startingHole = %s where id = %s";
-    const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, course, startingHole) values ('%s', %s, %s, '%s', %s, 0)";
+    const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, course, startingHole) values ('%s', '%s', '%s', '%s', %s, %s)";
+    const DELETE_PLACEHOLDER_SQL = "delete from schedule where date = '%s' and home = '0' and away = '0'";
     const GET_MATCH_SQL = "select * from schedule where id = %s";
 
     public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
@@ -81,8 +82,8 @@ class ScheduleDAO {
     	return $seasonId;
     }
     
-    public static function addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId) {
-    	$data = DBUtils::escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId));
+    public static function addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole = 0) {
+    	$data = DBUtils::escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole));
     	$query = vsprintf(self::ADD_SCHEDULE_SQL, $data);
     	$result = @mysql_query($query);
     	 
@@ -107,6 +108,19 @@ class ScheduleDAO {
     		throw new Exception("DB : " . mysql_error());
     	}
     	return $seasonId;
+    }
+    
+    public static function getSeasonTeamStructureByDate($date) {
+    	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
+    	$result = @mysql_query($query);
+    	$teamStructure = "INDIVIDUAL";
+    	if ($result) {
+    		$row = mysql_fetch_assoc($result);
+    		$teamStructure = $row["team_structure"];
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	return $teamStructure;
     }
     
     public static function getCurrentSeason() {
@@ -135,7 +149,7 @@ class ScheduleDAO {
     	} else {
     		throw new Exception("DB : " . mysql_error());
     	}
-    	return $courseId;
+    	return $courseIDELETE_PLACEHOLDER_SQLd;
     }
     
     public static function getScheduledDates() {
@@ -192,7 +206,7 @@ class ScheduleDAO {
     public static function removeMatchSubstitute($matchId, $subId) {
     	$data = DBUtils::escapeData(array($matchId, $subId));
     	$query = vsprintf(self::REMOVE_SUB_SQL, $data);
-    	$result = mysql_query($query) or die("Couldn't remove the sub");
+    	$result = mysql_DELETE_PLACEHOLDER_SQLquery($query) or die("Couldn't remove the sub");
     }
     
     public static function getPlayerBySubstitute($matchId, $subId) {
@@ -245,19 +259,22 @@ class ScheduleDAO {
         }
         return $matchup;
     }
-
+    
     public static function getScheduleForDate($date) {
         $schedule = new Schedule();
         $data = DBUtils::escapeData(array($date));
         $saveHoleData = false;
+        $createTeams = false;
+        $frontHoles = range(1, 9);
+        shuffle($frontHoles);
+        $backHoles = range(10, 18);
+        shuffle($backHoles);
+        $matchSide = "";
+        $matchCourse = "";
         $query = vsprintf(self::GET_SCHEDULE_BY_DATE_SQL, $data);
         $result = mysql_query($query) or die("Could not get the schedule of matches by the date specified - $date");
         if ($result) {
             $count = mysql_num_rows($result);
-            $frontHoles = range(1, $count);
-            shuffle($frontHoles);
-            $backHoles = range(10, (9 + $count));
-            shuffle($backHoles);
             for ($i = 0; $i < $count; $i++) {
                 $row = mysql_fetch_assoc($result);
                 $matchup = new Matchup();
@@ -269,30 +286,95 @@ class ScheduleDAO {
                 $matchId = $row["id"];
                 $course = $row["course"];
                  
-                if ($hole == 0) {
-                    if (strcasecmp($side, "back") == 0) {
-                        $hole = $backHoles[$i];
-                    } else {
-                        $hole = $frontHoles[$i];
-                    }
-                    $saveHoleData = true;
-                }
-                $matchup->hole = $hole;
                 $matchup->id = $matchId;
                 $matchup->course = $course;
+                $matchCourse = $course;
                 $matchup->side = $side;
-                array_push($matchup->teams, $homeTeam);
-                array_push($matchup->teams, $awayTeam);
-                 
+                $matchSide = $side;
                 $schedule->date = $matchDate;
-                array_push($schedule->matchups, $matchup);
+                
+                if ($homeTeam == 0 && $awayTeam == 0) {
+                	$createTeams = true;
+                } else {
+                	if ($hole == 0) {
+                    	if (strpos(strtolower($side), "back") === false) {
+                	    	$hole = $frontHoles[$i];
+                	    } else {
+                		    $hole = $backHoles[$i];
+                	    }
+                		$saveHoleData = true;
+                	}
+                    $matchup->hole = $hole;
+                    array_push($matchup->teams, $homeTeam);
+                    array_push($matchup->teams, $awayTeam);
+                    array_push($schedule->matchups, $matchup);
+                }
             }
+        }
+        
+        if ($createTeams) {
+        	// get the list of full time members
+        	$fulltimePlayers = PlayerDAO::getFulltimePlayers();
+        	shuffle($fulltimePlayers);
+        	$playerIndex = 0;
+        	$saveHoleData = true;
+        	$totalPlayers = count($fulltimePlayers);
+        	// HARDCODE - only supports 9 hole
+        	for ($i = 0; $i < 9; $i++) {
+        		if ($playerIndex >= $totalPlayers) {
+        			break;
+        		}
+        		$hole = 0;
+        		if (strpos(strtolower($matchSide), "back") === false) {
+        			$hole = $frontHoles[$i];
+        		} else {
+        			$hole = $backHoles[$i];
+        		}
+        		$matchup = new Matchup();
+        		$matchup->id = 0;
+        		$matchup->course = $matchCourse;
+        		$matchup->side = $matchSide;
+        		$matchup->hole = $hole;
+        		$homeTeam = $fulltimePlayers[$playerIndex]->id;
+        		// increment the player index to get the next player
+        		$playerIndex++;
+        		// make sure there are enough players to get another
+        		if ($playerIndex < $totalPlayers) {
+        			$homeTeam = $homeTeam . '^' . $fulltimePlayers[$playerIndex]->id;
+        		}
+        		array_push($matchup->teams, $homeTeam);
+        		// now let's try to get an away team
+        		$awayTeam = "";
+        		$playerIndex++;
+        		// again, make sure there are enough players
+        		if ($playerIndex < $totalPlayers) {
+        			$awayTeam = $fulltimePlayers[$playerIndex]->id;
+        		}
+        		// increment the player index to get the next player
+        		$playerIndex++;
+        		// lastly, make sure there are enough players
+        		if ($playerIndex < $totalPlayers) {
+        			$awayTeam = $awayTeam . '^' . $fulltimePlayers[$playerIndex]->id;
+        		}
+        		array_push($matchup->teams, $awayTeam);
+        		// put the match into the schedule
+        		array_push($schedule->matchups, $matchup);
+        		// increment the player index for the next time around
+        		$playerIndex++;
+        	}
         }
          
         if ($saveHoleData) {
             foreach ($schedule->matchups as $matchup) {
-                $query = sprintf(self::ASSIGN_HOLE_SQL, $matchup->hole, $matchup->id);
-                $result = mysql_query($query);
+            	if ($matchup->id == 0) {
+            		self::addMatch($matchDate, $matchup->teams[0], $matchup->teams[1], $matchSide, $matchCourse, $matchup->hole);
+            		// delete the placeholder
+            		$query = sprintf(self::DELETE_PLACEHOLDER_SQL, $matchDate);
+            		$result = mysql_query($query);
+            	} else {
+                    $query = sprintf(self::ASSIGN_HOLE_SQL, $matchup->hole, $matchup->id);
+                    $result = mysql_query($query);
+            	}
             }
         }
          

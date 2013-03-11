@@ -5,3 +5,5 @@ update handicap_history set course = 1;
 ALTER TABLE `seasons` ADD `team_structure` VARCHAR( 30 ) NOT NULL DEFAULT 'TWO_PERSON',
 ADD `score_style` VARCHAR( 30 ) NOT NULL DEFAULT 'STRAIGHT';
 INSERT INTO `courses` (`id`, `name`) VALUES (NULL, 'Wildewood');
+ALTER TABLE  `schedule` CHANGE  `home`  `home` VARCHAR( 30 ) NOT NULL;
+ALTER TABLE  `schedule` CHANGE  `away`  `away` VARCHAR( 30 ) NOT NULL;
