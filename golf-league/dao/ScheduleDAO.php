@@ -28,11 +28,15 @@ class ScheduleDAO {
     const UPDATE_SCHEDULE_NOTES_DATE = "update schedule_notes set date = '%s' where date = '%s'";
     const UPDATE_SCHEDULE_DATE = "update schedule set date = '%s' where date = '%s'";
     const GET_SCHEDULE_BY_DATE_SQL = "select * from schedule where date = '%s'";
+    const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id = 'X'";
     const GET_SUBS_BY_MATCH_SQL = "select * from schedule_subs where match_id = %s and player_id = %s";
+    const GET_SUBS_BY_DATE_SQL = "select * from date_subs where date = '%s' and player_id = '%s'";
     const GET_PLAYER_BY_MATCH_AND_SUB_SQL = "select * from schedule_subs where match_id = %s and sub_id = %s";
     const ASSIGN_SUBS_SQL = "insert into schedule_subs (sub_id, match_id, player_id) values (%s, %s, %s)";
+    const ADD_SUB_BY_DATE_SQL = "insert into date_subs (date, player_id, sub_id) values ('%s', '%s', '%s')";
     const REMOVE_SUB_SQL = "delete from schedule_subs where match_id = %s and sub_id = %s";
     const UPDATE_SUBS_SQL = "update schedule_subs set sub_id = %s where match_id = %s and player_id = %s";
+    const UPDATE_SUB_BY_DATE_SQL = "update date_subs set sub_id = '%s' where date = '%s' and player_id = '%s'";
     const ASSIGN_HOLE_SQL = "update schedule set startingHole = %s where id = %s";
     const ADD_SCHEDULE_SQL = "insert into schedule (date, home, away, side, course, startingHole) values ('%s', '%s', '%s', '%s', %s, %s)";
     const DELETE_PLACEHOLDER_SQL = "delete from schedule where date = '%s' and home = '0' and away = '0'";
@@ -203,6 +207,28 @@ class ScheduleDAO {
         return $subId;
     }
     
+    public static function getFutureAvailableDateSubs() {
+    	$query = self::GET_FUTURE_AVAILABLE_DATE_SUBS_SQL;
+    	$result = @mysql_query($query);
+    	if ($result) {
+    		// TODO need to store the values somehow so that I can put them on the GUI
+    	}
+    }
+    
+    public static function getSubstituteByDate($date, $playerId) {
+    	$data = DBUtils::escapeData(array($date, $playerId));
+    	$query = vsprintf(self::GET_SUBS_BY_DATE_SQL, $data);
+    	$result = @mysql_query($query);
+    	$subId = null;
+    	if ($result) {
+    		$row = mysql_fetch_assoc($result);
+    		$subId = $row["sub_id"];
+    	} else {
+    		throw new Exception("DB : " . mysql_error());
+    	}
+    	return $subId;
+    }
+    
     public static function removeMatchSubstitute($matchId, $subId) {
     	$data = DBUtils::escapeData(array($matchId, $subId));
     	$query = vsprintf(self::REMOVE_SUB_SQL, $data);
@@ -232,6 +258,25 @@ class ScheduleDAO {
     		$query = vsprintf(self::ASSIGN_SUBS_SQL, $data);
     	}
     	$result = mysql_query($query) or die("Could not assign the sub for the hole");
+    }
+    
+    public static function assignSubByDate($date, $playerId, $subId = "X") {
+    	// need to figure out if a sub is already assigned
+    	$existingSub = ScheduleDAO::getSubstituteByDate($date, $playerId);
+    	$newSub = (null == $existingSub);
+    	$alreadyTaken = ("X" != $existingSub);
+    	$success = false;
+    	if ($newSub) {
+    		$query = vsprintf(self::ADD_SUB_BY_DATE_SQL, DBUtils::escapeData(array($date, $playerId, $subId)));
+    		mysql_query($query);
+    		$success = true;
+    	} else if (!$alreadyTaken) {
+    		$query = vsptrinf(self::UPDATE_SUB_BY_DATE_SQL, DBUtils::escapeData(array($subId, $date, $playerId)));
+    		mysql_query($query);
+    		$success = true;
+    	}
+    	
+    	return $success;
     }
 
     public static function getMatchById($id) {
