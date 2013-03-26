@@ -97,21 +97,23 @@ class CourseDAO {
 		$data = DBUtils::escapeData(array($courseId));
 		$query = vsprintf(self::GET_TEES_SQL, $data);
 		$tees = array();
-		$result = @mysql_query($query);
-		if ($result) {
-			$count = mysql_num_rows($result);
-			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($result);
-				$tee = new Tee();
-				$tee->color = $row["color"];
-				$tee->id = $row["id"];
-				$tee->name = $row["name"];
-				$tee->rating = $row["rating"];
-				$tee->slope = $row["slope"];
-				array_push($tees, $tee);
-			}
-		} else {
-			throw new Exception("DB : " . mysql_error());
+		if (null != $courseId) {
+    		$result = @mysql_query($query);
+	    	if ($result) {
+		    	$count = mysql_num_rows($result);
+			    for ($i = 0; $i < $count; $i++) {
+				    $row = mysql_fetch_assoc($result);
+    				$tee = new Tee();
+	     			$tee->color = $row["color"];
+		    		$tee->id = $row["id"];
+			    	$tee->name = $row["name"];
+				    $tee->rating = $row["rating"];
+    				$tee->slope = $row["slope"];
+	    			array_push($tees, $tee);
+		    	}
+		    } else {
+			    throw new Exception("DB : " . mysql_error());
+		    }
 		}
 		return $tees;
 	}

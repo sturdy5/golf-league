@@ -7,6 +7,11 @@ include('./../navigation.inc.php');
 <title>Thursday Night Golf League</title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="./../js/selector.js"></script>
+<script>
+function goToPage(url, delay) {
+	setTimeout(delay, "window.location=\"" + url + "\"";
+}
+</script>
 </head>
 <body>
     <div class="content">
@@ -25,7 +30,7 @@ include('./../navigation.inc.php');
             	$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
             }
             $pageURL = substr($pageURL, 0, strlen("requestSubstitute.php"));
-            $pageURL .= "subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
+            $pageURL .= "/member/subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
             
             $emailText = $player->firstName . " " . $player->lastName . " needs a sub for " . $_POST["date"] . ". Click on the link below to take the spot.\n\n";
             $emailText .= $pageURL;
@@ -34,8 +39,10 @@ include('./../navigation.inc.php');
             <fieldset class="editPlayerFields">
                 <h1>Your request has been submitted</h1>
             </fieldset>
+            <script>
+                goToPage("subs.php", 2000);
+            </script>
 <?php
-            header("refresh:2;url=subs.php");
         } else {
             $fullTimePlayers = PlayerDAO::getFulltimePlayers();
             $dates = ScheduleDAO::getScheduledDates();
@@ -58,7 +65,7 @@ include('./../navigation.inc.php');
 	    				</span>
 		    		</p>
 			    	<p>
-				    	<label for="date" class="playerTitle">Your Name:</label>
+				    	<label for="date" class="playerTitle">Date:</label>
 					    <span class="textbox">
 					        <select name="date" id="date">
 <?php 

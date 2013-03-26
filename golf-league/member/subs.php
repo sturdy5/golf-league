@@ -7,6 +7,11 @@ include('./../navigation.inc.php');
 <title>Thursday Night Golf League</title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./../js/selector.js"></script>
+<script>
+function goToPage(url, delay) {
+	setTimeout(delay, "window.location=\"" + url + "\"";
+}
+</script>
 </head>
 <body>
     <div class="content">
@@ -19,8 +24,10 @@ include('./../navigation.inc.php');
                 <fieldset class="editPlayerFields">
                     <h1>You have the spot!</h1>
                 </fieldset>
+                <script>
+                    goToPage("subs.php", 2000);
+                </script>
 <?php
-                header("refresh:2;url=subs.php");
             } else {
 ?>
                 <fieldset class="editPlayerFields">
