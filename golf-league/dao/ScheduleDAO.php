@@ -28,7 +28,8 @@ class ScheduleDAO {
     const UPDATE_SCHEDULE_NOTES_DATE = "update schedule_notes set date = '%s' where date = '%s'";
     const UPDATE_SCHEDULE_DATE = "update schedule set date = '%s' where date = '%s'";
     const GET_SCHEDULE_BY_DATE_SQL = "select * from schedule where date = '%s'";
-    const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id = 'X'";
+    const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id = 'X' order by date asc";
+    const GET_FUTUTE_TAKEN_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id <> 'X' order by date asc";
     const GET_SUBS_BY_MATCH_SQL = "select * from schedule_subs where match_id = %s and player_id = %s";
     const GET_SUBS_BY_DATE_SQL = "select * from date_subs where date = '%s' and player_id = '%s'";
     const GET_PLAYER_BY_MATCH_AND_SUB_SQL = "select * from schedule_subs where match_id = %s and sub_id = %s";
@@ -156,7 +157,7 @@ class ScheduleDAO {
     	return $courseIDELETE_PLACEHOLDER_SQLd;
     }
     
-    public static function getScheduledDates() {
+    public static function getScheduledDates() {               
         $dates = array();
         $seasonId = "none";
         $startDate = null;
@@ -210,9 +211,36 @@ class ScheduleDAO {
     public static function getFutureAvailableDateSubs() {
     	$query = self::GET_FUTURE_AVAILABLE_DATE_SUBS_SQL;
     	$result = @mysql_query($query);
+    	$subsList = array();
     	if ($result) {
-    		// TODO need to store the values somehow so that I can put them on the GUI
+    		$count = mysql_num_rows($result);
+    		for ($i = 0; $i < $count; $i++) {
+    			$row = mysql_fetch_assoc($result);
+    			$subEntry = array(
+    					"date" => $row["date"],
+    					"player" => $row["player_id"]);
+    			array_push($subsList, $subEntry);
+    		}
     	}
+    	return $subsList;
+    }
+    
+    public static function getFutureTakenDateSubs() {
+    	$query = self::GET_FUTUTE_TAKEN_DATE_SUBS_SQL;
+    	$result = @mysql_query($query);
+    	$subsList = array();
+    	if ($result) {
+    		$count = mysql_num_rows($result);
+    		for ($i = 0; $i < $count; $i++) {
+    			$row = mysql_fetch_assoc($result);
+    			$subEntry = array(
+    					"date" => $row["date"],
+    					"player" => $row["player_id"],
+    					"sub" => $row["sub_id"]);
+    			array_push($subsList, $subEntry);
+    		}
+    	}
+    	return $subsList;
     }
     
     public static function getSubstituteByDate($date, $playerId) {
@@ -271,7 +299,7 @@ class ScheduleDAO {
     		mysql_query($query);
     		$success = true;
     	} else if (!$alreadyTaken) {
-    		$query = vsptrinf(self::UPDATE_SUB_BY_DATE_SQL, DBUtils::escapeData(array($subId, $date, $playerId)));
+    		$query = vsprintf(self::UPDATE_SUB_BY_DATE_SQL, DBUtils::escapeData(array($subId, $date, $playerId)));
     		mysql_query($query);
     		$success = true;
     	}

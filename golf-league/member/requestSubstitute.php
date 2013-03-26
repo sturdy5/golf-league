@@ -31,8 +31,11 @@ include('./../navigation.inc.php');
             $emailText .= $pageURL;
             mail("jonathon.sturdevant@gmail.com", "Thursday Night Golf League Substitutes", $emailText);
 ?>
-            <h1>Your request has been submitted</h1>
+            <fieldset class="editPlayerFields">
+                <h1>Your request has been submitted</h1>
+            </fieldset>
 <?php
+            header("refresh:2;url=subs.php");
         } else {
             $fullTimePlayers = PlayerDAO::getFulltimePlayers();
             $dates = ScheduleDAO::getScheduledDates();

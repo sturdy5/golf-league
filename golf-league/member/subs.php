@@ -13,14 +13,20 @@ include('./../navigation.inc.php');
 <?php 
         if (isset($_POST["date"]) && isset($_POST["player"]) && isset($_POST["sub"])) {
             // need to check to see if the date has been taken
-            $taken = ScheduleDAO::assignSubByDate($_POST["date"], $_POST["player"], $_POST["sub"]);
-            if ($taken) {
+            $success = ScheduleDAO::assignSubByDate($_POST["date"], $_POST["player"], $_POST["sub"]);
+            if ($success) {
 ?>
-                <h1>Spot already taken</h1>
+                <fieldset class="editPlayerFields">
+                    <h1>You have the spot!</h1>
+                </fieldset>
 <?php
+                header("refresh:2;url=subs.php");
             } else {
 ?>
-                <h1>You have the spot!</h1>
+                <fieldset class="editPlayerFields">
+                    <h1>Spot already taken</h1>
+                    <p>Click <a href="subs.php">here</a> to check other spots that may be available</p>
+                </fieldset>
 <?php
             }
         } else if (isset($_GET["date"]) && isset($_GET["player"])) {
@@ -35,7 +41,7 @@ include('./../navigation.inc.php');
 <?php 
                                 foreach ($subs as $sub) {
 ?>
-                                    <option value="<?=$sub->id?>"><?=$sub->lastName?>, <?=$sub-firstName?></option>
+                                    <option value="<?=$sub->id?>"><?=$sub->lastName?>, <?=$sub->firstName?></option>
 <?php
                                 }
 ?>
@@ -53,7 +59,60 @@ include('./../navigation.inc.php');
             </form>
 <?php
         } else {
-
+?>
+            <fieldset class="editPlayerFields">
+<?php
+            $subsList = ScheduleDAO::getFutureAvailableDateSubs();
+            if (count($subsList) > 0) {
+?>
+                <p>
+                    <span class="title">The following are requested sub spots that have not been taken</span>
+                </p>
+                <ul>
+<?php 
+                    foreach ($subsList as $subEntry) {
+                        $entryPlayerId = $subEntry["player"];
+                        $entryDate = $subEntry["date"];
+                        $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
+?>
+                        <li><a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a></li>
+<?php
+                    }
+?>
+                </ul>
+                <hr/>
+<?php
+            } else {
+?>
+                <p>There are no current requests for subs</p>
+                <hr/>
+<?php
+            }
+            $takenList = ScheduleDAO::getFutureTakenDateSubs();
+            if (count($takenList) > 0) {
+?>
+                <p>
+                    <span class="title">These are the taken sub spots</span>
+                </p>
+                <ul>
+<?php 
+                    foreach ($takenList as $subEntry) {
+                        $entryPlayerId = $subEntry["player"];
+                        $entryDate = $subEntry["date"];
+                        $entrySubId = $subEntry["sub"];
+                        $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
+                        $entrySub = PlayerDAO::getPlayer($entrySubId);
+?>
+                        <li><?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></li>
+<?php
+                    }
+?>
+                </ul>
+<?php
+            }
+?>
+            </fieldset>
+<?php
         }
 ?>
     </div>
