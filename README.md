@@ -1,5 +1,5 @@
-golf-league
-===========
+Overview
+========
 
 This application is a golf league management project. The application is primarly written in PHP and Javascript. This is an evolving solution to a golf league that had been previously doing everything through excel spreadsheets and email.
 
@@ -22,3 +22,8 @@ The following is a list of functionality that does not exist:
 - Creating a season that lands on a day other than a Thursday
 - Changing hole assignments on the fly
 - Changing course side on the fly
+
+Documentation
+=============
+
+Some documentation has been created for the admin functions on the github wiki (https://github.com/jsturdevant/golf-league/wiki)
