@@ -9,7 +9,7 @@ include('./../navigation.inc.php');
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
 function goToPage(url, delay) {
-	setTimeout(delay, "window.location=\"" + url + "\"";
+	setTimeout("window.location=\"" + url + "\"", delay);
 }
 </script>
 </head>
@@ -34,7 +34,12 @@ function goToPage(url, delay) {
             
             $emailText = $player->firstName . " " . $player->lastName . " needs a sub for " . $_POST["date"] . ". Click on the link below to take the spot.\n\n";
             $emailText .= $pageURL;
-            mail("jonathon.sturdevant@gmail.com", "Thursday Night Golf League Substitutes", $emailText);
+            
+            $subEmails = PlayerDAO::getSubEmails();
+            $toAddresses = implode(", ", $subEmails);
+            
+            $headers = "From: info@bctngl.com" . "\r\n" . "Reply-To: info@bctngl.com";
+            mail($toAddresses, "Thursday Night Golf League Substitutes", $emailText, $headers);
 ?>
             <fieldset class="editPlayerFields">
                 <h1>Your request has been submitted</h1>

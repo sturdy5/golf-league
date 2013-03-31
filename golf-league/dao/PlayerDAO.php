@@ -37,6 +37,7 @@ class PlayerDAO {
 	const INSERT_PLAYER_TEE_SQL = "insert into tee_history (teeId, playerId, seasonId) values (%s, %s, %s)";
 	const LAST_N_MATCHES_SQL = "select a.match_id, a.player_id, b.date, c.name from (select distinct match_id, player_id from scores) a, schedule b, courses c where a.match_id = b.id and b.course = c.id and a.player_id = %s order by b.date desc limit 0, %s";
 	const MATCH_SCORE_SQL = "select sum(score) as score from scores where player_id = %s and match_id = %s";
+	const GET_SUB_EMAILS_SQL = "SELECT email FROM users WHERE (active = 1 and fulltime = 0 and email <> '') or (active = 1 and admin = 1 and email <> '')";
 
 	public static function getPlayer($id) {
 		$query = sprintf(self::GET_USER_BY_ID_SQL, $id);
@@ -263,6 +264,21 @@ class PlayerDAO {
 
 	public static function getSubs() {
 		return self::getPlayers(self::GET_SUBS_SQL);
+	}
+	
+	public static function getSubEmails() {
+		$emails = array();
+		$query = self::GET_SUB_EMAILS_SQL;
+		$result = @mysql_query($query);
+		if (!$result) {
+			throw new Exception("Error getting substitute emails - DB : " . mysql_error());
+		}
+		while ($row = mysql_fetch_array($result)) {
+			$email = $row["email"];
+			array_push($emails, $email);
+		}
+		
+		return $emails;
 	}
 
 	private static function getPlayers($query) {

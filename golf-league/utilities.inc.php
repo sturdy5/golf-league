@@ -13,6 +13,6 @@
 ?>
         </div>
         <div class="weather">
-             <script type="text/javascript" src="http://voap.weather.com/weather/oap/29016?template=GOLFH&par=3000000007&unit=0&key=twciweatherwidget"></script>
+             <script type="text/javascript" src="http://voap.weather.com/weather/oap/29223?template=GOLFH&par=3000000007&unit=0&key=twciweatherwidget"></script>
         </div>
     </div>

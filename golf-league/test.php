@@ -14,22 +14,26 @@ require_once("./utils/ArrayUtils.php");
 //$player = $teams->players[1];
 //echo "$player->firstName $player->lastName : $player->handicap";
 
-$startDate = "2013-03-14";
-$endDate = "2013-05-20";
+//$startDate = "2013-03-14";
+//$endDate = "2013-05-20";
 
-$date = new DateTime($startDate);
-$stopDate = new DateTime($endDate);
+//$date = new DateTime($startDate);
+//$stopDate = new DateTime($endDate);
 
-while ($date <= $stopDate) {
-	// check to see if it is a thursday
-	$dayOfWeek = date("w", $date->getTimestamp());
-	if ($dayOfWeek == 4) {
-		echo $date->format("Y-m-d") . ' is a Thursday';
-		echo "<br/>";
-		
-	}
-	$date = $date->modify("+1 day");
-}
+//while ($date <= $stopDate) {
+//	// check to see if it is a thursday
+//	$dayOfWeek = date("w", $date->getTimestamp());
+//	if ($dayOfWeek == 4) {
+//		echo $date->format("Y-m-d") . ' is a Thursday';
+//		echo "<br/>";
+//		
+//	}
+//	$date = $date->modify("+1 day");
+//}
+$subEmails = PlayerDAO::getSubEmails();
+$toAddresses = implode(", ", $subEmails);
+
+echo $toAddresses;
 
 class TestDAO {
 

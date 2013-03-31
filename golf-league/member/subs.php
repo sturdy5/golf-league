@@ -9,7 +9,7 @@ include('./../navigation.inc.php');
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
 function goToPage(url, delay) {
-	setTimeout(delay, "window.location=\"" + url + "\"";
+	setTimeout("window.location=\"" + url + "\"", delay);
 }
 </script>
 </head>
@@ -68,6 +68,9 @@ function goToPage(url, delay) {
         } else {
 ?>
             <fieldset class="editPlayerFields">
+                <p>
+                    <a href="requestSubstitute.php">Request a Sub</a>
+                </p>
 <?php
             $subsList = ScheduleDAO::getFutureAvailableDateSubs();
             if (count($subsList) > 0) {

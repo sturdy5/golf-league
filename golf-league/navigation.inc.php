@@ -25,6 +25,12 @@ $thisPage = $parts[count($parts) - 1];
         <a href="/rules.html">
             <span class="nav-key">Rules</span>
         </a>
+        <?php
+        } if ($thisPage != "subs.php") { 
+        ?>
+        <a href="/member/subs.php">
+            <span class="nav-key">Subs</span>
+        </a>
         <?php 
         }
         if ($_SESSION["admin"] == 1) {
