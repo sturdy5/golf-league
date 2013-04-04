@@ -223,4 +223,9 @@
 	    padding: 5px;
 	    border: 1px solid #050;
 	}
+	
+	.error {
+	    color: red;
+	    display: none;
+	}
 </STYLE>
