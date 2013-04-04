@@ -45,6 +45,7 @@ function goToPage(url, delay) {
                         <label for="sub" class="playerTitle">Your Name:</label>
                         <span class="textbox">
                             <select name="sub" id="sub">
+                                <option value="-1">-- Please Select Your Name --</option>
 <?php 
                                 foreach ($subs as $sub) {
 ?>
@@ -53,17 +54,33 @@ function goToPage(url, delay) {
                                 }
 ?>
                             </select>
+                            <span id="subError" class="error">Please select your name from the list</span>
                             <input type="hidden" name="date" id="date" value="<?=$_GET["date"]?>"/>
                             <input type="hidden" name="player" id="player" value="<?=$_GET["player"]?>"/>
                         </span>
                     </p>
 				    <div id="alignRight">
 				    	<label for="submit">
-				    	    <input name="submitRequestButton" type="submit" value="Submit Request"/>
+				    	    <input name="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
 				    	</label>
 				    </div>
                 </fieldset>
             </form>
+            <script>
+                dojoConfig = {parseOnLoad: true}
+            </script>
+            <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+            <script>
+                function validateAndSubmit() {
+                    // make sure that a player was actually selected
+                    var playerId = dojo.byId("sub");
+                    if (playerId.value == "-1") {
+                        dojo.byId("subError").style.display = "inline";
+                    } else {
+                        dojo.byId("subForm").submit();
+                    }
+                }
+            </script>
 <?php
         } else {
 ?>
