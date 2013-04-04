@@ -21,16 +21,7 @@ function goToPage(url, delay) {
             // get the full time player information
             $player = PlayerDAO::getPlayer($_POST["fullTimePlayer"]);
             // send an email with a link
-            $pageURL = 'http';
-            if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-            $pageURL .= "://";
-            if ($_SERVER["SERVER_PORT"] != "80") {
-            	$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-            } else {
-            	$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-            }
-            $pageURL = substr($pageURL, 0, strlen("requestSubstitute.php"));
-            $pageURL .= "/member/subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
+            $pageURL = "http://www.bctngl.com/member/subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
             
             $emailText = $player->firstName . " " . $player->lastName . " needs a sub for " . $_POST["date"] . ". Click on the link below to take the spot.\n\n";
             $emailText .= $pageURL;
