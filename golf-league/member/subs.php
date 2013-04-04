@@ -11,6 +11,10 @@ include('./../navigation.inc.php');
 function goToPage(url, delay) {
 	setTimeout("window.location=\"" + url + "\"", delay);
 }
+
+function confirmDelete() {
+	return confirm("Are you sure you want to delete this request?");
+}
 </script>
 </head>
 <body>
@@ -102,7 +106,16 @@ function goToPage(url, delay) {
                         $entryDate = $subEntry["date"];
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
 ?>
-                        <li><a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a></li>
+                        <li>
+                            <a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a>
+<?php
+                            if ($_SESSION["admin"] == 1) {
+?>
+                                - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
+<?php
+                            }
+?>
+                        </li>
 <?php
                     }
 ?>
@@ -130,7 +143,16 @@ function goToPage(url, delay) {
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
                         $entrySub = PlayerDAO::getPlayer($entrySubId);
 ?>
-                        <li><?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></li>
+                        <li>
+                            <?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?>
+<?php
+                            if ($_SESSION["admin"] == 1) {
+?>
+                                - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
+<?php
+                            }
+?>
+                        </li>
 <?php
                     }
 ?>

@@ -36,6 +36,7 @@ class ScheduleDAO {
     const ASSIGN_SUBS_SQL = "insert into schedule_subs (sub_id, match_id, player_id) values (%s, %s, %s)";
     const ADD_SUB_BY_DATE_SQL = "insert into date_subs (date, player_id, sub_id) values ('%s', '%s', '%s')";
     const REMOVE_SUB_SQL = "delete from schedule_subs where match_id = %s and sub_id = %s";
+    const REMOVE_SUB_BY_DATE_SQL = "delete from date_subs where player_id = '%s' and date = '%s'";
     const UPDATE_SUBS_SQL = "update schedule_subs set sub_id = %s where match_id = %s and player_id = %s";
     const UPDATE_SUB_BY_DATE_SQL = "update date_subs set sub_id = '%s' where date = '%s' and player_id = '%s'";
     const ASSIGN_HOLE_SQL = "update schedule set startingHole = %s where id = %s";
@@ -260,7 +261,13 @@ class ScheduleDAO {
     public static function removeMatchSubstitute($matchId, $subId) {
     	$data = DBUtils::escapeData(array($matchId, $subId));
     	$query = vsprintf(self::REMOVE_SUB_SQL, $data);
-    	$result = mysql_DELETE_PLACEHOLDER_SQLquery($query) or die("Couldn't remove the sub");
+    	$result = mysql_query($query) or die("Couldn't remove the sub");
+    }
+    
+    public static function removeSubByDate($date, $playerId) {
+    	$data = DBUtils::escapeData(array($playerId, $date));
+    	$query = vsprintf(self::REMOVE_SUB_BY_DATE_SQL, $data);
+    	$result = mysql_query($query) or die("Couldn't remove the sub request");
     }
     
     public static function getPlayerBySubstitute($matchId, $subId) {
