@@ -9,3 +9,4 @@ require_once('./config.inc.php');
     <script type="text/javascript" src="./js/selector.js"></script>
 </head>
 <body>
+    <h1>Bogey Club - Thursday Night Golf League</h1>
