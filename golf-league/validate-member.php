@@ -1,5 +1,5 @@
 <?php
 if (!isset($_SESSION['userid'])) {
-    header("location: notamember.php");
+    header("location: /notamember.php");
 }
 ?>

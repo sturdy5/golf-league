@@ -23,6 +23,8 @@ April 4 - Woodcreek (Front Nine)<br/>
 <br/>
 April 11 -  Woodcreek (Back Nine)<br/>
 <br/>
+April 16 - WildeWood (Front Nine)<br/>
+<br/>
 April 18 - WildeWood (Back Nine)<br/>
 <br/>
 April 25 - WildeWood (Front Nine)<br/>

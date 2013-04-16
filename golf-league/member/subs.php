@@ -4,12 +4,16 @@ include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-<title>Thursday Night Golf League</title>
+<title>Bogey Club - Thursday Night Golf League</title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
 function goToPage(url, delay) {
 	setTimeout("window.location=\"" + url + "\"", delay);
+}
+
+function confirmDelete() {
+	return confirm("Are you sure you want to delete this request?");
 }
 </script>
 </head>
@@ -45,6 +49,7 @@ function goToPage(url, delay) {
                         <label for="sub" class="playerTitle">Your Name:</label>
                         <span class="textbox">
                             <select name="sub" id="sub">
+                                <option value="-1">-- Please Select Your Name --</option>
 <?php 
                                 foreach ($subs as $sub) {
 ?>
@@ -53,17 +58,33 @@ function goToPage(url, delay) {
                                 }
 ?>
                             </select>
+                            <span id="subError" class="error">Please select your name from the list</span>
                             <input type="hidden" name="date" id="date" value="<?=$_GET["date"]?>"/>
                             <input type="hidden" name="player" id="player" value="<?=$_GET["player"]?>"/>
                         </span>
                     </p>
 				    <div id="alignRight">
 				    	<label for="submit">
-				    	    <input name="submitRequestButton" type="submit" value="Submit Request"/>
+				    	    <input name="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
 				    	</label>
 				    </div>
                 </fieldset>
             </form>
+            <script>
+                dojoConfig = {parseOnLoad: true}
+            </script>
+            <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+            <script>
+                function validateAndSubmit() {
+                    // make sure that a player was actually selected
+                    var playerId = dojo.byId("sub");
+                    if (playerId.value == "-1") {
+                        dojo.byId("subError").style.display = "inline";
+                    } else {
+                        dojo.byId("subForm").submit();
+                    }
+                }
+            </script>
 <?php
         } else {
 ?>
@@ -85,7 +106,16 @@ function goToPage(url, delay) {
                         $entryDate = $subEntry["date"];
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
 ?>
-                        <li><a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a></li>
+                        <li>
+                            <a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a>
+<?php
+                            if ($_SESSION["admin"] == 1) {
+?>
+                                - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
+<?php
+                            }
+?>
+                        </li>
 <?php
                     }
 ?>
@@ -113,7 +143,16 @@ function goToPage(url, delay) {
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
                         $entrySub = PlayerDAO::getPlayer($entrySubId);
 ?>
-                        <li><?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></li>
+                        <li>
+                            <?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?>
+<?php
+                            if ($_SESSION["admin"] == 1) {
+?>
+                                - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
+<?php
+                            }
+?>
+                        </li>
 <?php
                     }
 ?>

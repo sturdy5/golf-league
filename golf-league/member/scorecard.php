@@ -87,7 +87,7 @@ $away2scores = ScoreDAO::getScoresByMatchIdAndPlayer($matchId, $awayteam->player
 ?>
 <html>
 <head>
-    <title>Thursday Night Golf League</title>
+    <title>Bogey Club - Thursday Night Golf League</title>
     <link href="/theme/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="./../js/selector.js"></script>
     <script type="text/javascript">

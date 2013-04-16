@@ -38,7 +38,7 @@ if ($_GET["logout"] && $_GET["logout"] = 1) {
 function showLogin($error) {
 	echo '<html>
 	<head>
-	    <title>Thursday Night Golf League - Login Page</title>
+	    <title>Bogey Club - Thursday Night Golf League - Login Page</title>
 	    <link href="theme/style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>';
