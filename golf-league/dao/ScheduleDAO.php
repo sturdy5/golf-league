@@ -28,8 +28,8 @@ class ScheduleDAO {
     const UPDATE_SCHEDULE_NOTES_DATE = "update schedule_notes set date = '%s' where date = '%s'";
     const UPDATE_SCHEDULE_DATE = "update schedule set date = '%s' where date = '%s'";
     const GET_SCHEDULE_BY_DATE_SQL = "select * from schedule where date = '%s'";
-    const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id = 'X' order by date asc";
-    const GET_FUTUTE_TAKEN_DATE_SUBS_SQL = "select * from date_subs where date >= now() and sub_id <> 'X' order by date asc";
+    const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= curdate() and sub_id = 'X' order by date asc";
+    const GET_FUTUTE_TAKEN_DATE_SUBS_SQL = "select * from date_subs where date >= curdate() and sub_id <> 'X' order by date asc";
     const GET_SUBS_BY_MATCH_SQL = "select * from schedule_subs where match_id = %s and player_id = %s";
     const GET_SUBS_BY_DATE_SQL = "select * from date_subs where date = '%s' and player_id = '%s'";
     const GET_PLAYER_BY_MATCH_AND_SUB_SQL = "select * from schedule_subs where match_id = %s and sub_id = %s";

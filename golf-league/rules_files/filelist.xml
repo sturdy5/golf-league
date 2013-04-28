@@ -1,9 +1,16 @@
 <xml xmlns:o="urn:schemas-microsoft-com:office:office">
  <o:MainFile HRef="../rules.html"/>
  <o:File HRef="image001.gif"/>
- <o:File HRef="image002.jpg"/>
+ <o:File HRef="image002.png"/>
  <o:File HRef="image003.jpg"/>
- <o:File HRef="image004.png"/>
- <o:File HRef="image005.jpg"/>
+ <o:File HRef="image007.jpg"/>
+ <o:File HRef="image008.jpg"/>
+ <o:File HRef="image009.png"/>
+ <o:File HRef="image010.jpg"/>
+ <o:File HRef="image011.jpg"/>
+ <o:File HRef="image012.jpg"/>
+ <o:File HRef="image013.wmz"/>
+ <o:File HRef="image015.gif"/>
+ <o:File HRef="header.html"/>
  <o:File HRef="filelist.xml"/>
 </xml>

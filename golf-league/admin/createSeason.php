@@ -5,7 +5,7 @@ include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-    <title>Thursday Night Golf League</title>
+    <title>Bogey Club - Thursday Night Golf League</title>
     <link href="/theme/style.css" rel="stylesheet" type="text/css"/>
     <link href="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="./../js/selector.js"></script>

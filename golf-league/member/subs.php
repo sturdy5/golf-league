@@ -4,12 +4,16 @@ include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-<title>Thursday Night Golf League</title>
+<title>Bogey Club - Thursday Night Golf League</title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
 function goToPage(url, delay) {
 	setTimeout("window.location=\"" + url + "\"", delay);
+}
+
+function confirmDelete() {
+	return confirm("Are you sure you want to delete this request?");
 }
 
 function confirmDelete() {

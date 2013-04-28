@@ -4,7 +4,7 @@ include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-<title>Thursday Night Golf League</title>
+<title>Bogey Club - Thursday Night Golf League</title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
@@ -67,6 +67,8 @@ function goToPage(url, delay) {
 					        <select name="date" id="date">
 <?php 
                                 $now = new DateTime();
+                                $currentDate = $now->format('Y-m-d');
+                                $now = new DateTime($currentDate);
                                 foreach ($dates as $scheduledDates) {
                                     $date1 = new DateTime($scheduledDates->date);
                                     if ($date1 >= $now) {
