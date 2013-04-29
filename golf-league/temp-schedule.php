@@ -1,10 +1,7 @@
 <?php
+include("./requires.inc.php");
+include("./config/loadConfiguration.php");
 include('./header.inc.php');
-
-require_once('./dao/BlogDAO.php');
-require_once('./model/Comment.php');
-require_once('./model/Post.php');
-require_once('./model/Blog.php');
 ?>
 
 <?php 

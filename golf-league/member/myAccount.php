@@ -1,11 +1,12 @@
 <?php
 include('requires.inc.php');
+include("./../config/loadConfiguration.php");
 include('./../validate-member.php');
 include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-<title>Bogey Club - Thursday Night Golf League</title>
+<title><?=getConfigValue("General", "siteTitle")?></title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script type="text/javascript">

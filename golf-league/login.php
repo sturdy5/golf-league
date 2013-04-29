@@ -1,5 +1,7 @@
 <?php
-require_once('./config.inc.php');
+include("./requires.inc.php");
+include("./config/loadConfiguration.php");
+
 if ($_POST["username"] && $_POST["pass"]) {
 	$query = "select id from users where user = '{$_POST["username"]}' and active=1 and password = '".MD5($_POST["pass"])."'";
 	$result = mysql_query($query) or die("Login query error");
@@ -38,7 +40,7 @@ if ($_GET["logout"] && $_GET["logout"] = 1) {
 function showLogin($error) {
 	echo '<html>
 	<head>
-	    <title>Bogey Club - Thursday Night Golf League - Login Page</title>
+	    <title>' . getConfigValue("General", "siteTitle") . '</title>
 	    <link href="theme/style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>';

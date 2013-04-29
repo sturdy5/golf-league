@@ -1,9 +1,6 @@
 <?php
-require_once('./config.inc.php');
-require_once('./dao/BlogDAO.php');
-require_once('./model/Comment.php');
-require_once('./model/Post.php');
-require_once('./model/Blog.php');
+include("./requires.inc.php");
+include("./config/loadConfiguration.php");
 
 $blogId = "";
 if ($_POST["blog_title"] && $_POST["blog_body"]) {

@@ -1,4 +1,6 @@
 <?php
+include('./requires.inc.php');
+include('./config/loadConfiguration.php');
 include('./header.inc.php');
 include('./validate-admin.php');
 ?>

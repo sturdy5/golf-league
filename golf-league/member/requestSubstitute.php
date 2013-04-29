@@ -1,10 +1,11 @@
 <?php
 include('requires.inc.php');
+include('./../config/loadConfiguration.php');
 include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-<title>Bogey Club - Thursday Night Golf League</title>
+<title><?=getConfigValue("General", "siteTitle")?></title>
 <link href="/theme/style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
@@ -28,9 +29,9 @@ function goToPage(url, delay) {
             
             $subEmails = PlayerDAO::getSubEmails();
             $toAddresses = implode(", ", $subEmails);
-            
+           
             $headers = "From: info@bctngl.com" . "\r\n" . "Reply-To: info@bctngl.com";
-            mail($toAddresses, "Thursday Night Golf League Substitutes", $emailText, $headers);
+            mail($toAddresses, getConfigValue("General", "siteTitle") . " Substitutes", $emailText, $headers);
 ?>
             <fieldset class="editPlayerFields">
                 <h1>Your request has been submitted</h1>

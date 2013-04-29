@@ -1,20 +1,6 @@
 <?php
-require_once("./../config.inc.php");
-require_once("../dao/DBUtils.php");
-require_once("../dao/ScheduleDAO.php");
-require_once("../dao/PlayerDAO.php");
-require_once("../dao/TeamDAO.php");
-require_once("../dao/CourseDAO.php");
-require_once("../dao/ScoreDAO.php");
-require_once("../model/Schedule.php");
-require_once("../model/Matchup.php");
-require_once("../model/Team.php");
-require_once("../model/Player.php");
-require_once("../model/Course.php");
-require_once("../model/Hole.php");
-require_once("../model/Scores.php");
-require_once("../model/Tee.php");
-require_once("./../utils/ArrayUtils.php");
+include("requires.inc.php");
+include("./../config/loadConfiguration.php");
 //include('../validate-member.php');
 if (!isset($_GET["matchId"])) {
 	header("location: /index.php");
@@ -87,7 +73,7 @@ $away2scores = ScoreDAO::getScoresByMatchIdAndPlayer($matchId, $awayteam->player
 ?>
 <html>
 <head>
-    <title>Bogey Club - Thursday Night Golf League</title>
+    <title><?=getConfigValue("General", "siteTitle")?></title>
     <link href="/theme/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="./../js/selector.js"></script>
     <script type="text/javascript">

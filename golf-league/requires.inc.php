@@ -1,10 +1,15 @@
 <?php
 require_once('./config.inc.php');
 require_once("./dao/DBUtils.php");
+require_once("./config/ConfigDAO.php");
+require_once("./dao/BlogDAO.php");
 require_once("./dao/ScheduleDAO.php");
 require_once("./dao/PlayerDAO.php");
 require_once("./dao/TeamDAO.php");
 require_once("./dao/CourseDAO.php");
+require_once('./model/Comment.php');
+require_once('./model/Post.php');
+require_once('./model/Blog.php');
 require_once("./model/Schedule.php");
 require_once("./model/ScheduleDate.php");
 require_once("./model/Matchup.php");

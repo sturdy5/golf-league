@@ -1,6 +1,7 @@
 <?php
 require_once("./../config.inc.php");
 require_once("./../dao/DBUtils.php");
+require_once("./../config/ConfigDAO.php");
 require_once("./../dao/ScheduleDAO.php");
 require_once("./../dao/PlayerDAO.php");
 require_once("./../dao/TeamDAO.php");
@@ -13,5 +14,6 @@ require_once("./../model/Player.php");
 require_once("./../model/Course.php");
 require_once("./../model/Hole.php");
 require_once("./../model/Tee.php");
+require_once("./../model/HandicapMethod.php");
 require_once("./../utils/ArrayUtils.php");
 ?>

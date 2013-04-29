@@ -4,13 +4,7 @@
 
     //Include phpMyGraph5.0.php
     include_once('../utils/phpMyGraph5.0.php');
-    require_once('../config.inc.php');
-    require_once("../dao/PlayerDAO.php");
-    require_once("../dao/ScheduleDAO.php");
-    require_once("../dao/TeamDAO.php");
-    require_once("../model/Team.php");
-    require_once("../model/Player.php");
-    require_once("./../utils/ArrayUtils.php");
+    include("requires.inc.php");
     
     //Set config directives
     $cfg['width'] = 500;
