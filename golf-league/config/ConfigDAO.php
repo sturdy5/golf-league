@@ -2,6 +2,7 @@
 
 class ConfigDAO {
 	const GET_CONFIG_SQL = "select * from config";
+	const UPDATE_CONFIG_SQL = "update config set value = '%s' where variable = '%s' and category = '%s'";
 	
 	public static function getConfiguration() {
 		$config = array();
@@ -24,4 +25,19 @@ class ConfigDAO {
 		}
 		return $config;
 	}
+	
+	public static function saveConfiguration($configArray) {
+		foreach($configArray as $categoryName => $category) {
+			foreach($category as $valueName => $value) {
+				$data = DBUtils::escapeData(array($value, $valueName, $categoryName));
+				$query = vsprintf(self::UPDATE_CONFIG_SQL, $data);
+				$result = @mysql_query($query);
+				if (!$result) {
+					throw new Exception("Error saving configuration - " . mysql_error());
+				}
+			}
+		}
+	}
 }
+
+?>

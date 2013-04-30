@@ -17,6 +17,7 @@ include('./../navigation.inc.php');
             <li><a href="/admin-players.php">Manage Players</a></li>
             <li><a href="/admin-assignHandicap.php">Assign Handicaps</a></li>
             <li><a href="/admin/createSeason.php">Create Season</a></li>
+            <li><a href="/config/editConfiguration.php">Edit Configuration</a></li>
         </ul>
     </div>
 </div>
