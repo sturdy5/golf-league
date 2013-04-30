@@ -26,7 +26,7 @@ April 18 - WildeWood (Back Nine)<br/>
 <br/>
 April 25 - WildeWood (Front Nine)<br/>
 <br/>
-May 2 - Woodcreek ??<br/>
+May 2 - WildeWood<br/>
 <br/>
 May 9 - WildeWood (Back Nine)<br/>
 <br/>
