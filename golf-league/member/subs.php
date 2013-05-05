@@ -16,10 +16,6 @@ function goToPage(url, delay) {
 function confirmDelete() {
 	return confirm("Are you sure you want to delete this request?");
 }
-
-function confirmDelete() {
-	return confirm("Are you sure you want to delete this request?");
-}
 </script>
 </head>
 <body>
@@ -47,6 +43,7 @@ function confirmDelete() {
             }
         } else if (isset($_GET["date"]) && isset($_GET["player"])) {
             $subs = PlayerDAO::getSubs();
+            $playersThatAlreadyHaveASpot = ScheduleDAO::getTakenDateSubsByDate($_GET["date"]);
 ?>
             <form name="subForm" id="subForm" method="POST" action="subs.php">
                 <fieldset class="editPlayerFields">
@@ -57,9 +54,11 @@ function confirmDelete() {
                                 <option value="-1">-- Please Select Your Name --</option>
 <?php 
                                 foreach ($subs as $sub) {
+                                    if (!in_array($sub->id, $playersThatAlreadyHaveASpot)) {
 ?>
-                                    <option value="<?=$sub->id?>"><?=$sub->lastName?>, <?=$sub->firstName?></option>
+                                        <option value="<?=$sub->id?>"><?=$sub->lastName?>, <?=$sub->firstName?></option>
 <?php
+                                    }
                                 }
 ?>
                             </select>

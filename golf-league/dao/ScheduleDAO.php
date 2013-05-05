@@ -30,6 +30,7 @@ class ScheduleDAO {
     const GET_SCHEDULE_BY_DATE_SQL = "select * from schedule where date = '%s'";
     const GET_FUTURE_AVAILABLE_DATE_SUBS_SQL = "select * from date_subs where date >= curdate() and sub_id = 'X' order by date asc";
     const GET_FUTUTE_TAKEN_DATE_SUBS_SQL = "select * from date_subs where date >= curdate() and sub_id <> 'X' order by date asc";
+    const GET_TAKEN_DATE_SUBS_SQL = "select * from date_subs where date = '%s' and sub_id <> 'X'";
     const GET_SUBS_BY_MATCH_SQL = "select * from schedule_subs where match_id = %s and player_id = %s";
     const GET_SUBS_BY_DATE_SQL = "select * from date_subs where date = '%s' and player_id = '%s'";
     const GET_PLAYER_BY_MATCH_AND_SUB_SQL = "select * from schedule_subs where match_id = %s and sub_id = %s";
@@ -239,6 +240,21 @@ class ScheduleDAO {
     					"player" => $row["player_id"],
     					"sub" => $row["sub_id"]);
     			array_push($subsList, $subEntry);
+    		}
+    	}
+    	return $subsList;
+    }
+    
+    public static function getTakenDateSubsByDate($date) {
+    	$data = DBUtils::escapeData(array($date));
+    	$query = vsprintf(self::GET_TAKEN_DATE_SUBS_SQL, $data);
+    	$result = @mysql_query($query);
+    	$subsList = array();
+    	if ($result) {
+    		$count = mysql_num_rows($result);
+    		for ($i = 0; $i < $count; $i++) {
+    			$row = mysql_fetch_assoc($result);
+    			array_push($subsList, $row["sub_id"]);
     		}
     	}
     	return $subsList;
