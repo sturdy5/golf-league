@@ -27,3 +27,8 @@ Documentation
 =============
 
 Some documentation has been created for the admin functions on the github wiki (https://github.com/jsturdevant/golf-league/wiki)
+
+Issues and Feature Requests
+===========================
+
+If you have any issues or want to request a feature for the web site, please log them on the issues page - https://github.com/jsturdevant/golf-league/issues
