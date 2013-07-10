@@ -166,10 +166,17 @@ class ScheduleDAO {
         $endDate = null;
         $result = mysql_query(self::GET_SEASON_SQL) or die("Could not determine the season that is currently in session");
         if ($result) {
-            $row = mysql_fetch_assoc($result);
-            $seasonId = $row["id"];
-            $startDate = $row["startDate"];
-            $endDate = $row["endDate"];
+        	$count = mysql_num_rows($result);
+        	for ($i = 0; $i < $count; $i++) {
+                $row = mysql_fetch_assoc($result);
+                $seasonId = $row["id"];
+                if ($startDate == "none" || $startDate > $row["startDate"]) {
+                    $startDate = $row["startDate"];
+                }
+                if ($endDate == null || $endDate < $row["endDate"]) {
+                    $endDate = $row["endDate"];
+                }
+        	}
         } else {
             $result = mysql_query(self::GET_LAST_SEASON_SQL) or die("Could not determine the season that was last in session");
             if ($result) {
