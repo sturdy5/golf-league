@@ -68,11 +68,19 @@ class ScheduleDAO {
     	$thursdays = array();
     	
     	while ($date <= $stopDate) {
-    		$dayOfWeek = date("w", $date->getTimestamp());
+    		/*
+    		 * PHP >= 5.3
+    		 *    $dayOfWeek = date("w", $date->getTimestamp());
+    		 */
+    		$dayOfWeek = date("w", $date->format('U'));
     		if ($dayOfWeek == 4) {
     			array_push($thursdays, $date->format("Y-m-d"));
     		}
-    		$date = $date->modify("+1 day");
+    		/*
+    		 * PHP >= 5.3
+    		 *    $date = $date->modify("+1 day");
+    		 */
+    		$date = new DateTime('@' . ($date->format('U') + 86400));
     	}
     	
     	$sideIndex = 0;
