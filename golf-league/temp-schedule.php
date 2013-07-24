@@ -16,7 +16,7 @@ July 11 - Woodcreek (Front Nine)<br/>
 <br/>
 July 18 - Woodcreek (Back Nine)<br/>
 <br/>
-July 25 -  WildeWood (Back Nine)<br/>
+July 25 -  Woodcreek (Front Nine)<br/>
 <br/>
 August 2 - WildeWood (Front Nine)<br/>
 <br/>
