@@ -23,7 +23,7 @@ class PlayerDAO {
 	const ADD_ADMIN_USER_SQL = "update users set admin=1 where id = %s";
 	const REMOVE_ADMIN_USER_SQL = "update users set admin=0 where id = %s";
 	const DELETE_USER_SQL = "delete from users where id = %s";
-	const UPDATE_USER_SQL = "update users set firstName = '%s', lastName = '%s', email = '%s', phoneNumber = '%s', handicap = %s, fulltime = %s, active = %s, usercontrolled = %s, admin = %s, user = '%s' where id = %s";
+	const UPDATE_USER_SQL = "update users set firstName = '%s', lastName = '%s', email = '%s', phoneNumber = '%s', fulltime = %s, active = %s, usercontrolled = %s, admin = %s, user = '%s' where id = %s";
 	const UPDATE_ACCOUNT_SQL = "update users set firstName = '%s', lastName = '%s', email = '%s', phoneNumber = '%s' where id = %s";
 	const CHANGE_PASSWORD_SQL = "update users set password = '%s' where id = %s";
 	const ADD_USER_BY_ADMIN_SQL = "insert into users (firstName, lastName, email, phoneNumber, fulltime, user, password, active, admin, usercontrolled) values ('%s', '%s', '%s', '%s', %s, 'temp', '%s', 1, 0, 0)";
@@ -163,7 +163,7 @@ class PlayerDAO {
 		}
 		return $history;
 	}
-	
+
 	public static function getPlayerTee($playerId, $seasonId) {
 		$tee = -1;
 		$query = vsprintf(self::GET_PLAYER_TEE_SQL, array($playerId, $seasonId));
@@ -176,7 +176,7 @@ class PlayerDAO {
 		}
 		return $tee;
 	}
-	
+
 	public static function setPlayerTee($playerId, $teeId, $seasonId) {
 		$data = DBUtils::escapeData(array($teeId, $playerId, $seasonId));
 		$query = vsprintf(self::UPDATE_PLAYER_TEE_SQL, $data);
@@ -186,7 +186,7 @@ class PlayerDAO {
 				$result = @mysql_query(vsprintf(self::INSERT_PLAYER_TEE_SQL, $data));
 				if (!$result) {        	// HARDCODE - only supports 9 hole
 
-        	
+
 					throw new Exception ("DB : " . mysql_error());
 				}
 			}
@@ -265,7 +265,7 @@ class PlayerDAO {
 	public static function getSubs() {
 		return self::getPlayers(self::GET_SUBS_SQL);
 	}
-	
+
 	public static function getSubEmails() {
 		$emails = array();
 		$query = self::GET_SUB_EMAILS_SQL;
@@ -277,7 +277,7 @@ class PlayerDAO {
 			$email = $row["email"];
 			array_push($emails, $email);
 		}
-		
+
 		return $emails;
 	}
 
@@ -390,7 +390,7 @@ class PlayerDAO {
 		if ($player->admin) {
 			$admin = "1";
 		}
-		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $player->handicap, $fulltime, $active, $usercontrolled, $admin, $player->username, $player->id));
+		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $fulltime, $active, $usercontrolled, $admin, $player->username, $player->id));
 		$query = vsprintf(self::UPDATE_USER_SQL, $data);
 		$result = @mysql_query($query);
 		if (!$result) {
@@ -466,7 +466,7 @@ class PlayerDAO {
 			echo("DB : " . mysql_error());
 		}
 	}
-	
+
 	public static function getLastNScores($playerId, $numberOfScores) {
 		$scores = array();
 		$data1 = DBUtils::escapeData(array($playerId, $numberOfScores));
@@ -483,7 +483,7 @@ class PlayerDAO {
 		} else {
 			throw new Exception("DB : " . mysql_error());
 		}
-		
+
 		foreach ($scores as $score) {
 			$data2 = DBUtils::escapeData(array($playerId, $score->match));
 			$query = vsprintf(self::MATCH_SCORE_SQL, $data2);
@@ -495,7 +495,7 @@ class PlayerDAO {
 				throw new Exception("DB : " . mysql_error());
 			}
 		}
-		
+
 		return $scores;
 	}
 }
