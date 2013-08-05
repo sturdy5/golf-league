@@ -10,15 +10,17 @@ include('./navigation.inc.php');
 
 <div class="content">
 <div class="schedule">
-July 3 - WildeWood (Front Nine)<br/>
+August 8 - Woodcreek (Back Nine)<br/>
 <br/>
-July 11 - Woodcreek (Front Nine)<br/>
+August 15 - Woodcreek (Front Nine)<br/>
 <br/>
-July 18 - Woodcreek (Back Nine)<br/>
+August 22 - Woodcreek (Back Nine)<br/>
 <br/>
-July 25 -  Woodcreek (Front Nine)<br/>
+August 29 - WildeWood (Front Nine)<br/>
 <br/>
-August 2 - WildeWood (Front Nine)<br/>
+September 5 - Woodcreek (Front Nine)<br/>
+<br/>
+September 12 - Woodcreek (Back Nine)<br/>
 <br/>
 </div>
 </div>
