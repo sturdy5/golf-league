@@ -4,28 +4,30 @@ include("./config/loadConfiguration.php");
 include('./header.inc.php');
 ?>
 
-<?php 
+<?php
 include('./navigation.inc.php');
 ?>
 
 <div class="content">
 <div class="schedule">
-August 8 - Woodcreek (Back Nine)<br/>
+September 19 - Woodcreek (Front Nine)<br/>
 <br/>
-August 15 - Woodcreek (Front Nine)<br/>
+September 26 - WildeWood (Front Nine)<br/>
 <br/>
-August 22 - Woodcreek (Back Nine)<br/>
+October 3 - WildeWood (Back Nine)<br/>
 <br/>
-August 29 - WildeWood (Front Nine)<br/>
+October 10 - WildeWood (Front Nine)<br/>
 <br/>
-September 5 - Woodcreek (Front Nine)<br/>
+October 17 - Woodcreek (Back Nine)<br/>
 <br/>
-September 12 - Woodcreek (Back Nine)<br/>
+October 24 - Woodcreek<br/>
+<br/>
+October 29 - Woodcreek<br/>
 <br/>
 </div>
 </div>
 <?php
-include('./utilities.inc.php'); 
+include('./utilities.inc.php');
 ?>
 <?php
 include('./footer.inc.php');
