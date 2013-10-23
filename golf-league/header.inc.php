@@ -9,4 +9,7 @@ require_once('./config.inc.php');
     <script type="text/javascript" src="./js/selector.js"></script>
 </head>
 <body>
+<?php
+include_once("./analyticstracking.php");
+?>
     <h1><?=$config["General"]["siteTitle"]["value"]?></h1>

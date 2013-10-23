@@ -25,6 +25,9 @@ include('./../navigation.inc.php');
     </script>
 </head>
 <body class="claro">
+<?php  
+include_once("../analyticstracking.php");
+?>
 <div class="content">
 <?php
     $message = "";

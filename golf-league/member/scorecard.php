@@ -102,6 +102,9 @@ $away2scores = ScoreDAO::getScoresByMatchIdAndPlayer($matchId, $awayteam->player
     </script>
 </head>
 <body>
+<?php  
+include_once("../analyticstracking.php");
+?>
 <div class="content">
 <?php 
     if (isset($success) && $success == "1") {

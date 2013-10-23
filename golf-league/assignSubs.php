@@ -13,6 +13,7 @@ include("./validate-admin.php");
 <body onload="fireEvents()">
 
 <?php
+include_once("./analyticstracking.php");
 include('./navigation.inc.php');
 ?>
 

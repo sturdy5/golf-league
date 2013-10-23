@@ -19,6 +19,9 @@ function confirmDelete() {
 </script>
 </head>
 <body>
+<?php  
+include_once("../analyticstracking.php");
+?>
     <div class="content">
 <?php 
         if (isset($_POST["date"]) && isset($_POST["player"]) && isset($_POST["sub"])) {

@@ -65,6 +65,9 @@ if ($fileExists) {
     <script type="text/javascript" src="./../js/selector.js"></script>
 </head>
 <body>
+<?php  
+include_once("../analyticstracking.php");
+?>
 <div>
 <?php 
 if ($fileExists) {

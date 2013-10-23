@@ -86,7 +86,9 @@ include('./../navigation.inc.php');
     </script>
 </head>
 <body onload="fireEvents()">
-
+<?php  
+include_once("../analyticstracking.php");
+?>
 <div class="content">
 <?php
     $seasonId = ScheduleDAO::getCurrentSeason();

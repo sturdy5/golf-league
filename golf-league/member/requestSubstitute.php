@@ -15,6 +15,9 @@ function goToPage(url, delay) {
 </script>
 </head>
 <body>
+<?php  
+include_once("../analyticstracking.php");
+?>
     <div class="content">
 <?php
         if (isset($_POST["fullTimePlayer"]) && isset($_POST["date"])) {

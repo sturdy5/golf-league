@@ -20,7 +20,10 @@ include("./config/loadConfiguration.php");
 	</style>
 </head>
 
+<body>
+
 <?php
+include_once("./analyticstracking.php");
 include('./navigation.inc.php');
 ?>
 

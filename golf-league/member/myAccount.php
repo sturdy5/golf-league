@@ -58,7 +58,9 @@ function hideOrShowNewPasswordFields() {
 </script>
 </head>
 <body onload="fireEvents()">
-
+<?php  
+include_once("../analyticstracking.php");
+?>
 	<div class="content">
 <?php
 		if (isset($_POST["id"]) && isset($_POST["firstName"]) && isset($_POST["lastName"]) && isset($_POST["email"]) && isset($_POST["phoneNumber"]) && isset($_POST["newPassword1"])) {

@@ -24,7 +24,9 @@ include('./../navigation.inc.php');
     </script>
 </head>
 <body onload="fireEvents()">
-
+<?php  
+include_once("../analyticstracking.php");
+?>
 <div class="content">
 <?php
     if (isset($_POST["oldDate"]) && isset($_POST["newDate"]) && isset($_POST["notes"]) && isset($_POST["alreadyExists"])) {
