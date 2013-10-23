@@ -23,7 +23,7 @@ $stopDate = new DateTime($endDate);
 //echo "<b>getTimestamp -- </b>";
 //echo $date->getTimestamp();
 //echo "<br/>";
-echo "<b>formatU -- </b>";
+echo "<b>Testing formatU -- </b>";
 echo $date->format('U');
 echo "<br/>";
 echo "<b>formatU end -- </b>";
