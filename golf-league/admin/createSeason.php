@@ -24,7 +24,7 @@ include('./../navigation.inc.php');
     }
     </script>
 </head>
-<body class="claro">
+<body class="claro js" id="body">
 <?php 
 include_once("../analyticstracking.php");
 ?>

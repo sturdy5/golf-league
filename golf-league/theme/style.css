@@ -215,8 +215,7 @@ li.nav-key:hover a {
 	.js [role="main"],.js [role="banner"] {
 		width: 70%;
 	}
-	,
-	js [role="banner"] {
+	.js [role="banner"] {
 		-webkit-box-ordinal-group: 1;
 		-moz-box-ordinal-group: 1;
 		-ms-box-ordinal-group: 1;
