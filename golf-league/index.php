@@ -10,7 +10,7 @@ include('./header.inc.php');
 include('./navigation.inc.php');
 ?>
 
-<div class="content">
+<section role="main">
     <div class="blog">
 <?php 
         if ($_SESSION["admin"] == 1) {
@@ -22,7 +22,7 @@ include('./navigation.inc.php');
         echo $blogDao->getBlogInformation()->toHTML();
 ?>
     </div>
-</div>
+</section>
 
 <?php
 include('./utilities.inc.php'); 
