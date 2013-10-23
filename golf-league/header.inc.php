@@ -12,4 +12,10 @@ require_once('./config.inc.php');
 <?php
 include_once("./analyticstracking.php");
 ?>
-    <h1><?=$config["General"]["siteTitle"]["value"]?></h1>
+    <header role="banner">
+        <h1><?=$config["General"]["siteTitle"]["value"]?></h1>
+        <?php 
+            // This menu button is displayed when the screen size is too small to show the main navigation buttons 
+        ?>
+        <a href="" id="menu-button" class="ir menu-mobile menu-button" role="presentation">menu</a>
+    </header>
