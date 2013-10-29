@@ -77,7 +77,7 @@ li.nav-key:hover a {
 	a.menu-link {
 	    display: none;
 	}
-	nav[role="navigation"] {
+	.js nav[role="navigation"] {
 	    max-width: none;
 	    position: static;
 	    width: auto;
@@ -102,6 +102,9 @@ nav[role="navigation"] {
 	background: #EFF;
 	clear: both;
 	overflow: hidden;
+}
+
+.js nav[role="navigation"] {
 	width: 16em;
 	height: 100%;
 	position: absolute;

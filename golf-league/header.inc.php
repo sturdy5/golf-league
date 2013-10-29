@@ -12,7 +12,7 @@ require_once('./config.inc.php');
     include_once("./utils/dojo.inc.php");
 ?>
 </head>
-<body>
+<body id="body">
 <?php
 include_once("./analyticstracking.php");
 ?>
