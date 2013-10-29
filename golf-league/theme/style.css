@@ -44,20 +44,23 @@ A,A:visited {
 	text-decoration: none;
 }
 
-/* sprites (aka menu icons) */
-.menu-mobile {
-	float: left;
-	margin: 0 12px 0 12px;
-	vertical-align: middle;
-	display: block;
-	background-image: url(../images/sprites.png) no-repeat;
-	width: 36px;
-	height: 36px;
-	margin-top: 2px;
+.wrap {
+	position: relative;
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
 }
 
-.menu-button {
-	background-position: -32px -292px;
+.wrap.active {
+	left: 16em;
+}
+
+a.menu-link {
+	float: left;
+	display: block;
+	padding: 1em;
 }
 
 li.nav-key:hover {
@@ -70,18 +73,43 @@ li.nav-key:hover a {
 }
 
 /* When the screen width is greater than 48em (what does this translate to?) don't display the menu button */
-@media screen and (min-width: 48em) {
-	#menu-button {
-		visibility: hidden;
+@media screen and (min-width: 41.25em) {
+	a.menu-link {
+	    display: none;
+	}
+	nav[role="navigation"] {
+	    max-width: none;
+	    position: static;
+	    width: auto;
+	}
+	nav[role="navigation"] ul {
+	    margin: 0;
+	    border: 0;
+	}
+	nav[role="navigation"] li {
+	    display: inline-block;
+	    margin: 0 0.25em;
+	}
+	nav[role="navigation"] li a {
+	    border: 0;
+	}
+	.wrap.active {
+	    left: 0;
 	}
 }
 
-[role="navigation"] {
+nav[role="navigation"] {
 	background: #EFF;
-	font-weight: 700;
+	clear: both;
+	overflow: hidden;
+	width: 16em;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: -16em;
 }
 
-[role="navigation"] ul {
+nav[role="navigation"] ul {
 	margin: 0;
 	padding: 0;
 	border-bottom: 1px solid #050;
@@ -96,20 +124,6 @@ li.nav-key:hover a {
 	border-top: 1px solid #050;
 }
 
-@media screen and (min-width: 48em) {
-	[role="navigation"] li {
-		border-left: none
-	}
-}
-
-[role="navigation"] li:first-of-type {
-	border-top: 1px solid #3e3f3f
-}
-
-[role="navigation"] li:last-of-type {
-	border-bottom-color: #3e3f3f;
-}
-
 [role="navigation"] a {
 	position: relative;
 	display: block;
@@ -122,234 +136,6 @@ li.nav-key:hover a {
 
 [role="navigation"],[role="main"] {
 	width: 100%
-}
-
-.js #wrapper {
-	display: -webkit-box;
-	display: -moz-box;
-	display: box;
-	-webkit-box-orient: horizontal;
-	-moz-box-orient: horizontal;
-	-ms-box-orient: horizontal;
-	box-orient: horizontal;
-}
-
-}
-[role="main"],[role="banner"] {
-	-webkit-box-shadow: -3px 0px 4px 0.5 1px 2px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: -3px 0px 4px 0.5 1px 2px rgba(0, 0, 0, 0.1);
-	box-shadow: -3px 0px 4px 0.5 1px 2px rgba(0, 0, 0, 0.1);
-	border-left: 1px solid #3e3f3f;
-}
-
-.js [role="navigation"] {
-	margin-left: -100%;
-	-webkit-box-ordinal-group: 1;
-	-moz-box-ordinal-group: 1;
-	-ms-box-ordinal-group: 1;
-	box-ordinal-group: 1;
-	-webkit-transition: all 0.1s ease-in-out;
-	-moz-transition: all 0.1 S ease-in-out;
-	-ms-transition: all 0.1s ease-in-out;
-	-o-transition: all 0.1s ease-in-out;
-	transition: all 0.1s ease-in-out;
-}
-
-[role="banner"] {
-	width: 100%;
-}
-
-.js [role="banner"] {
-	margin-left: 0;
-	-webkit-box-ordinal-group: 2;
-	-moz-box-ordinal-group: 2;
-	-ms-box-ordinal-group: 2;
-	box-ordinal-group: 2;
-}
-
-.js [role="main"] {
-	margin-left: -100%;
-	margin-top: 50px;
-	-webkit-box-ordinal-group: 3;
-	-moz-box-ordinal-group: 3;
-	-ms-box-ordinal-group: 3;
-	box-ordinal-group: 3;
-	padding: 1.5%;
-}
-
-.active-nav [role="navigation"] {
-	background: #5C5C5C;
-	margin-left: 0;
-	width: 80%;
-}
-
-.active-nav #clear-btn {
-	position: absolute;
-	top: 0;
-	right: 0;
-	height: 800px;
-	width: 20%;
-	background: transparent;
-	z-index: 4;
-}
-
-.active-nav [role="banner"] {
-	margin-left:; -200%;
-	overflow: hidden;
-}
-
-.active-nav [role="main"] {
-	overflow: hidden;
-}
-
-@media all and (min-width: 768px) {
-	.js [role="navigation"] {
-		background: #5C5C5C;
-		width: 30%;
-		margin-left: 0;
-		-webkit-box-ordinal-group: 2;
-		-moz-box-ordinal-group: 2;
-		-ms-box-ordinal-group: 2;
-		box-ordinal-group: 2;
-	}
-	.js [role="main"],.js [role="banner"] {
-		width: 70%;
-	}
-	.js [role="banner"] {
-		-webkit-box-ordinal-group: 1;
-		-moz-box-ordinal-group: 1;
-		-ms-box-ordinal-group: 1;
-		box-ordinal-group: 1;
-	}
-	.active-nav #clear-btn {
-		display: none
-	}
-}
-
-@media all and (min-width: 800px) {
-	.js #wrapper {
-		-webkit-box-orient: vertical;
-		-moz-box-orient: vertical;
-		-ms-box-orient: vertical;
-		box-orient: vertical;
-	}
-	.js [role="navigation"] {
-		width: 100%;
-		margin: 0 auto;
-		padding: 0;
-		text-align: center;
-	}
-	[role="navigation"] li {
-		display: inline-block;
-		padding: 0 12px;
-		border: none;
-		border-right: 1px solid #333;
-	}
-	[role="navigation"] li:first-of-type {
-		border-left: 1px solid #333;
-	}
-	.js [role="main"] {
-		margin: 0 auto;
-		width: 80%;
-	}
-	.js [role="banner"] {
-		margin: 0;
-		width: 100%;
-	}
-}
-
-.ir {
-	border: 0;
-	font: 0/0 a;
-	text-shadow: none;
-	color: transparent;
-	background-color: transparent;
-}
-
-.hidden {
-	display: none !important;
-	visibility: hidden;
-}
-
-.visuallyhidden {
-	border: 0;
-	clip: rect(0, 0, 0, 0);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-}
-
-.visuallyhidden.focusable:active,.visuallyhidden.focusable:focus {
-	clip: auto;
-	height: auto;
-	margin: 0;
-	overflow: visible;
-	position: static;
-	width: auto;
-}
-
-.invisible {
-	visibility: hidden
-}
-
-.clearfix:before,.clearfix:after {
-	content: "";
-	display: table;
-}
-
-.clearfix:after {
-	clear: both
-}
-
-.clearfix {
-	*zoom: 1
-}
-
-@media print {
-	* {
-		background: transparent !important;
-		color: black !important;
-		box-shadow: none !important;
-		text-shadow: none !important;
-	}
-	a,a:visited {
-		text-decoration: underline
-	}
-	a[href]:after {
-		content: " (" attr(href) ")"
-	}
-	abbr[title]:after {
-		content: " (" attr(title) ")"
-	}
-	.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after {
-		content: ""
-	}
-	pre,blockquote {
-		border: 1px solid #999;
-		page-break-inside: avoid;
-	}
-	thead {
-		display: table-header-group
-	}
-	tr,img {
-		page-break-inside: avoid
-	}
-	img {
-		max-width: 100% !important
-	}
-	@page {
-		margin: 0.5cm
-	}
-	p,h2,h3 {
-		orphans: 3;
-		widows: 3;
-	}
-	h2,h3 {
-		page-break-after: avoid
-	}
 }
 
 /* ================ previously defined styles ===============================*/

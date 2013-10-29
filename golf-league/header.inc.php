@@ -16,13 +16,8 @@ require_once('./config.inc.php');
 <?php
 include_once("./analyticstracking.php");
 ?>
-    <div id="wrapper">
-    <a href="" id="clear-btn"></a>
-    
-    <header role="banner">
-        <h1><?=$config["General"]["siteTitle"]["value"]?></h1>
-        <?php 
-            // This menu button is displayed when the screen size is too small to show the main navigation buttons 
-        ?>
-        <a href="" id="menu-button" class="ir menu-mobile menu-button" role="presentation">menu</a>
-    </header>
+    <div class="wrap" id="wrap">
+        <a href="#menu" id="menuLink" class="menu-link">Menu</a>
+        <header role="banner">
+            <h1><?=$config["General"]["siteTitle"]["value"]?></h1>
+        </header>

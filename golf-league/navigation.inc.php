@@ -4,7 +4,7 @@ $parts = Explode('/', $currentFile);
 $thisPage = $parts[count($parts) - 1];
 ?>
 
-    <nav role="navigation">
+    <nav id="menu" role="navigation">
         <ul>
             <li>
                 <a href="/index.php">Home</a>

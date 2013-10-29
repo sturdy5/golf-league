@@ -10,19 +10,18 @@ include('./header.inc.php');
 include('./navigation.inc.php');
 ?>
 
-<section role="main">
-    <div class="blog">
+<div class="blog">
 <?php 
-        if ($_SESSION["admin"] == 1) {
+    if ($_SESSION["admin"] == 1) {
 ?>
-            <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
+        <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
 <?php
-        }
-        $blogDao = new BlogDAO();
-        echo $blogDao->getBlogInformation()->toHTML();
+    }
+    $blogDao = new BlogDAO();
+    echo $blogDao->getBlogInformation()->toHTML();
 ?>
-    </div>
-</section>
+</div>
+
 
 <?php
 include('./utilities.inc.php'); 
