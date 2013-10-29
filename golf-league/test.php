@@ -3,7 +3,15 @@
         <title>Test Page</title>
         <link href="theme/style.css" rel="stylesheet" type="text/css"/>
         <script type="text/javascript" src="./js/selector.js"></script>
-        <script type="text/javascript" src="./js/menu.js"></script>
+        <script type="text/javascript">
+
+        var showMenu = function() {
+            dojo.toggleClass("menuLink", "active");
+            dojo.toggleClass("wrap", "active");
+            return false;
+        }
+        
+        </script>
 <?php 
         include_once("./utils/dojo.inc.php");
 ?>
@@ -13,7 +21,7 @@
   <div id="pattern" class="pattern">
     <!--Begin Pattern HTML-->
 		<div class="wrap" id="wrap">
-			<a href="#menu" id="menuLink" class="menu-link">Menu</a>
+			<a href="#menu" id="menuLink" class="menu-link" onclick="return showMenu()">Menu</a>
 			<nav id="menu" role="navigation">
 				<ul>
 					<li><a href="#">Home</a></li>
