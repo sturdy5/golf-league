@@ -13,7 +13,7 @@
   <div id="pattern" class="pattern">
     <!--Begin Pattern HTML-->
 		<div class="wrap" id="wrap">
-			<a href="#menu" class="menu-link">Menu</a>
+			<a href="#menu" id="menuLink" class="menu-link">Menu</a>
 			<nav id="menu" role="navigation">
 				<ul>
 					<li><a href="#">Home</a></li>
