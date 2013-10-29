@@ -2,19 +2,6 @@
     <head>
         <title>Test Page</title>
         <link href="theme/style.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="./js/selector.js"></script>
-        <script type="text/javascript">
-
-        var showMenu = function() {
-            dojo.toggleClass("menuLink", "active");
-            dojo.toggleClass("wrap", "active");
-            return false;
-        }
-        
-        </script>
-<?php 
-        include_once("./utils/dojo.inc.php");
-?>
     </head>
 <body id="body">
 <!--Pattern HTML-->
@@ -76,5 +63,20 @@
 			</div>
 		</footer>
 	</div>
+
+	<script type="text/javascript" src="./js/selector.js"></script>
+    <script type="text/javascript">
+
+    var showMenu = function() {
+        dojo.toggleClass("menuLink", "active");
+        dojo.toggleClass("wrap", "active");
+        return false;
+    }
+        
+    </script>
+<?php 
+    include_once("./utils/dojo.inc.php");
+?>
+	<script type="text/javascript" src="./js/css3-mediaqueries.js"></script>
 </body>
 </html>
