@@ -6,11 +6,7 @@ require_once('./config.inc.php');
 <head>
     <title><?=$config["General"]["siteTitle"]["value"]?></title>
     <link href="theme/style.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="./js/selector.js"></script>
-    <script type="text/javascript" src="./js/menu.js"></script>
-<?php 
-    include_once("./utils/dojo.inc.php");
-?>
+    <link href="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css"/>
 </head>
 <body id="body">
 <?php
