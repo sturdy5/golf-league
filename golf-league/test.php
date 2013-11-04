@@ -3,7 +3,7 @@
         <title>Test Page</title>
         <link href="theme/style.css" rel="stylesheet" type="text/css"/>
     </head>
-<body id="body">
+<body id="body" class="js">
 <!--Pattern HTML-->
   <div id="pattern" class="pattern">
     <!--Begin Pattern HTML-->
