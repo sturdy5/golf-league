@@ -72,44 +72,18 @@ li.nav-key:hover a {
 	text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
 }
 
-/* When the screen width is greater than 48em (what does this translate to?) don't display the menu button */
-@media screen and (min-width: 41.25em) {
-	a.menu-link {
-	    display: none;
-	}
-	nav[role="navigation"] {
-	    max-width: none;
-	    position: static;
-	    width: auto;
-	}
-	nav[role="navigation"] ul {
-	    margin: 0;
-	    border: 0;
-	}
-	nav[role="navigation"] li {
-	    display: inline-block;
-	    margin: 0 0.25em;
-	}
-	nav[role="navigation"] li a {
-	    border: 0;
-	}
-	.wrap.active {
-	    left: 0;
-	}
-}
-
-nav[role="navigation"] {
-	background: #EFF;
-	clear: both;
-	overflow: hidden;
-}
-
 nav[role="navigation"] {
 	width: 16em;
 	height: 100%;
 	position: absolute;
 	top: 0;
 	left: -16em;
+}
+
+nav[role="navigation"] {
+	background: #EFF;
+	clear: both;
+	overflow: hidden;
 }
 
 nav[role="navigation"] ul {
@@ -137,6 +111,32 @@ nav[role="navigation"] ul {
 
 [role="navigation"],[role="main"] {
 	width: 100%
+}
+
+/* When the screen width is greater than 48em (what does this translate to?) don't display the menu button */
+@media screen and (min-width: 41.25em) {
+	a.menu-link {
+	    display: none;
+	}
+	nav[role="navigation"] {
+	    max-width: none;
+	    position: static;
+	    width: auto;
+	}
+	nav[role="navigation"] ul {
+	    margin: 0;
+	    border: 0;
+	}
+	nav[role="navigation"] li {
+	    display: inline-block;
+	    margin: 0 0.25em;
+	}
+	nav[role="navigation"] li a {
+	    border: 0;
+	}
+	.wrap.active {
+	    left: 0;
+	}
 }
 
 /* ================ previously defined styles ===============================*/
