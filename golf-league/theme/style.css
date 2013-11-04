@@ -97,6 +97,7 @@ nav[role="navigation"] ul {
 	padding-left: 24px;
 	position: relative;
 	display: block;
+	border-bottom: 1px solid #050;
 }
 
 [role="navigation"] a {
@@ -122,6 +123,7 @@ nav[role="navigation"] ul {
 	    max-width: none;
 	    position: static;
 	    width: auto;
+	    height: auto;
 	}
 	nav[role="navigation"] ul {
 	    margin: 0;
@@ -130,6 +132,7 @@ nav[role="navigation"] ul {
 	nav[role="navigation"] li {
 	    display: inline-block;
 	    margin: 0 0.25em;
+	    border: 0;
 	}
 	nav[role="navigation"] li a {
 	    border: 0;
