@@ -144,7 +144,7 @@ nav[role="navigation"] ul {
 
 /* ================ previously defined styles ===============================*/
 div.navigation {
-	width: 140px;
+	/* width: 140px; */
 	height: 100%;
 	display: inline;
 	float: left;
@@ -153,7 +153,7 @@ div.navigation {
 }
 
 span.nav-key,span.nav-key:hover,span.admin-nav-key {
-	width: 130px;
+	/* width: 130px; */
 	height: 40px;
 	text-align: center;
 	vertical-align: middle;
@@ -187,7 +187,7 @@ div.content {
 }
 
 div.content .blog {
-	width: 500px;
+	/* width: 500px; */
 	border: 2px solid #050;
 	max-height: 600px;
 	min-height: 200px;
@@ -230,7 +230,7 @@ div.content .assignSubFields {
 
 div.content .addPostFields {
 	background-color: #EFF;
-	width: 700px;
+	/* width: 700px; */
 	display: inline;
 	float: left;
 }
@@ -262,7 +262,7 @@ div.utilities .weather {
 }
 
 div.content div.teams {
-	width: 500px;
+	/* width: 500px; */
 	border: 2px solid #050;
 	background-color: #EFF;
 	padding: 5px;
@@ -271,7 +271,7 @@ div.content div.teams {
 }
 
 div.content div.players {
-	width: 800px;
+	/* width: 800px; */
 	border: 2px solid #050;
 	background-color: #EFF;
 	padding: 5px;
@@ -287,7 +287,7 @@ div.matchups {
 div.matchups div.matchDate {
 	font: bold 1.2em tahoma, sans-serif;
 	text-align: center;
-	width: 600px;
+	/* width: 600px; */
 	border: 2px solid #050;
 	background-color: #EFF;
 	margin: 10px;
@@ -321,7 +321,7 @@ table.teams,table.players,table.scorecard {
 }
 
 table.matchup,table.handicaps,table.import {
-	width: 600px;
+	/* width: 600px; */
 	border: 2px solid #050;
 	border-collapse: collapse;
 	background-color: #EFF;
@@ -345,7 +345,7 @@ table.matchup td.hole,table.scorecard td {
 }
 
 table.matchup td.player {
-	width: 210px;
+	/* width: 210px; */
 }
 
 table.matchup td.player div.color-box {
