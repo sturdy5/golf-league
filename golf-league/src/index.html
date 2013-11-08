@@ -7,19 +7,19 @@
         <link rel="stylesheet" href="js/lib/golfleague/resources/golfleague.css">
     </head>
     <body class="claro">
-        <div id="borderContainer" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design: 'headline', gutters: true">
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" style="height: 15%">Header</div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'botton'" style="height: 15%">Footer</div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left'" style="width: 20%">Navigation</div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'right'" style="width: 20%">Utilities</div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">Main Content</div>
+        <div id="borderContainer" data-dojo-type="dijit/layout/LayoutContainer" data-dojo-props="design: 'sidebar'" class="main">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" class="top"><h1>Header</h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'" class="bottom"><h1>Footer</h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left'" class="navigation"><h1>Navigation</h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'right'" class="utilities"><h1>Utilities</h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'" class="center"><h1>Main Content</h1></div>
         </div>
         <script type="text/javascript" src="js/lib/golfleague/dojoConfig.js"></script>
         <script type="text/javascript" src="js/lib/dojo/dojo.js"></script>
         <script>
             require([
                 "dojo/parser",
-                "dijit/layout/BorderContainer",
+                "dijit/layout/LayoutContainer",
                 "dijit/layout/ContentPane",
                 "dojo/domReady!"
             ], function(parser) {
