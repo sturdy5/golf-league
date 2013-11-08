@@ -1,5 +1,4 @@
 dojoConfig = {
-    parseOnLoad: true,
     async: true,
     packages: [
         { name: "golfleague", location: "../golfleague" }],

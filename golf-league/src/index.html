@@ -18,11 +18,12 @@
         <script type="text/javascript" src="js/lib/dojo/dojo.js"></script>
         <script>
             require([
+                "dojo/parser",
                 "dijit/layout/BorderContainer",
                 "dijit/layout/ContentPane",
                 "dojo/domReady!"
-            ], function() {
-
+            ], function(parser) {
+                parser.parse();
             });
         </script>
     </body>
