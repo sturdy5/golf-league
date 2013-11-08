@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>Thursday Night Golf League</title>
+        <link rel="stylesheet" href="js/lib/golfleague/resources/golfleague.css">
+    </head>
+    <body class="claro">
+        <div id="borderContainer" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design: 'headline', gutters: true">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" style="height: 15%">Header</div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'botton'" style="height: 15%">Footer</div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left'" style="width: 20%">Navigation</div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'right'" style="width: 20%">Utilities</div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">Main Content</div>
+        </div>
+        <script type="text/javascript" src="js/lib/golfleague/dojoConfig.js"></script>
+        <script type="text/javascript" src="js/lib/dojo/dojo.js"></script>
+        <script>
+            require([
+                "dijit/layout/BorderContainer",
+                "dijit/layout/ContentPane",
+                "dojo/domReady!"
+            ], function() {
+
+            });
+        </script>
+    </body>
+</html>
