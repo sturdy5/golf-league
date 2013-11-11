@@ -8,11 +8,11 @@
     </head>
     <body class="claro">
         <div id="borderContainer" data-dojo-type="dijit/layout/LayoutContainer" data-dojo-props="design: 'sidebar'" class="main">
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" class="top"><h1>Header</h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" class="top"><h1 class="siteTitle"></h1></div>
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'" class="bottom"><h1>Footer</h1></div>
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left'" class="navigation"><h1>Navigation</h1></div>
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'right'" class="utilities"><h1>Utilities</h1></div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'" class="center">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center', loadingMessage: 'Loading...'" class="center">
                 <h1>Main Content</h1>
                 <p>Lorem upsum dolor sit amet</p>
             </div>
@@ -22,11 +22,19 @@
         <script>
             require([
                 "dojo/parser",
+                "dojo/request",
+                "dojo/query",
                 "dijit/layout/LayoutContainer",
                 "dijit/layout/ContentPane",
                 "dojo/domReady!"
-            ], function(parser) {
+            ], function(parser, request, query) {
                 parser.parse();
+                request("/config/ConfigService", {
+                    query: "operation=get&category=General&name=siteTitle"
+                }).then(function(data) {
+                    var siteTitle = query("h1.siteTitle")[0];
+                    siteTitle.innerHTML = data;
+                });
             });
         </script>
     </body>
