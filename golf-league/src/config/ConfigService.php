@@ -7,7 +7,6 @@ if (isset($_GET["operation"])) {
 	//   - get 
 	//       - category - the category of the value to get
 	//       - name - the name of the value to get
-	$dao = new ConfigDAO();
 	$operation = $_GET["operation"];
 	switch ($operation){
 	    case "get":

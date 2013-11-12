@@ -5,17 +5,19 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <title>Thursday Night Golf League</title>
         <link rel="stylesheet" href="js/lib/golfleague/resources/golfleague.css">
+        <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <![endif]-->
     </head>
     <body class="claro">
-        <div id="borderContainer" data-dojo-type="dijit/layout/LayoutContainer" data-dojo-props="design: 'sidebar'" class="main">
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'" class="top"><h1 class="siteTitle"></h1></div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'" class="bottom"><h1>Footer</h1></div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left'" class="navigation"><h1>Navigation</h1></div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'right'" class="utilities"><h1>Utilities</h1></div>
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center', loadingMessage: 'Loading...'" class="center">
-                <h1>Main Content</h1>
-                <p>Lorem upsum dolor sit amet</p>
+        <div id="borderContainer" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design: 'headline', gutters: false, liveSplitters:false, loadingMessage: 'Loading...'" class="main">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top', splitter: false" class="top"><h1 class="siteTitle"></h1></div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'leading'" class="navigation">
+                <div data-dojo-type="golfleague/widgets/form/Navigation"></div>
             </div>
+            <div id="mainContent" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center', loadingMessage: 'Loading...'" class="center">
+            </div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'trailing'" class="utilities"><h1>Utilities</h1></div>
         </div>
         <script type="text/javascript" src="js/lib/golfleague/dojoConfig.js"></script>
         <script type="text/javascript" src="js/lib/dojo/dojo.js"></script>
@@ -24,16 +26,37 @@
                 "dojo/parser",
                 "dojo/request",
                 "dojo/query",
-                "dijit/layout/LayoutContainer",
+                "dojo/_base/array",
+                "dojo/dom-construct",
+                "dijit/layout/BorderContainer",
                 "dijit/layout/ContentPane",
+                "golfleague/widgets/form/Navigation",
                 "dojo/domReady!"
-            ], function(parser, request, query) {
+            ], function(parser, request, query, arrayUtil, domConstruct) {
                 parser.parse();
                 request("/config/ConfigService", {
                     query: "operation=get&category=General&name=siteTitle"
                 }).then(function(data) {
                     var siteTitle = query("h1.siteTitle")[0];
                     siteTitle.innerHTML = data;
+                });
+
+                // get the blog information
+                request("/service/BlogService", {
+                    query: "operation=get",
+                    handleAs: "json"
+                }).then(function(data) {
+                    // should get data.posts as an array of post items
+                    if (data && data.posts) {
+                        var blog = domConstruct.create("blog", {"class": "blog"});
+                        arrayUtil.forEach(data.posts, function(post) {
+                            domConstruct.create("div", {"class": "postTitle", innerHTML: post.title.replace(/\\\'/g, "'")}, blog);
+                            domConstruct.create("div", {"class": "postBody", innerHTML: post.body.replace(/\\\'/g, "'")}, blog);
+                        });
+                        domConstruct.place(blog, "mainContent", "only");
+                    } else {
+                        console.log("the data that was returned was not what was expected: " + data);
+                    }
                 });
             });
         </script>
