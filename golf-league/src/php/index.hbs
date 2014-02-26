@@ -1,0 +1,11 @@
+<div class="blog">
+<?php 
+    if ($_SESSION["admin"] == 1) {
+?>
+        <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
+<?php
+    }
+    $blogDao = new BlogDAO();
+    echo $blogDao->getBlogInformation()->toHTML();
+?>
+</div>
