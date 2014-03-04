@@ -56,6 +56,7 @@ class ScheduleDAO {
     /* sql related to course schedules */
     const GET_CURRENT_COURSE_SCHEDULE = "select distinct s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= '%s' and s.match_date <= '%s' order by s.match_date asc";
     const GET_SINGLE_COURSE_SCHEDULE = "select s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.id = %s";
+    const GET_NEXT_SINGLE_COURSE_SCHEDULE = "select s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= curdate() order by s.match_date asc";
     const UPDATE_SINGLE_COURSE_SCHEDULE = "update schedule_course set match_date = '%s', course = %s, side = '%s', details_exist = %s where id = %s";
     const ADD_SINGLE_COURSE_SCHEDULE = "insert into schedule_course (match_date, course, side) values ('%s', %s, '%s')";
     const REMOVE_SINGLE_COURSE_SCHEDULE = "delete from schedule_course where id = %s";
@@ -755,6 +756,35 @@ class ScheduleDAO {
 
         return $scheduleDate;
     }
+
+    /**
+     * Gets the next match that is scheduled.
+     *
+     * @throws Exception if there is an issue getting the match from the database
+     * @return An instance of ScheduleDate if the match was found, otherwise NULL
+     */
+    public static function getNextCourseScheduleMatch() {
+        $result = @mysql_query(self::GET_NEXT_SINGLE_COURSE_SCHEDULE);
+
+        $scheduleDate = null;
+        if ($result) {
+            $count = mysql_num_rows($result);
+            if ($count > 0) {
+                $row = mysql_fetch_assoc($result);
+                $scheduleDate = new ScheduleDate();
+                $scheduleDate->id = $row["id"];
+                $scheduleDate->date = $row["match_date"];
+                $scheduleDate->side = $row["side"];
+                $scheduleDate->course = $row["name"];
+                $scheduleDate->notes = $row["notes"];
+                $scheduleDate->detailsExist = $row["details_exist"];
+            }
+        } else {
+            throw new Exception("Unable to get the next scheduled match - DB : " . mysql_error());
+        }
+
+        return $scheduleDate;
+     }
 
     /**
      * Gets a list of the course scheduled matches between the given dates (inclusive).

@@ -1,5 +1,24 @@
 <div class="blog">
 <?php 
+    $nextMatch = ScheduleDAO::getNextCourseScheduleMatch();
+    if ($nextMatch) {
+?>
+        <div class="nextMatch">Next match: <?=date('l, F d', strtotime($nextMatch->date))?>
+<?php
+        if ($nextMatch->course) {
+?>
+            at <?=$nextMatch->course?>
+<?php
+            if ($nextMatch->side) {
+?>
+                (<?=$nextMatch->side?>)
+<?php
+            }
+        }
+?>
+        </div>
+<?php
+    }
     if ($_SESSION["admin"] == 1) {
 ?>
         <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
