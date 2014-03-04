@@ -18,7 +18,7 @@ class ScheduleDAO {
 
     /* sql related to season management */
     const GET_SEASON_SQL = "select id, startDate, endDate, team_structure, score_style from seasons where startDate < ADDDATE(CURDATE(), INTERVAL 21 DAY) and endDate > CURDATE() order by id asc";
-    const CREATE_SEASON_SQL = "insert into seasons (startDate, endDate, courseId, team_structure, score_style) values ('%s', '%s', %s, '%s', '%s')";
+    const CREATE_SEASON_SQL = "insert into seasons (startDate, endDate, courseId, team_structure, score_style) values ('%s', '%s', '%s', '%s', '%s')";
     const GET_LAST_SEASON_SQL = "select id, startDate, endDate, team_structure, score_style from seasons where endDate < CURDATE() order by endDate desc limit 0, 1";
     const GET_SEASON_BY_DATE_SQL = "select * from seasons where startDate <= '%s' and endDate >= '%s'";
     const GET_COURSE_BY_SEASON_SQL = "select courseId from seasons where id = %s";
@@ -54,9 +54,9 @@ class ScheduleDAO {
     const UPDATE_SUB_BY_DATE_SQL = "update date_subs set sub_id = '%s' where date = '%s' and player_id = '%s'";
 
     /* sql related to course schedules */
-    const GET_CURRENT_COURSE_SCHEDULE = "select distinct s.match_date, c.name, s.side, n.notes from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= '%s' and s.match_date <= '%s' order by s.match_date asc";
-    const GET_SINGLE_COURSE_SCHEDULE = "select s.match_date, c.name, s.side, n.notes from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.id = %s";
-    const UPDATE_SINGLE_COURSE_SCHEDULE = "update schedule_course set match_date = '%s', course = %s, side = '%s' where id = %s";
+    const GET_CURRENT_COURSE_SCHEDULE = "select distinct s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= '%s' and s.match_date <= '%s' order by s.match_date asc";
+    const GET_SINGLE_COURSE_SCHEDULE = "select s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.id = %s";
+    const UPDATE_SINGLE_COURSE_SCHEDULE = "update schedule_course set match_date = '%s', course = %s, side = '%s', details_exist = %s where id = %s";
     const ADD_SINGLE_COURSE_SCHEDULE = "insert into schedule_course (match_date, course, side) values ('%s', %s, '%s')";
     const REMOVE_SINGLE_COURSE_SCHEDULE = "delete from schedule_course where id = %s";
 
@@ -114,7 +114,7 @@ class ScheduleDAO {
     		if ($sideIndex >= $numberOfSides) {
     			$sideIndex = 0;
     		}
-            self::addCourseScheduleMatch($thursday, $courseId, $sides[$sideIndex]);
+            self::addCourseScheduleMatch($thursday, $courseId, $sides[$sideIndex], 0);
     	}
 
     	return $seasonId;
@@ -226,7 +226,7 @@ class ScheduleDAO {
     	} else {
     		throw new Exception("DB : " . mysql_error());
     	}
-    	return $courseIDELETE_PLACEHOLDER_SQLd;
+    	return $courseId;
     }
 
     /**
@@ -714,8 +714,8 @@ class ScheduleDAO {
      * @param String $side The side that will be played
      * @throws Exception An exception is thrown if there is an issue adding the date to the database
      */
-    public static function addCourseScheduleMatch($date, $courseId, $side) {
-        $data = DBUtils::escapeData(array($date, $courseId, $side));
+    public static function addCourseScheduleMatch($date, $courseId, $side, $detailsExist) {
+        $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist));
         $query = vsprintf(self::ADD_SINGLE_COURSE_SCHEDULE, $data);
         $result = @mysql_query($query);
 
@@ -742,10 +742,12 @@ class ScheduleDAO {
             if ($count > 0) {
                 $row = mysql_fetch_assoc($result);
                 $scheduleDate = new ScheduleDate();
+                $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
                 $scheduleDate->side = $row["side"];
                 $scheduleDate->course = $row["name"];
                 $scheduleDate->notes = $row["notes"];
+                $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
             throw new Exception("Unable to get the scheduled match for the id given - DB : " . mysql_error());
@@ -773,10 +775,12 @@ class ScheduleDAO {
             for ($i = 0; $i < $count; $i++) {
                 $row = mysql_fetch_assoc($result);
                 $scheduleDate = new ScheduleDate();
+                $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
                 $scheduleDate->side = $row["side"];
                 $scheduleDate->course = $row["name"];
                 $scheduleDate->notes = $row["notes"];
+                $scheduleDate->detailsExist = $row["details_exist"];
                 array_push($scheduleDates, $scheduleDate);
             }
         } else {
@@ -793,8 +797,8 @@ class ScheduleDAO {
      * @param String $side The side of the course that the match will take place
      * @throws Exception If there is an issue updating the database
      */
-    public static function updateCourseScheduleMatch($date, $courseId, $side) {
-        $data = DBUtils::escapeData(array($date, $courseId, $side));
+    public static function updateCourseScheduleMatch($date, $courseId, $side, $detailsExist, $id) {
+        $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist, $id));
         $query = vsprintf(self::UPDATE_SINGLE_COURSE_SCHEDULE, $data);
         $result = @mysql_query($query);
 

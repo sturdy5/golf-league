@@ -125,7 +125,16 @@ include_once("../analyticstracking.php");
         $player = PlayerDAO::getPlayer($_GET["id"]);
         $courseId = ScheduleDAO::getCourseBySeason($seasonId);
         $playerTeeId = PlayerDAO::getPlayerTee($player->id, $seasonId);
-        $tees = CourseDAO::getTees($courseId);
+        $courseIds = explode(",", $courseId);
+        $courseTees = array();
+        $courses = array();
+        foreach ($courseIds as $aCourseId) {
+            $tees = CourseDAO::getTees($aCourseId);
+            array_push($courseTees, $tees);
+
+            $course = CourseDAO::getCourseById($aCourseId);
+            array_push($courses, $course);
+        }
         
         if (null == $player) {
 ?>
@@ -169,27 +178,28 @@ include_once("../analyticstracking.php");
     			    </span>
     			</p>
     		    <p>
-    		        <label for="teeBox" class="playerTitle">Tee Box:</label>
+                        <!-- this section needs to be redone as the site now supports multiple courses for a season -->
+    		        <!-- label for="teeBox" class="playerTitle">Tee Box:</label>
     		        <span class="textbox">
     		        	<select name="teeBox" id="teeBox">
-    		        	    <option value="-1">No tee box</option>
+    		        	    <option value="-1">No tee box</option -->
 <?php 
-                            foreach ($tees as $tee) {
+                            //foreach ($tees as $tee) {
 ?>
-                                <option value="<?=$tee->id?>"
+                                <!-- option value=""
 <?php 
-                                if ($tee->id == $playerTeeId) {
+                                //if ($tee->id == $playerTeeId) {
 ?>
                                     selected="selected"
 <?php 
-                                }
+                                //}
 ?>
-                                ><?=$tee->name?> (<?=$tee->color?>)</option>
+                                >tee name (tee color)</option-->
 <?php 
-                            }
+                            //}
 ?>
-    		        	</select>    
-    		        </span>
+    		        	<!-- /select>    
+    		        </span-->
     		    </p>
     			<p>
     				<label for="fullTime" class="playerTitle">Full Time:</label> 

@@ -293,11 +293,34 @@ if ($_POST["matchDate"] || $_GET["matchDate"]) {
 <?php
             if ($_SESSION["admin"] == 1) {
 ?>
-                <a href="admin/updateScheduleNotes.php?date=<?=$date->date?>">Modify</a> - 
+                <a href="admin/updateScheduleNotes.php?date=<?=$date->date?>&matchId=<?=$date->id?>">Modify</a> - 
 <?php 
             }
+            if ($date->detailsExist) {
 ?>
-            <a href="#" onclick="submitDate('<?=$date->date?>');return false;"><?=$date->date?></a> <?=$date->notes?>
+                <a href="#" onclick="submitDate('<?=$date->date?>');return false;"><?=$date->date?></a>
+<?php
+            } else {
+?>
+                <?=$date->date?>
+<?php
+                if ($date->course) {
+?>
+                    - <?=$date->course?>
+<?php
+                    if ($date->side) {
+?>
+                        (<?=$date->side?>)
+<?php
+                    }
+                }
+                if ($date->notes) {
+?>
+                    - <?=$date->notes?>
+<?php
+                }
+            }
+?>
         </div>
 <?php
 	}
