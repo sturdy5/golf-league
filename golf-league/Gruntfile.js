@@ -107,6 +107,71 @@ module.exports = function(grunt) {
           cwd: 'src/support/',
           src: ['**/*.*'],
           dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/photos/',
+          src: ['**/*.*'],
+          dest: 'build/web/photos/'
+        }]
+      },
+      dev: {
+        files: [{
+          expand: true,
+          cwd: 'src/php/',
+          src: ['**/*.php'],
+          dest: 'build/web/',
+          rename: function(dest, src) {
+            if (src.indexOf("config.inc.php") >= 0) {
+              return dest + src.substring(0, src.lastIndexOf("/")) + "/config.inc.remote.php";
+            } else if (src.indexOf("config.inc.local.php") >= 0) {
+              return dest + src.substring(0, src.lastIndexOf("/")) + "/config.inc.php";
+            } else {
+              return dest + src;
+            }
+          }
+        },
+        {
+          expand: true,
+          cwd: 'src/admin/',
+          src: ['**/*.php'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/member/',
+          src: ['**/*.php'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/pages/',
+          src: ['**/*.html'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/',
+          src: ['images/**/*.*'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/scripts/',
+          src: ['**/*.js'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/support/',
+          src: ['**/*.*'],
+          dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/photos/',
+          src: ['**/*.*'],
+          dest: 'build/web/photos/'
         }]
       }
     }
@@ -116,5 +181,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['clean', 'assemble', 'copy', 'cssmin', 'uglify']);
+  grunt.registerTask('default', ['clean', 'assemble', 'copy:main', 'cssmin', 'uglify']);
+  grunt.registerTask('dev', ['clean', 'assemble', 'copy:dev', 'cssmin', 'uglify']);
 };
