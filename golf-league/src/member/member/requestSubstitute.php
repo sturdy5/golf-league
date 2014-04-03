@@ -25,6 +25,8 @@ include_once("../analyticstracking.php");
             // get the full time player information
             $player = PlayerDAO::getPlayer($_POST["fullTimePlayer"]);
             // send an email with a link
+            // first, set the from for php so that it gets delivered correctly
+            ini_set('sendmail_from', 'info@bctngl.com');
             $pageURL = "http://www.bctngl.com/member/subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
             
             $emailText = $player->firstName . " " . $player->lastName . " needs a sub for " . $_POST["date"] . ". Click on the link below to take the spot.\n\n";
