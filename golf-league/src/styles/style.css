@@ -238,4 +238,17 @@
 	    color: red;
 	    display: none;
 	}
+        
+        div.errorMessage {
+            color: red;
+            background-color: pink;
+            border: 1px solid red;
+            width: 600px;
+            margin: 10px;
+        }
+
+        td.failed {
+            color: red;
+            background-color: pink;
+        }
 </STYLE>
