@@ -93,7 +93,7 @@ if ($fileExists) {
 <?php
     } else {
         // need to get the side and the course that this date is for
-        $scheduleCourse = ScheduleDAO::getCourseScheduleMatchByDate($matchDate)
+        $scheduleCourse = ScheduleDAO::getCourseScheduleMatchByDate($matchDate);
         $course = $scheduleCourse->courseId;
         $side = $scheduleCourse->side;
     }
