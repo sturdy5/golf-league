@@ -767,7 +767,7 @@ class ScheduleDAO {
      * @return An instance of ScheduleDate if the match was found, otherwise NULL
      */
     public static function getCourseScheduleMatchByDate($matchDate) {
-        $data = DBUtils::escapeDate(array($matchDate));
+        $data = DBUtils::escapeData(array($matchDate));
         $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE_BY_DATE, $data);
         $result = @mysql_query($query);
 
@@ -881,7 +881,7 @@ class ScheduleDAO {
      */
     public static function setCourseScheduleDetails($id, $detailsExist) {
         $detailsExist = ($detailsExist) ? 1 : 0;
-        $data = DBUtils::escapeDate(array($id, $detailsExist));
+        $data = DBUtils::escapeData(array($detailsExist, $id));
         $query = vsprintf(self::SET_COURSE_SCHEDULE_DETAILS, $data);
         $result = @mysql_query($query);
 

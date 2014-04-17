@@ -12,7 +12,7 @@ function addDetail($date, $player, $opponent, $startingHole) {
     global $data;
     global $overallStatus;
     global $matchDate;
-    $matchDate = $date;
+    $matchDate = substr($date, 0, 10);
     // lookup the player by name
     $player1name = explode(", ", $player);
     $player2name = explode(", ", $opponent);
@@ -33,7 +33,7 @@ function addDetail($date, $player, $opponent, $startingHole) {
             $status = "2";
         }
     }
-    array_push($data, array('player1' => $player, 'player1id' => $player1->id, 'player2' => $opponent, 'player2id' => $player2->id, 'matchDate' => $date, 'startingHole' => $startingHole, 'status' => $status));
+    array_push($data, array('player1' => $player, 'player1id' => $player1->id, 'player2' => $opponent, 'player2id' => $player2->id, 'matchDate' => $matchDate, 'startingHole' => $startingHole, 'status' => $status));
     // addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole)
 }
 
@@ -83,7 +83,7 @@ if ($fileExists) {
 include_once("../analyticstracking.php");
 ?>
 <div>
-<?php 
+<?php
 if ($fileExists) {
     $course = "";
     $side = "";
