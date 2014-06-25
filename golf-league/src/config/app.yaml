@@ -1,0 +1,48 @@
+application: bctngl-test
+version: 1
+runtime: php
+api_version: 1
+
+handlers:
+- url: /
+  script: index.php
+
+- url: /admin
+  static_dir: admin
+
+- url: /config
+  static_dir: config
+
+- url: /dao
+  static_dir: dao
+
+- url: /images
+  static_dir: images
+
+- url: /js
+  static_dir: js
+
+- url: /member
+  static_dir: member
+
+- url: /model
+  static_dir: model
+
+- url: /register
+  static_dir: register
+
+- url: /rules_files
+  static_dir: rules_files
+
+- url: /service
+  static_dir: service
+
+- url: /test
+  static_dir: test
+
+- url: /theme
+  static_dir: theme
+
+- url: /utils
+  static_dir: utils
+
