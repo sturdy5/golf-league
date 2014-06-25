@@ -113,6 +113,12 @@ module.exports = function(grunt) {
           cwd: 'src/photos/',
           src: ['**/*.*'],
           dest: 'build/web/photos/'
+        },
+        {
+          expand: true,
+          cwd: 'src/config/',
+          src: ['**/*.*'],
+          dest: 'build/web/'
         }]
       },
       dev: {
@@ -172,6 +178,12 @@ module.exports = function(grunt) {
           cwd: 'src/photos/',
           src: ['**/*.*'],
           dest: 'build/web/photos/'
+        },
+        {
+          expand: true,
+          cwd: 'src/config/',
+          src: ['**/*.*'],
+          dest: 'build/web/'
         }]
       }
     }

@@ -56,10 +56,12 @@ class ScheduleDAO {
     /* sql related to course schedules */
     const GET_CURRENT_COURSE_SCHEDULE = "select distinct s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= '%s' and s.match_date <= '%s' order by s.match_date asc";
     const GET_SINGLE_COURSE_SCHEDULE = "select s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.id = %s";
+    const GET_SINGLE_COURSE_SCHEDULE_BY_DATE = "select s.id, s.match_date, c.id as courseId, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date = '%s'";
     const GET_NEXT_SINGLE_COURSE_SCHEDULE = "select s.id, s.match_date, c.name, s.side, n.notes, s.details_exist from schedule_course s left join schedule_notes n on s.match_date = n.date left join courses c on s.course = c.id where s.match_date >= curdate() order by s.match_date asc";
     const UPDATE_SINGLE_COURSE_SCHEDULE = "update schedule_course set match_date = '%s', course = %s, side = '%s', details_exist = %s where id = %s";
     const ADD_SINGLE_COURSE_SCHEDULE = "insert into schedule_course (match_date, course, side) values ('%s', %s, '%s')";
     const REMOVE_SINGLE_COURSE_SCHEDULE = "delete from schedule_course where id = %s";
+    const SET_COURSE_SCHEDULE_DETAILS = "update schedule_course set details_exist = %s where id = %s";
 
     /**
      * Create a new season definition. This will also add the course dates.
@@ -758,6 +760,39 @@ class ScheduleDAO {
     }
 
     /**
+     * Retrieves a single match by date.
+     *
+     * @param Date $matchDate The date of the match to retrieve
+     * @throws Exception if there is an issue getting the match from the database
+     * @return An instance of ScheduleDate if the match was found, otherwise NULL
+     */
+    public static function getCourseScheduleMatchByDate($matchDate) {
+        $data = DBUtils::escapeData(array($matchDate));
+        $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE_BY_DATE, $data);
+        $result = @mysql_query($query);
+
+        $scheduleDate = null;
+        if ($result) {
+            $count = mysql_num_rows($result);
+            if ($count > 0) {
+                $row = mysql_fetch_assoc($result);
+                $scheduleDate = new ScheduleDate();
+                $scheduleDate->id = $row["id"];
+                $scheduleDate->date = $row["match_date"];
+                $scheduleDate->side = $row["side"];
+                $scheduleDate->course = $row["name"];
+                $scheduleDate->courseId = $row["courseId"];
+                $scheduleDate->notes = $row["notes"];
+                $scheduleDate->detailsExist = $row["details_exist"];
+            }
+        } else {
+            throw new Exception("Unable to get the scheduled match for the date given - DB : " . mysql_error());
+        }
+
+        return $scheduleDate;
+    }
+
+    /**
      * Gets the next match that is scheduled.
      *
      * @throws Exception if there is an issue getting the match from the database
@@ -834,6 +869,24 @@ class ScheduleDAO {
 
         if (!$result) {
             throw new Exception("Unable to update a scheduled date for the course - DB : " . mysql_error());
+        }
+    }
+
+    /**
+     * Updates the match details with the given id.
+     *
+     * @param Integer $id The id of the course schedule
+     * @param Boolean $detailsExist The indicator that means that details exist
+     * @throws Exception if there is an issue updating the database
+     */
+    public static function setCourseScheduleDetails($id, $detailsExist) {
+        $detailsExist = ($detailsExist) ? 1 : 0;
+        $data = DBUtils::escapeData(array($detailsExist, $id));
+        $query = vsprintf(self::SET_COURSE_SCHEDULE_DETAILS, $data);
+        $result = @mysql_query($query);
+
+        if (!$result) {
+            throw new Exception("Unable to update the scheduled date for the course - DB : " . mysql_error());
         }
     }
 

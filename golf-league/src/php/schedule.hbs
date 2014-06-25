@@ -304,21 +304,21 @@ if ($_POST["matchDate"] || $_GET["matchDate"]) {
 ?>
                 <?=$date->date?>
 <?php
-                if ($date->course) {
+            }
+            if ($date->course) {
 ?>
-                    - <?=$date->course?>
+                - <?=$date->course?>
 <?php
-                    if ($date->side) {
+                if ($date->side) {
 ?>
-                        (<?=$date->side?>)
-<?php
-                    }
-                }
-                if ($date->notes) {
-?>
-                    - <?=$date->notes?>
+                    (<?=$date->side?>)
 <?php
                 }
+            }
+            if ($date->notes) {
+?>
+                - <?=$date->notes?>
+<?php
             }
 ?>
         </div>
