@@ -4,15 +4,15 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     clean: ["build/web/"],
     assemble: {
-//      assembleHTML: {
-//        options: {
-//          layout: "src/layouts/html/default.hbs",
-//          flatten: true
-//        },
-//        files: {
-//          'build/web/': ['src/pages/*.hbs']
-//        }
-//      },
+      assembleHTML: {
+        options: {
+          layout: "src/layouts/html/default.hbs",
+          flatten: true
+        },
+        files: {
+          'build/web/': ['src/pages/*.hbs']
+        }
+      },
       assembleAdmin: {
         options: {
           layout: "src/layouts/php/admin.hbs",
@@ -119,6 +119,12 @@ module.exports = function(grunt) {
           cwd: 'src/config/',
           src: ['**/*.*'],
           dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/Initio/',
+          src: ['**/*.*'],
+          dest: 'build/web/Initio/'
         }]
       },
       dev: {
@@ -184,6 +190,12 @@ module.exports = function(grunt) {
           cwd: 'src/config/',
           src: ['**/*.*'],
           dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: 'src/Initio/',
+          src: ['**/*.*'],
+          dest: 'build/web/Initio/'
         }]
       }
     }

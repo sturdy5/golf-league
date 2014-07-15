@@ -5,7 +5,11 @@ api_version: 1
 
 handlers:
 - url: /
-  script: index.php
+  script: responsive.html
+
+- url: /(.*)
+  static_files: \1
+  upload: .* 
 
 - url: /admin
   static_dir: admin
