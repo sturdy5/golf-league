@@ -109,10 +109,4 @@ The `page` value used to find the response. Defaults to 1.
 __page.count__
 The number of actual results in the response. Can be less than the given `per_page` if there are too few results.
 
----
-
-See more notes at http://jsturdevant.roughdraft.io/
-
----
-
 > Written with [StackEdit](https://stackedit.io/).
