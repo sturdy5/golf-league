@@ -19,8 +19,8 @@ Encryption (`https://`) is not used by default but will be added later. All info
 
 Path | Description
 ---- | -----------
-`/players.php` | Current players names and IDs
-`/schedule.php` | Scheduled game dates
+`/players` | Current players names and IDs
+`/schedule` | Scheduled game dates
 
 ## Parameters
 
@@ -29,7 +29,7 @@ Path | Description
 All requests to the bctngl API require a developers API key. API keys can be provided with a request through the query string:
 
 ```
-/players.php?apiKey=[your_api_key]
+/players?apiKey=[your_api_key]
 ```
 
 Or, by setting the key as the value of an `X-APIKEY` HTTP request header.
@@ -39,11 +39,11 @@ Or, by setting the key as the value of an `X-APIKEY` HTTP request header.
 You can filter on many fields with a simple key/value pair:
 
 ```
-/players.php?last_name=Smith
+/players?last_name=Smith
 ```
 
 ```
-/schedule.php?date=2014-07-15
+/schedule?date=2014-07-15
 ```
 
 The API will automatically treat numbers as numbers, and "true" and "false" as booleans. Dates should be in the format `yyyy-mm-dd`.
@@ -51,7 +51,7 @@ The API will automatically treat numbers as numbers, and "true" and "false" as b
 To force the API to treat a value as a string, use quotes:
 
 ```
-/players.php?player_id="432"
+/players?player_id="432"
 ```
 
 See the documentation for the specific methods to see what fields can be filtered on.
@@ -75,7 +75,7 @@ All operators are applied by adding two underscores (`__`) after the field name.
 __All games scheduled after 2014-01-01__
 
 ```
-/schedule.php?date__gt=2014-01-01
+/schedule?date__gt=2014-01-01
 ```
 
 ### Pagination
@@ -83,7 +83,7 @@ __All games scheduled after 2014-01-01__
 All results in the bctngl API are paginated. Set `per_page` and `page` to control the page size and offset. The maximum `per_page` is 50.
 
 ```
-/players.php?per_page=50&page=3
+/players?per_page=50&page=3
 ```
 
 At the top-level of every response are __count__ and __page__ fields, with pagination information.
