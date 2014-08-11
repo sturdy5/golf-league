@@ -1,6 +1,31 @@
-<IfModule mod_rewrite.c>
-RewriteEngine On
+<Files .htaccess>
+deny from all
+</Files>
+DirectoryIndex index.php
+RewriteEngine on 
+RewriteBase / 
+RewriteCond %{HTTP_USER_AGENT} ^EmailSiphon [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^EmailWolf [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^ExtractorPro [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Mozilla.*NEWT [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Crescent [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^CherryPicker [OR]
+RewriteCond %{HTTP_USER_AGENT} ^[Ww]eb[Bb]andit [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^WebEMailExtrac.* [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^NICErsPRO [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Teleport [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Zeus.*Webster [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Microsoft.URL [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^Wget [OR] 
+RewriteCond %{HTTP_USER_AGENT} ^LinkWalker [OR]
+RewriteCond %{HTTP_USER_AGENT} ^sitecheck.internetseer.com [OR]
+RewriteCond %{HTTP_USER_AGENT} ^ia_archiver [OR]
+RewriteCond %{HTTP_USER_AGENT} ^DIIbot [OR]
+RewriteCond %{HTTP_USER_AGENT} ^psbot [OR]
+RewriteCond %{HTTP_USER_AGENT} ^EmailCollector 
+RewriteRule ^.* - [F]
+RewriteCond %{HTTP_REFERER} ^http://www.iaea.org$ 
+RewriteRule !^http://[^/.]\.your-site.com.* - [F] 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule api/v1/(.*)$ api/v1/api.php?request=$1 [QSA,NC.L]
-</IfModule>
+RewriteRule api/v1/(.*)$ api/v1/api.php?request=$1 [QSA,NC,L]

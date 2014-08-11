@@ -105,7 +105,7 @@ module.exports = function(grunt) {
         {
           expand: true,
           cwd: 'src/support/',
-          src: ['**/*.*'],
+          src: ['**/*.*', '**/.htaccess'],
           dest: 'build/web/'
         },
         {
@@ -113,6 +113,12 @@ module.exports = function(grunt) {
           cwd: 'src/photos/',
           src: ['**/*.*'],
           dest: 'build/web/photos/'
+        },
+        {
+          expand: true,
+          cwd: 'src/api/',
+          src: ['**/*.*'],
+          dest: 'build/web/api/'
         },
         {
           expand: true,
@@ -170,7 +176,7 @@ module.exports = function(grunt) {
         {
           expand: true,
           cwd: 'src/support/',
-          src: ['**/*.*'],
+          src: ['**/*.*', '**/.htaccess'],
           dest: 'build/web/'
         },
         {
@@ -178,6 +184,12 @@ module.exports = function(grunt) {
           cwd: 'src/photos/',
           src: ['**/*.*'],
           dest: 'build/web/photos/'
+        },
+        {
+          expand: true,
+          cwd: 'src/api/',
+          src: ['**/*.*'],
+          dest: 'build/web/api/'
         },
         {
           expand: true,

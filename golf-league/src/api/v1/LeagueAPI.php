@@ -1,3 +1,5 @@
+<?php
+
 require_once 'RestAPI.php';
 class LeagueAPI extends RestAPI {
   protected $user;
@@ -19,9 +21,11 @@ class LeagueAPI extends RestAPI {
    */
   protected function example() {
     if ($this->method == 'GET') {
-      return 'you did a get to figure out this example'
+      return 'you did a get to figure out this example';
     } else {
-      return 'method unavailable'
+      return 'method unavailable';
     }
   }
 }
+
+?>

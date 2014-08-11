@@ -1,3 +1,5 @@
+<?php
+
 abstract class RestAPI {
   /**
    * The HTTP method this request was made in, either GET, POST, PUT or DELETE
@@ -103,3 +105,5 @@ abstract class RestAPI {
     return ($status[$code]) ? $status[$code] : $status[500];
   }
 }
+
+?>
