@@ -90,7 +90,7 @@ include_once("../analyticstracking.php");
 				    </p>
 				    <div id="alignRight">
 				    	<label for="submit">
-				    	    <input name="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
+				    	    <input id="submitRequestButton" name="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
 				    	</label>
 				    </div>
                 </fieldset>
@@ -101,6 +101,8 @@ include_once("../analyticstracking.php");
             <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
             <script>
                 function validateAndSubmit() {
+                    // disable the submit button
+                    dojo.byId("submitRequestButton").disabled = true;
                     // make sure that a player was actually selected
                     var playerId = dojo.byId("fullTimePlayer");
                     if (playerId.value == "-1") {
