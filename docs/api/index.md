@@ -51,7 +51,7 @@ The API will automatically treat numbers as numbers, and "true" and "false" as b
 To force the API to treat a value as a string, use quotes:
 
 ```
-/players?player_id="432"
+/players?id="432"
 ```
 
 See the documentation for the specific methods to see what fields can be filtered on.
