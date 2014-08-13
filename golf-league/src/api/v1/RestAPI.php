@@ -79,7 +79,7 @@ abstract class RestAPI {
   }
 
   private function _response($data, $status = 200) {
-    hreader("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
+    header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
     return json_encode($data);
   }
 
