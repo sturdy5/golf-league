@@ -30,15 +30,19 @@ All fields can be used in searches using the standard rules defined [here](../in
 ```
 
 __id__
+
 The unique identifier for the player.
 
 __first_name__
+
 The first name of the player.
 
 __last_name__
+
 The last name of the player.
 
 __full_time__
+
 Whether the player is currently setup as a full-time member of the league.
 
 
