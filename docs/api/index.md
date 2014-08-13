@@ -19,7 +19,7 @@ Encryption (`https://`) is not used by default but will be added later. All info
 
 Path | Description
 ---- | -----------
-`/players` | Current players names and IDs
+[`/players`](./methods/players.md) | Current players names and IDs
 `/schedule` | Scheduled game dates
 
 ## Parameters
