@@ -16,7 +16,7 @@
  */
 class TeamDAO {
 
-    const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by id asc";
+    const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by name asc";
     const LOOKUP_TEAM_BY_PLAYER_ID_SQL = "select * from teams where (players like '%s' or players like '%s') and season = %s";
     const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s";
     const ADD_TEAM_SQL = "insert into teams (name, players, season) values ('%s', '%s', %s)";
