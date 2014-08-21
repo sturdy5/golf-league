@@ -125,6 +125,31 @@
 	div.utilities .weather {
 	    margin-top: 10px;
 	}
+	div.membership {
+		font: 0.8em tahoma,sans-serif;
+		background-color: #EFF;
+		border: 2px solid #050;
+		padding: 5px;
+		width: 500px;
+		margin-top: 20px;
+	}
+	div.membership .title {
+		margin: 2px;
+		display: block;
+		font: bold 1.2em tahoma,sans-serif;
+	}
+	div.membership .intro {
+		margin: 2px;
+		display: block;
+	}
+	div.membership .overview {
+		margin: 15px 2px 2px 2px;
+		display: block;
+	}
+	div.membership .more-info {
+		margin: 15px 2px 2px 2px;
+		display: block;
+	}
 	div.content div.teams {
 	    width: 500px;
 	    border: 2px solid #050;
