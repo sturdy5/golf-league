@@ -183,6 +183,32 @@ class TeamDAO {
         
         return $returnValue;
     }
+    
+    /**
+     * Get the partner for the player with the given id.
+     * 
+     * @param $playerId The id of the player to get the partner for.
+     * @param $matchDate The date of the match.
+     * @return The Player object of the partner. If the season isn't using team
+     * format, then the result will be null.
+     */
+    public static function getParterOfPlayer($playerId, $matchDate) {
+        $partner = null;
+        // first we need to determine the team structure
+        $teamStructure = ScheduleDAO::getSeasonTeamStructureByDate($matchDate);
+        if ($teamStructure == "TWO_PERSON") {
+            $teamId = self::getTeamIdByPlayerId($playerId);
+            $team = self::getTeamById($teamId);
+            $players = $team->players;
+            foreach($players as $player) {
+                if ($player->id != $playerId) {
+                    $partner = $player;
+                    break;
+                }
+            }
+        }
+        return $partner;
+    }
 }
 
 ?>
