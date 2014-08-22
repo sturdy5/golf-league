@@ -10,7 +10,10 @@ class LeagueAPI extends RestAPI {
     // TODO implement an api key verification mechanism
 
     if (!array_key_exists('apiKey', $this->request)) {
-      throw new Exception('No API Key provided');
+      // check to see if the key was posted in the header
+      if (!array_key_exists('HTTP_X_APIKEY', $_SERVER)) {
+        throw new Exception('No API Key provided');
+      }
     } 
     // add an else here that validates the key
     // then add another else that runs if everything is ok that will get the user and assign it to $this->user
