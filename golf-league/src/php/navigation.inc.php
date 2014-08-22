@@ -20,13 +20,21 @@ $thisPage = $parts[count($parts) - 1];
         </a>
         <?php
         }
+        if ($thisPage != "teams.php") {
+        ?>
+            <a href="/teams.php">
+                <span class="nav-key">Teams</span>
+            </a>
+        <?php
+        }
         if ($thisPage != "rules.php") {
         ?>
         <a href="/rules.html">
             <span class="nav-key">Rules</span>
         </a>
         <?php
-        } if ($thisPage != "subs.php") {
+        }
+        if ($thisPage != "subs.php") {
         ?>
         <a href="/member/subs.php">
             <span class="nav-key">Subs</span>

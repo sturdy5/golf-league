@@ -16,7 +16,7 @@
  */
 class TeamDAO {
 
-    const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by id asc";
+    const LOOKUP_TEAMS_SQL = "select * from teams where season = %s order by name asc";
     const LOOKUP_TEAM_BY_PLAYER_ID_SQL = "select * from teams where (players like '%s' or players like '%s') and season = %s";
     const LOOKUP_TEAM_BY_TEAM_ID_SQL = "select * from teams where id = %s";
     const ADD_TEAM_SQL = "insert into teams (name, players, season) values ('%s', '%s', %s)";
@@ -182,6 +182,32 @@ class TeamDAO {
         }
         
         return $returnValue;
+    }
+    
+    /**
+     * Get the partner for the player with the given id.
+     * 
+     * @param $playerId The id of the player to get the partner for.
+     * @param $matchDate The date of the match.
+     * @return The Player object of the partner. If the season isn't using team
+     * format, then the result will be null.
+     */
+    public static function getParterOfPlayer($playerId, $matchDate) {
+        $partner = null;
+        // first we need to determine the team structure
+        $teamStructure = ScheduleDAO::getSeasonTeamStructureByDate($matchDate);
+        if ($teamStructure == "TWO_PERSON") {
+            $teamId = self::getTeamIdByPlayerId($playerId);
+            $team = self::getTeamById($teamId);
+            $players = $team->players;
+            foreach($players as $player) {
+                if ($player->id != $playerId) {
+                    $partner = $player;
+                    break;
+                }
+            }
+        }
+        return $partner;
     }
 }
 
