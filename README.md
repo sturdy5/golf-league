@@ -28,7 +28,9 @@ The following is a list of functionality that does not exist:
 Documentation
 =============
 
-Some documentation has been created for the admin functions on the github wiki (https://github.com/jsturdevant/golf-league/wiki)
+Some documentation has been created for the admin functions on the github wiki (https://github.com/jsturdevant/golf-league/wiki).
+
+For api documentation, please see [api documentation](docs/api/).
 
 Issues and Feature Requests
 ===========================
