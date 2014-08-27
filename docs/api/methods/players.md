@@ -22,10 +22,15 @@ All fields can be used in searches using the standard rules defined [here](../in
 
 ```javascript
 {
-  "id": 37,
-  "first_name": "Player",
-  "last_name": "Testing",
-  "full_time": true
+  "players"" [{
+    "id": 37,
+    "first_name": "Player",
+    "last_name": "Testing",
+    "full_time": true,
+    "active": true,
+    "handicap": 15,
+    "team_id": 4
+  }]
 }
 ```
 

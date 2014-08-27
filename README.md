@@ -30,7 +30,7 @@ Documentation
 
 Some documentation has been created for the admin functions on the github wiki (https://github.com/jsturdevant/golf-league/wiki).
 
-For api documentation, please see [api documentation](docs/api/).
+For api documentation, please see [api documentation](docs/api/index.md).
 
 Issues and Feature Requests
 ===========================
