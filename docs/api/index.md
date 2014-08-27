@@ -68,7 +68,7 @@ The API supports 8 operators that can be combined with filters
 * __all__ - the field is an array that contains all of these values (separated by `|`)
 * __in__ - the field is a string that is one of these values (separated by `|`)
 * __nin__ - the field is a string that is _not_ one of these values (separated by `|`)
-* __exists__ - the field is both present and non-null (supploy `true` or `false`)
+* __exists__ - the field is both present and non-null (supply `true` or `false`)
 
 All operators are applied by adding two underscores (`__`) after the field name. They cannot be combined.
 

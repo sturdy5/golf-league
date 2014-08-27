@@ -22,7 +22,7 @@ All fields can be used in searches using the standard rules defined [here](../in
 
 ```javascript
 {
-  "players"" [{
+  "players" [{
     "id": 37,
     "first_name": "Player",
     "last_name": "Testing",

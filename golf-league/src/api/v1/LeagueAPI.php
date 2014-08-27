@@ -15,8 +15,20 @@ class LeagueAPI extends RestAPI {
    */
   public $DEFAULT_PAGE = 1;
   
+  /**
+   * The per page requested
+   */
   protected $perPage;
+  
+  /**
+   * The page number requested
+   */
   protected $page;
+  
+  /**
+   * stores the array of parameters that the functions can use
+   */
+  protected $parameters;
 
   public function __construct($request, $origin) {
     parent::__construct($request);
@@ -34,16 +46,64 @@ class LeagueAPI extends RestAPI {
     
     // check to see if per page was specified
     if (array_key_exists("per_page", $this->request)) {
-      $this->perPage = $this->request["per_page"];
+      // make sure the value passed in is numeric
+      if (is_numeric($this->request["page"])) {
+        $this->perPage = intval($this->request["per_page"]);
+      }
     } else {
       $this->perPage = $this->DEFAULT_PER_PAGE;
     }
     
     // check to see if the page number was specified
     if (array_key_exists("page", $this->request)) {
-      $this->page = $this->request["page"];
+      // make sure the value passed in is numeric
+      if (is_numeric($this->request["page"])) {
+        $this->page = intval($this->request["page"]);
+      }
     } else {
       $this->page = $this->DEFAULT_PAGE;
+    }
+    
+    // parse out the parameters
+    $this->parseArguments($this->request);
+  }
+  
+  /**
+   * This function will take all of the request parameters and parse them to
+   * take into account the following operations:
+   *  - gt - the field is greater than this value
+   *  - gte - the field is greater than or equal to this value
+   *  - lt - the field is less than this value
+   *  - lte - the field is less than or equal to this value
+   *  - not - the field is not this value
+   *  - all - the field is an array that contains all of these values (separated by |)
+   *  - in - the field is a string that is one of these values (separated by |)
+   *  - nin - the field is a string that is not one of these values (separated by |)
+   *  - exists - the field is both present and non-null (supploy true or false)
+   * 
+   * All operators are applied by adding two underscores (__) after the field name. They cannot be combined.
+   */
+  protected function parseArguments($args) {
+    foreach(array_keys($args) as $key) {
+      // default operatio is equals (eq)
+      $operation = "eq";
+      // get the value to be used
+      $value = $args[$key];
+      // check to see if the value has any bars (|)
+      // if there are bars then the values become a list
+      if (strpos($value, "|") > 0) {
+        $value = explode("|", $value);
+      }
+      
+      // check to see if the key has any double underscores (__)
+      // if there are underscores then the operation changes
+      if (strpos($key, "__") > 0) {
+        $splitArg = explode("__", $key);
+        $operation = $splitArg[1];
+        $key = $splitArg[0];
+      }
+      // now we have all of our data, let's put it in the protected array $parameters
+      $this->parameters[$key] = array("operation"=>$operation, "value"=>$value);
     }
   }
 
@@ -52,7 +112,7 @@ class LeagueAPI extends RestAPI {
    */
   protected function example($args) {
     if ($this->method == 'GET') {
-      $result = array("message" => "You did a GET to figure out this example", "args" => $args);
+      $result = array("message" => "You did a GET to figure out this example", "args" => $this->parameters);
       return $result;
     } else {
       return 'method unavailable';
@@ -62,13 +122,13 @@ class LeagueAPI extends RestAPI {
   protected function players($args) {
     $allPlayers = false;
     // if the all_players value was provided, then toggle the indicator
-    if (array_key_exists("all_players", $this->request)) {
-      $allPlayers = (strtolower($this->request["all_players"]) === "true");
+    if (array_key_exists("all_players", $this->parameters)) {
+      $allPlayers = (strtolower($this->parameters["all_players"]["value"]) === "true");
     }
     // let's see if we can put together some criteria
     // start with the id. If the id exists then we can skip everything else
-    if (array_key_exists("id", $this->request)) {
-      $searchId = $this->request["id"];
+    if (array_key_exists("id", $this->parameters)) {
+      $searchId = $this->parameters["id"]["value"];
       $player = PlayerDAO::getPlayer($searchId);
       
       $topLevel = $this->getPagination(1, 1);
