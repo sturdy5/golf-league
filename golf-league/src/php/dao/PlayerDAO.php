@@ -592,7 +592,7 @@ class PlayerDAO {
     }
     // if the assignment is set...
     if ("" != $assignment) {
-      $assignment = $assignment . $value
+      $assignment = $assignment . $value;
     } else {
       // now let's look at the list operations
       switch ($operation) {
