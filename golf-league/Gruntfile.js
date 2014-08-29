@@ -64,6 +64,18 @@ module.exports = function(grunt) {
         }
       }
     },
+    phpunit: {
+      classes: {
+        dir: 'test/'
+      },
+      options: {
+        bin: 'vendor/bin/phpunit',
+        bootstrap: 'build/web/autoload.php',
+        configuration: 'test/phpunit.xml',
+        colors: true,
+        coverage: true
+      }
+    },
     copy: {
       main: {
         files: [{
@@ -205,6 +217,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['clean', 'assemble', 'copy:main', 'cssmin', 'uglify']);
-  grunt.registerTask('dev', ['clean', 'assemble', 'copy:dev', 'cssmin', 'uglify']);
+  grunt.loadNpmTasks('grunt-phpunit');
+  grunt.registerTask('default', ['clean', 'assemble', 'copy:main', 'cssmin', 'uglify', 'phpunit']);
+  grunt.registerTask('dev', ['clean', 'assemble', 'copy:dev', 'cssmin', 'uglify', 'phpunit']);
 };

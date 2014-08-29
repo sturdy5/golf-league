@@ -8,7 +8,8 @@
     "grunt-contrib-uglify": "~0.3.1",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-contrib-clean": "~0.5.0"
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-phpunit": "~0.3.4"
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,8 @@
     "league"
   ],
   "author": "Jonathon Sturdevant",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.10.0"
+  }
 }
