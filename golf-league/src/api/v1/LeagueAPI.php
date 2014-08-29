@@ -47,7 +47,7 @@ class LeagueAPI extends RestAPI {
     // check to see if per page was specified
     if (array_key_exists("per_page", $this->request)) {
       // make sure the value passed in is numeric
-      if (is_numeric($this->request["page"])) {
+      if (is_numeric($this->request["per_page"])) {
         $this->perPage = intval($this->request["per_page"]);
       }
     } else {
