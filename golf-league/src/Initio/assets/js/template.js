@@ -63,6 +63,6 @@ function initializeMap() {
     var bounds = map.getBounds();
     searchBox.setBounds(bounds);
   });
-}guefee
+}
 
 google.maps.event.addDomListener(window, 'load', initializeMap);

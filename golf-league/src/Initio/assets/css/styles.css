@@ -493,10 +493,40 @@ img {
 /*********************************************************************
  
 
-                                 BLOG
+                                 Rules
 
 
 **********************************************************************/
+.escLabel,
+.hcpLabel {
+  display: block;
+  font-size: 18px;
+  font-size: 1.125rem;
+}
+table.escTable,
+table.hcpTable {
+  color: #333;
+  border-width: 1px;
+  border-color: #a9c6c9;
+  border-collapse: collapse;
+}
+table.escTable th,
+table.hcpTable th,
+table.escTable td,
+table.hcpTable td {
+  padding: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #a9c6c9;
+}
+table.escTable td,
+table.hcpTable td {
+  background-color: #d4e3e5;
+}
+table.escTable td.alt,
+table.hcpTable td.alt {
+  background-color: #c3dde0;
+}
 .section-title,
 .entry-title {
   display: block;
