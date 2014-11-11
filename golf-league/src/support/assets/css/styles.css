@@ -679,98 +679,16 @@ footer.entry-meta .meta-in {
 /*********************************************************************
  
 
-                                COMMENTS
+                                Teams
 
 
 **********************************************************************/
-#comments {
-  font-size: 13px;
-  font-size: 0.8125rem;
-}
-#comments .comments-title {
-  margin: 0 0 5px 0;
-}
-#comments .leave-comment {
-  display: block;
-  margin: 0 0 40px 0;
-}
-#comments ul,
-#comments ol {
-  margin: 0;
-  padding: 0;
-}
-#comments .comment {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  clear: both;
-}
-#comments .comments-title {
-  text-shadow: none;
-  margin-bottom: 0;
-}
-#comments .avatar {
-  float: left;
-  width: 70px;
-  height: 70px;
-  margin-bottom: 30px;
-  border: 5px solid #eeeeee;
-  -webkit-border-radius: 50%;
-  -webkit-background-clip: padding-box;
-  -moz-border-radius: 50%;
-  -moz-background-clip: padding;
-  border-radius: 50%;
-  background-clip: padding-box;
-}
-#comments .children {
-  margin: 0 0 0 90px;
-}
-#comments .comment-meta {
-  margin: 0 0 0 90px;
-}
-#comments .comment-meta a {
-  color: #333333;
-}
-#comments .comment-meta a:hover {
-  color: #bd1550;
-}
-#comments .comment-meta .author {
-  margin: 0 20px 0 0;
-  font-weight: bold;
-}
-#comments .comment-meta .date {
-  margin: 0 20px 0 0;
-}
-#comments .comment-meta .date a {
-  color: #666666;
-}
-#comments .comment-meta .reply {
-  float: right;
-}
-#comments .comment-body {
-  margin: 0 0 35px 90px;
-}
-.comment-navigation {
+table.teams {
   width: 100%;
-  border-top: 1px solid #ccc;
-  padding: 2px 0 0 0;
-}
-.comment-navigation .nav-content {
-  border-top: 1px solid #ccc;
-  width: 100%;
-  padding: 10px 0 0 0;
-}
-.comment-navigation .nav-previous {
-  float: left;
-  width: 50%;
-}
-.comment-navigation .nav-next {
-  float: right;
-  width: 50%;
-  text-align: right;
-}
-#respond {
-  margin: 55px 0 0 0;
+  color: #333;
+  border-width: 1px;
+  border-color: #a9c6c9;
+  border-collapse: collapse;
 }
 /*********************************************************************
  

@@ -1,3 +1,3 @@
-var api = {
+(function(window) {
 
-};
+})(window);
