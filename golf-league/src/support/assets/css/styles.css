@@ -230,14 +230,14 @@ a:hover {
   color: #000000;
 }
 .navbar-default .navbar-toggle {
-  border-color: #ff0000;
+  border-color: #5E5E5E;
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-  background-color: #008000;
+  background-color: #E6EAE6;
 }
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #0000ff;
+  background-color: #5E5E5E;
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
