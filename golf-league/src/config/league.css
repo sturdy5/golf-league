@@ -1,0 +1,39 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+@media screen and (min-width: 768px)
+.hero {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.hero {
+  margin: 0px;
+  font-size: 21px;
+  line-height: 2.1428571435;
+  min-height: 100%;
+  position: relative;
+}
+
+.hero .landing {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  background: url(images/background.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  border-bottom-style: solid;
+  border-bottom-color: #d3d3d3;
+  border-bottom-width: 1px;
+  -webkit-animation: fadein 1s;
+  -moz-animation: fadein 1s;
+  -ms-animation: fadein 1s;
+  -o-animation: fadein 1s;
+  animation: fadein 1s;
+}

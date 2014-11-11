@@ -90,7 +90,7 @@ include_once("../analyticstracking.php");
 				    </p>
 				    <div id="alignRight">
 				    	<label for="submit">
-				    	    <input id="submitRequestButton" name="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
+				    	    <input name="submitRequestButton" id="submitRequestButton" type="button" onclick="validateAndSubmit()" value="Submit Request"/>
 				    	</label>
 				    </div>
                 </fieldset>
@@ -108,6 +108,7 @@ include_once("../analyticstracking.php");
                     if (playerId.value == "-1") {
                         dojo.byId("fullTimePlayerError").style.display = "inline";
                     } else {
+                        dojo.byId("submitRequestButton").disabled = true;
                         dojo.byId("subForm").submit();
                     }
                 }

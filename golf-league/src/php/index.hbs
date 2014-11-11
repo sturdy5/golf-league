@@ -3,48 +3,39 @@
     $nextMatch = ScheduleDAO::getNextCourseScheduleMatch();
     if ($nextMatch) {
 ?>
-        <div class="nextMatch">Next match: <?=date('l, F d', strtotime($nextMatch->date))?>
+      <div class="row section topspace">
+        <div class="col-md-12">
+          <p class="lead text-center">
+            Next match: <?=date('l, F d', strtotime($nextMatch->date))?>
 <?php
-        if ($nextMatch->course) {
+            if ($nextMatch->course) {
 ?>
-            at <?=$nextMatch->course?>
+              at <?=$nextMatch->course?>
 <?php
-            if ($nextMatch->side) {
+              if ($nextMatch->side) {
 ?>
                 (<?=$nextMatch->side?>)
 <?php
+              }
             }
-        }
 ?>
+          </p>
         </div>
+      </div>
 <?php
     }
-    if ($_SESSION["admin"] == 1) {
 ?>
-        <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
+    <div class="row section featured topspace">
+      <h2 class="section-title"><span>News</span></h2>
+      <div class="row topspace">
+        <div class="col-sm-8 col-sm-offset-2">
 <?php
-    }
-    $blogDao = new BlogDAO();
-    echo $blogDao->getBlogInformation()->toHTML();
+          if ($_SESSION["admin"] == 1) {
 ?>
-</div>
-
-<div class="membership">
-  <span class="title">Golf Course Membership Information</span>
-  <span class="intro">The Members Club at Woodcreek and WildeWood have invited us to become members.</span>
-  <span class="overview">
-    <blockquote>
-      If you are exploring the possibilities of private club membership for the first time, the Board of 
-      Directors and Staff would like you to consider membership at The Members Club at Woodcreek 
-      & WildeWood. 
-      <br/><br/>
-      Our members enjoy the best of championship golf and private amenities at two phenomenal 
-      Columbia golf locations. Discover the numerous membership options available to you, your 
-      family, or company. The unique advantage of joining The Members Club at Woodcreek & 
-      WildeWood is we are one club, with two Columbia golf locations. This means you can enjoy two 
-      great golf courses by two of the sport’s most accomplished golf architects, two exceptional 
-      clubhouses, tennis and swimming, and two places to soak up life's finer moments.
-    </blockquote>
-  </span>
-  <span class="more-info">For more information, click <a href="/membership/tmcww.pdf">here</a></span>
+            <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
+<?php
+          }
+          $blogDao = new BlogDAO();
+          echo $blogDao->getBlogInformation()->toHTML();
+?>
 </div>
