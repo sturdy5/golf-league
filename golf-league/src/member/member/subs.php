@@ -112,10 +112,23 @@ include_once("../analyticstracking.php");
                         $entryPlayerId = $subEntry["player"];
                         $entryDate = $subEntry["date"];
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
+                        $partner = TeamDAO::getParterOfPlayer($entryPlayerId, $entryDate);
 ?>
                         <li>
                             <a href="subs.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>"><?=$entryDate?> - <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?></a>
 <?php
+                            if (null != $partner) {
+                                // check to see if the partner has a sub...
+                                $partnerSub = ScheduleDAO::getSubstituteByDate($entryDate, $partner->id);
+                                if ($partnerSub != null && $partnerSub != "X") {
+                                    // get the sub info
+                                    $partner = PlayerDAO::getPlayer($partnerSub);
+                                }
+?>
+                                (partnered with <?=$partner->firstName?> <?=$partner->lastName?>)
+<?php
+
+                            }
                             if ($_SESSION["admin"] == 1) {
 ?>
                                 - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
@@ -149,10 +162,22 @@ include_once("../analyticstracking.php");
                         $entrySubId = $subEntry["sub"];
                         $entryPlayer = PlayerDAO::getPlayer($entryPlayerId);
                         $entrySub = PlayerDAO::getPlayer($entrySubId);
+                        $partner = TeamDAO::getParterOfPlayer($entryPlayerId, $entryDate);
 ?>
                         <li>
                             <?=$entryDate?> - <?=$entrySub->firstName?> <?=$entrySub->lastName?> will be playing for <?=$entryPlayer->firstName?> <?=$entryPlayer->lastName?>
 <?php
+                            if (null != $partner) {
+                                // check to see if the partner has a sub...
+                                $partnerSub = ScheduleDAO::getSubstituteByDate($entryDate, $partner->id);
+                                if ($partnerSub != null && $partnerSub != "X") {
+                                    // get the sub info
+                                    $partner = PlayerDAO::getPlayer($partnerSub);
+                                }
+?>
+                                (partnered with <?=$partner->firstName?> <?=$partner->lastName?>)
+<?php
+                            }
                             if ($_SESSION["admin"] == 1) {
 ?>
                                 - <a onclick="return confirmDelete()" href="/admin/delete-subrequest.php?date=<?=$entryDate?>&player=<?=$entryPlayerId?>">Delete</a>
