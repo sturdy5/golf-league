@@ -4,15 +4,15 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     clean: ["build/web/"],
     assemble: {
-//      assembleHTML: {
-//        options: {
-//          layout: "src/layouts/html/default.hbs",
-//          flatten: true
-//        },
-//        files: {
-//          'build/web/': ['src/pages/*.hbs']
-//        }
-//      },
+      assembleHTML: {
+        options: {
+          layout: "src/layouts/html/default.hbs",
+          flatten: true
+        },
+        files: {
+          'build/web/': ['src/pages/*.hbs']
+        }
+      },
       assembleAdmin: {
         options: {
           layout: "src/layouts/php/admin.hbs",
