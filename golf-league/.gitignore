@@ -1,5 +1,6 @@
 /node_modules
 /.settings
 /build
+/vendor
 /app-engine-instructions
 deploy-web

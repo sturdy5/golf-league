@@ -498,6 +498,116 @@ class PlayerDAO {
 
 		return $scores;
 	}
+  
+  /**
+   * This function will be a catch all for the api. This is just so we don't have to
+   * write functions for every permutation that may potentially exist from the api.
+   *
+   * @param $parameters An array of parameters that should be used to search the players.
+   */
+  public static function apiSearchCall($parameters) {
+    
+  }
+  
+  public static function getAPIWhereStatement($parameters) {
+    $whereStatement = "";
+    foreach(array_keys($parameters) as $key) {
+      switch ($key) {
+        case "id":
+          $whereStatement .= " and id ";
+          break;
+        case "first_name":
+          break;
+        case "last_name":
+          break;
+        case "full_time":
+          break;
+        case "active":
+          break;
+        case "handicap":
+          break;
+        case "team_id":
+          break;
+      }
+    }
+  }
+  
+  public static function getAPIFieldAssignment($operation, $value) {
+    /*
+    gt - the field is greater than this value
+    gte - the field is greater than or equal to this value
+    lt - the field is less than this value
+    lte - the field is less than or equal to this value
+    not - the field is not this value
+    all - the field is an array that contains all of these values (separated by |)
+    in - the field is a string that is one of these values (separated by |)
+    nin - the field is a string that is not one of these values (separated by |)
+    exists - the field is both present and non-null (supply true or false)
+    */
+    $assignment = "";
+    // first check the non-list operations
+    switch ($operation) {
+      case "eq":
+        // $value shouldn't be an array
+        if (is_array($value)) {
+          throw new Exception("The value for an equals should not be an array");
+        }
+        $assignment = " = ";
+        break;
+      case "gt":
+        // $value shouldn't be an array
+        if (is_array($value)) {
+          throw new Exception("The value for a greater than should not be an array");
+        }
+        $assignment = " > ";
+        break;
+      case "gte":
+        // $value shouldn't be an array
+        if (is_array($value)) {
+          throw new Exception("The value for a greater than or equals should not be an array");
+        }
+        $assignment = " >= ";
+        break;
+      case "lt":
+        // $value shouldn't be an array  
+        if (is_array($value)) {
+          throw new Exception("The value for a less than should not be an array");
+        }
+        $assignment = " < ";
+        break;
+      case "lte":
+        // $value shouldn't be an array
+        if (is_array($value)) {
+          throw new Exception("The value for a less than or equals should not be an array");
+        }
+        $assignment = " <= ";
+        break;
+      case "not":
+        // $value shouldn't be an array
+        if (is_array($value)) {
+          throw new Exception("The value for a not should not be an array");
+        }
+        $assignment = " <> ";
+        break;
+    }
+    // if the assignment is set...
+    if ("" != $assignment) {
+      $assignment = $assignment . $value;
+    } else {
+      // now let's look at the list operations
+      switch ($operation) {
+        case "all":
+          break;
+        case "in":
+          break;
+        case "nin":
+          break;
+        case "exists":
+          break;
+      }
+    }
+    return $assignment;
+  }
 }
 
 ?>
