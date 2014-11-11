@@ -119,12 +119,6 @@ module.exports = function(grunt) {
           cwd: 'src/config/',
           src: ['**/*.*'],
           dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/Initio/',
-          src: ['**/*.*'],
-          dest: 'build/web/Initio/'
         }]
       },
       dev: {
@@ -190,12 +184,6 @@ module.exports = function(grunt) {
           cwd: 'src/config/',
           src: ['**/*.*'],
           dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/Initio/',
-          src: ['**/*.*'],
-          dest: 'build/web/Initio/'
         }]
       }
     }
