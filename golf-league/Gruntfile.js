@@ -137,6 +137,12 @@ module.exports = function(grunt) {
           cwd: 'src/config/',
           src: ['**/*.*'],
           dest: 'build/web/'
+        },
+        {
+          expand: true,
+          cwd: '.',
+          src: ['composer.json'],
+          dest: 'build/web/'
         }]
       },
       dev: {
@@ -154,60 +160,6 @@ module.exports = function(grunt) {
               return dest + src;
             }
           }
-        },
-        {
-          expand: true,
-          cwd: 'src/admin/',
-          src: ['**/*.php'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/member/',
-          src: ['**/*.php'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/pages/',
-          src: ['**/*.html'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/',
-          src: ['images/**/*.*'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/scripts/',
-          src: ['**/*.js'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/support/',
-          src: ['**/*.*', '**/.htaccess'],
-          dest: 'build/web/'
-        },
-        {
-          expand: true,
-          cwd: 'src/photos/',
-          src: ['**/*.*'],
-          dest: 'build/web/photos/'
-        },
-        {
-          expand: true,
-          cwd: 'src/api/',
-          src: ['**/*.*'],
-          dest: 'build/web/api/'
-        },
-        {
-          expand: true,
-          cwd: 'src/config/',
-          src: ['**/*.*'],
-          dest: 'build/web/'
         }]
       }
     }
@@ -219,5 +171,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-phpunit');
   grunt.registerTask('default', ['clean', 'assemble', 'copy:main', 'cssmin', 'uglify', 'phpunit']);
-  grunt.registerTask('dev', ['clean', 'assemble', 'copy:dev', 'cssmin', 'uglify', 'phpunit']);
+  grunt.registerTask('dev', ['clean', 'assemble', 'copy:main', 'copy:dev', 'cssmin', 'uglify', 'phpunit']);
 };
