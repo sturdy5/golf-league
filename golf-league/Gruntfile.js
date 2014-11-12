@@ -23,16 +23,16 @@ module.exports = function(grunt) {
           'build/web/': ['src/admin/**/*.hbs']
         }
       },
-//      assembleMember: {
-//        options: {
-//          layout: "src/layouts/php/member.hbs",
-//          flatten: true,
-//          ext: ".php"
-//        },
-//        files: {
-//          'build/web/': ['src/member/**/*.hbs']
-//        }
-//      },
+      assembleMember: {
+        options: {
+          layout: "src/layouts/php/member.hbs",
+          flatten: true,
+          ext: ".php"
+        },
+        files: {
+          'build/web/member/': ['src/member/**/*.hbs']
+        }
+      },
       assemblePHP: {
         options: {
           layout: "src/layouts/php/default.hbs",

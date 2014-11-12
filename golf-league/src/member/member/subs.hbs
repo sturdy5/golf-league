@@ -1,12 +1,3 @@
-<?php
-include('requires.inc.php');
-include('./../config/loadConfiguration.php');
-include('./../navigation.inc.php');
-?>
-<html>
-<head>
-<title><?=getConfigValue("General", "siteTitle")?></title>
-<link href="/theme/style.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./../js/selector.js"></script>
 <script>
 function goToPage(url, delay) {
@@ -17,11 +8,6 @@ function confirmDelete() {
 	return confirm("Are you sure you want to delete this request?");
 }
 </script>
-</head>
-<body>
-<?php  
-include_once("../analyticstracking.php");
-?>
     <div class="content">
 <?php 
         if (isset($_POST["date"]) && isset($_POST["player"]) && isset($_POST["sub"])) {
@@ -197,10 +183,3 @@ include_once("../analyticstracking.php");
         }
 ?>
     </div>
-<?php
-include("./../utilities.inc.php");
-?>
-
-<?php
-include("./../footer.inc.php");
-?>
