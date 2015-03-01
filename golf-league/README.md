@@ -12,7 +12,13 @@ If you need to setup the database for the first time, you can run the sql locate
 
 # Building
 
-This website uses Grunt to build the application. The build primary consists of converting handlebars into real HTML. There are two configurations setup in the build script. One for development and one for production builds. To build the development site, run the following command
+This website uses Grunt to build the application. The build primary consists of converting handlebars into real HTML. There are two configurations setup in the build script. One for development and one for production builds. Before building the site, you will need install the composer dependencies by running the command
+
+```
+$ composer install
+```
+
+Then to build the development site, run the following command
 
 ```
 $ grunt dev
