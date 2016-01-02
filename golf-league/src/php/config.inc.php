@@ -5,7 +5,7 @@ session_name("bcbssc_golf_league");
 session_start();
 
 // database configuration
-$db_server = "bcbsscgl.db.9045345.hostedresource.com";
+$db_server = "107.180.51.10";
 $db_user = "bcbsscgl";
 $db_password = "hnTCZXEN2Ab6tb";
 $db_database = "bcbsscgl";
