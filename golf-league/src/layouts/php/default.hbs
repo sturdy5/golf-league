@@ -105,11 +105,11 @@ require_once("./config.inc.php");
             <?php
             if (isset($_SESSION["firstName"])) {
             ?>
-              Welcome <?=$_SESSION["firstName"]?>! <a href="login.php?logout=1">Not <?=$_SESSION["firstName"]?>?</a> <a href="member/myAccount.php">My Account</a>
+              Welcome <?=$_SESSION["firstName"]?>! <a href="/login.php?logout=1">Not <?=$_SESSION["firstName"]?>?</a> <a href="/member/myAccount.php">My Account</a>
             <?php
             } else {
             ?>
-              <a href="login.php">login</a>
+              <a href="/login.php">login</a>
             <?php
             }
             ?>
