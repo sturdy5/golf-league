@@ -1,46 +1,59 @@
 module.exports = function(grunt) {
+  // Time how long tasks take. Can help when optimizing build times
+  require('time-grunt')(grunt);
+
+  // Load grunt tasks automatically (as long as they start with "grunt")
+  require('load-grunt-tasks')(grunt);
+
+  // Configurable paths
+  var config = {
+    app: 'src',
+    dist: 'dist/web'
+  };
+
   // project configuration
   grunt.initConfig({
+    config: config,
     pkg: grunt.file.readJSON('package.json'),
-    clean: ["build/web/"],
+    clean: ["<%= config.dist %>/"],
     assemble: {
       assembleHTML: {
         options: {
-          layout: "src/layouts/html/default.hbs",
+          layout: "<%= config.app %>/layouts/html/default.hbs",
           flatten: true
         },
         files: {
-          'build/web/': ['src/pages/*.hbs']
+          '<%= config.dist %>/': ['<%= config.app %>/pages/*.hbs']
         }
       },
       assembleAdmin: {
         options: {
-          layout: "src/layouts/php/admin.hbs",
+          layout: "<%= config.app %>/layouts/php/admin.hbs",
           flatten: true,
           ext: ".php"
         },
         files: {
-          'build/web/': ['src/admin/**/*.hbs']
+          '<%= config.dist %>/': ['<%= config.app %>/admin/**/*.hbs']
         }
       },
       assembleMember: {
         options: {
-          layout: "src/layouts/php/member.hbs",
+          layout: "<%= config.app %>/layouts/php/member.hbs",
           flatten: true,
           ext: ".php"
         },
         files: {
-          'build/web/member/': ['src/member/**/*.hbs']
+          '<%= config.dist %>/member/': ['<%= config.app %>/member/**/*.hbs']
         }
       },
       assemblePHP: {
         options: {
-          layout: "src/layouts/php/default.hbs",
+          layout: "<%= config.app %>/layouts/php/default.hbs",
           flatten: true,
           ext: ".php"
         },
         files: {
-          'build/web/': ['src/php/**/*.hbs']
+          '<%= config.dist %>': ['<%= config.app %>/php/**/*.hbs']
         }
       }
     },
@@ -50,7 +63,7 @@ module.exports = function(grunt) {
     		  banner: "/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today('yyyy-mm-dd') %> */"
     	  },
     	  files: {
-            'build/web/theme/style.css' : 'src/styles/**/*.css'
+            '<%= config.dist %>/theme/style.css' : '<%= config.app %>/styles/**/*.css'
     	  }
       }
     },
@@ -60,7 +73,7 @@ module.exports = function(grunt) {
       },
       library: {
         files: {
-          'build/web/js/golf-league.js': 'lib/**/*.js'
+          '<%= config.dist %>/js/golf-league.js': 'lib/**/*.js'
         }
       }
     },
@@ -70,87 +83,106 @@ module.exports = function(grunt) {
       },
       options: {
         bin: 'vendor/bin/phpunit',
-        bootstrap: 'build/web/autoload.php',
+        bootstrap: '<%= config.dist %>/autoload.php',
         configuration: 'test/phpunit.xml',
         colors: true,
         coverage: true
+      }
+    },
+    php: {
+      options: {
+        livereload: true
+      },
+      livereload: {
+        options: {
+          middleware: function(connect) {
+            return [
+              connect.static(config.app)
+            ];
+          },
+          port: 10090,
+          hostname: '0.0.0.0',
+          open: false,
+          keepalive: true,
+          base: '<%= config.dist %>'
+        }
       }
     },
     copy: {
       main: {
         files: [{
           expand: true,
-          cwd: 'src/php/',
+          cwd: '<%= config.app %>/php/',
           src: ['**/*.php'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/admin/',
+          cwd: '<%= config.app %>/admin/',
           src: ['**/*.php'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/member/',
+          cwd: '<%= config.app %>/member/',
           src: ['**/*.php'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/pages/',
+          cwd: '<%= config.app %>/pages/',
           src: ['**/*.html'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/',
+          cwd: '<%= config.app %>/',
           src: ['images/**/*.*'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/scripts/',
+          cwd: '<%= config.app %>/scripts/',
           src: ['**/*.js'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
           cwd: 'src/support/',
           src: ['**/*.*', '**/.htaccess'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
-          cwd: 'src/photos/',
+          cwd: '<%= config.app %>/photos/',
           src: ['**/*.*'],
-          dest: 'build/web/photos/'
+          dest: '<%= config.dist %>/photos/'
         },
         {
           expand: true,
-          cwd: 'src/api/',
+          cwd: '<%= config.app %>/api/',
           src: ['**/*.*'],
-          dest: 'build/web/api/'
+          dest: '<%= config.dist %>/api/'
         },
         {
           expand: true,
-          cwd: 'src/config/',
+          cwd: '<%= config.app %>/config/',
           src: ['**/*.*'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         },
         {
           expand: true,
           cwd: '.',
           src: ['composer.json'],
-          dest: 'build/web/'
+          dest: '<%= config.dist %>/'
         }]
       },
       dev: {
         files: [{
           expand: true,
-          cwd: 'src/php/',
+          cwd: '<%= config.app %>/php/',
           src: ['**/*.php'],
-          dest: 'build/web/',
+          dest: '<%= config.dist %>/',
           rename: function(dest, src) {
             if (src.indexOf("config.inc.php") >= 0) {
               return dest + src.substring(0, src.lastIndexOf("/")) + "/config.inc.remote.php";
@@ -172,4 +204,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-phpunit');
   grunt.registerTask('default', ['clean', 'assemble', 'copy:main', 'cssmin', 'uglify', 'phpunit']);
   grunt.registerTask('dev', ['clean', 'assemble', 'copy:main', 'copy:dev', 'cssmin', 'uglify', 'phpunit']);
+  grunt.registerTask('serve', 'start the server and preview your app', function (target) {
+    grunt.task.run([
+      'clean', 'assemble', 'copy:main', 'cssmin', 'uglify', 'phpunit', 'php'
+    ]);
+  });
 };
