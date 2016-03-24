@@ -15,19 +15,29 @@ function goToPage(url, delay) {
             ini_set('sendmail_from', 'info@bctngl.com');
             $pageURL = "http://www.bctngl.com/member/subs.php?date=" . $_POST["date"] . "&player=" . $player->id;
             
-            $emailText = $player->firstName . " " . $player->lastName . " needs a sub for " . $_POST["date"] . ". Click on the link below to take the spot.\n\n";
-            $emailText .= $pageURL;
-            
             $subEmails = PlayerDAO::getSubEmails();
             $toAddresses = implode(", ", $subEmails);
-           
-            $headers = "From: info@bctngl.com" . "\r\n" . "Reply-To: info@bctngl.com";
-            mail($toAddresses, getConfigValue("General", "siteTitle") . " Substitutes", $emailText, $headers);
+
+            $subject = getConfigValue("General", "siteTitle") . " Substitutes";
 ?>
             <fieldset class="editPlayerFields">
                 <h1>Your request has been submitted</h1>
             </fieldset>
             <script>
+                dojoConfig = {parseOnLoad: true}
+            </script>
+            <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+            <script>
+                require(["dojo/request"], function(request) { 
+                    var message = "<?= $player->firstName ?> <?= $player->lastName ?> needs a sub for <?= $_POST["date"] ?>. Click on the link below to take the spot.<br/><br/><?= $pageURL ?>";
+                    request.post("/service/EmailService.php", { 
+                        data: { 
+                            to: '<?= $toAddresses ?>', 
+                            subject: '<?= $subject ?>', 
+                            message: message
+                        } 
+                    }); 
+                });
                 goToPage("subs.php", 2000);
             </script>
 <?php
