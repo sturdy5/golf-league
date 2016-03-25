@@ -14,11 +14,36 @@ function confirmDelete() {
             // need to check to see if the date has been taken
             $success = ScheduleDAO::assignSubByDate($_POST["date"], $_POST["player"], $_POST["sub"]);
             if ($success) {
+                $player = PlayerDAO::getPlayer($_POST["player"]);
+                $substitute = PlayerDAO::getPlayer($_POST["sub"]);
+                $playerEmailAddress = $player->emailAddress;
+                // get the email addresses for the administrators
+                $adminEmails = PlayerDAO::getAdminEmails();
+                $toAddresses = implode(", ", $subEmails);
+                $toAddresses .= ", $playerEmailAddress";
+
+                $subject = getConfigValue("General", "siteTitle") . " Substitute Taken";
 ?>
                 <fieldset class="editPlayerFields">
                     <h1>You have the spot!</h1>
                 </fieldset>
                 <script>
+                    dojoConfig = {parseOnLoad: true}
+                </script>
+                <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.3/dojo/dojo.js"></script>
+                <script>
+                    require(["dojo/request"], function(request) { 
+                        var message = "<?= $substitute->firstName ?> <?= $substitute->lastName ?> took the sub spot requested by <?= $player->firstName ?> <?= $player->lastName ?> for <?= $_POST["date"] ?>.";
+                        request.post("/service/EmailService.php", { 
+                            data: { 
+                                to: '<?= $toAddresses ?>', 
+                                subject: '<?= $subject ?>', 
+                                message: message
+                            }
+                        });
+
+                        console.log("Sent an email to \"<?= $toAddresses ?>\" with the subject \"<?= $subject ?>\" and message \"" + message + "\"");
+                    });
                     goToPage("subs.php", 2000);
                 </script>
 <?php
