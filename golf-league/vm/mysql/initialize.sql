@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 --
 
 INSERT INTO `config` (`id`, `category`, `name`, `variable`, `value`) VALUES
-(1, 'General', 'Site Title', 'siteTitle', 'Bogey Club - Thursday Night Golf League');
+(1, 'General', 'Site Title', 'siteTitle', 'Bogey Club - Golf League');
 
 -- --------------------------------------------------------
 
@@ -6985,7 +6985,7 @@ INSERT INTO `seasons` (`id`, `startDate`, `endDate`, `courseId`, `team_structure
 (11, '2013-03-08', '2013-07-12', '2', 'INDIVIDUAL', 'USGA'),
 (13, '2013-07-06', '2013-11-03', '2', 'INDIVIDUAL', 'USGA'),
 (17, '2014-03-07', '2014-06-28', '2,3', 'INDIVIDUAL', 'USGA');
-
+(18, '2018-03-21', '2018-10-31', '2,3', 'INDIVIDUAL', 'USGA');
 -- --------------------------------------------------------
 
 --
