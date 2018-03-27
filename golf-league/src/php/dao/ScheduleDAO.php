@@ -88,10 +88,10 @@ class ScheduleDAO {
 
     	// now that the season exists, let's add the dates to the schedule.
 
-    	// now let's assume for now that all scheduled dates will be on Thursdays
+    	// now let's assume for now that all scheduled dates will be on Wednesdays
     	$date = new DateTime($startDate);
     	$stopDate = new DateTime($endDate);
-    	$thursdays = array();
+    	$wednesday = array();
 
     	while ($date <= $stopDate) {
     		/*
@@ -100,7 +100,7 @@ class ScheduleDAO {
     		 */
     		$dayOfWeek = date("w", $date->format('U'));
     		if ($dayOfWeek == 4) {
-    			array_push($thursdays, $date->format("Y-m-d"));
+    			array_push($wednesdays, $date->format("Y-m-d"));
     		}
     		/*
     		 * PHP >= 5.3
@@ -110,14 +110,14 @@ class ScheduleDAO {
     	}
 
     	$sideIndex = 0;
-    	foreach($thursdays as $thursday) {
+    	foreach($wednesdays as $wednesdays) {
     		// create a match date
     		$side = $sides[$sideIndex];
     		$sideIndex++;
     		if ($sideIndex >= $numberOfSides) {
     			$sideIndex = 0;
     		}
-            self::addCourseScheduleMatch($thursday, $courseId, $sides[$sideIndex], 0);
+            self::addCourseScheduleMatch($wednesday, $courseId, $sides[$sideIndex], 0);
     	}
 
     	return $seasonId;
