@@ -95,6 +95,7 @@ INSERT INTO `courses` (`id`, `name`) VALUES
 (1, 'Windermere'),
 (2, 'Wildewood'),
 (3, 'Woodcreek');
+(4, 'Cobblestone');
 
 -- --------------------------------------------------------
 
@@ -120,6 +121,10 @@ INSERT INTO `course_sides` (`id`, `courseId`, `name`) VALUES
 (4, 2, 'Back'),
 (5, 3, 'Front'),
 (6, 3, 'Back');
+(7, 4, 'Garnet');
+(8, 4, 'Black');
+(9, 4, 'Gold');
+
 
 -- --------------------------------------------------------
 
