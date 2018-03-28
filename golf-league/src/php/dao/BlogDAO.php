@@ -40,14 +40,14 @@ class BlogDAO {
 
 		$query = vsprintf(self::INSERT_POST_QUERY, $data);
 		
-		$result = @mysql_query($query);
+		$result = @mysqli_query($query);
 		
 		$postId = "";
 		
 		if ($result) {
-			$postId = mysql_insert_id();
+			$postId = mysqli_insert_id();
 		}else{
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 		
 		return $postId;
@@ -56,10 +56,10 @@ class BlogDAO {
 	public function deleteBlogPost($postId) {
 		$query = sprintf(self::DELETE_POST_QUERY, $postId);
 		
-		$result = @mysql_query($query);
+		$result = @mysqli_query($query);
 		
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 	}
 	
@@ -70,21 +70,21 @@ class BlogDAO {
 		
 		$query = vsprintf(self::UPDATE_POST_QUERY, $data);
 		
-		$result = @mysql_query($query);
+		$result = @mysqli_query($query);
 		
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 	}
 	
 	private function getBlogPosts() {
 		$posts = array();
 		
-		$results = @mysql_query(self::SELECT_POST_QUERY);
+		$results = @mysqli_query(self::SELECT_POST_QUERY);
 		if ($results) {
-			$count = mysql_num_rows($results);
+			$count = mysqli_num_rows($results);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($results);
+				$row = mysqli_fetch_assoc($results);
 				$post = new post();
 				$post->id = $row["id"];
 				$post->title = $row["title"];
@@ -100,7 +100,7 @@ class BlogDAO {
 				$postItem->comments = $this->getPostComments($postItem->id);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 		
 		return $posts;
@@ -110,18 +110,18 @@ class BlogDAO {
 		$comments = array();
 		
 		$query = sprintf(self::SELECT_POST_QUERY, $postId);
-		$results = @mysql_query($query);
+		$results = @mysqli_query($query);
 		if ($results) {
-			$count = mysql_num_rows($results);
+			$count = mysqli_num_rows($results);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($results);
+				$row = mysqli_fetch_assoc($results);
 				$comment = new comment();
 				$comment->body = $row["body"];
 				
 				array_push($comments, $comment);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 		
 		return $comments;

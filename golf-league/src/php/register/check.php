@@ -11,8 +11,8 @@ function checkUsername($username) {
 		return false;
 	} else {
 		$query = "select id from users where user = '{$username}'";
-		$result = mysql_query($query) or die (mysql_error());
-		if (mysql_num_rows($result)) {
+		$result = mysqli_query($query) or die (mysqli_error());
+		if (mysqli_num_rows($result)) {
 			$error = "Your username is taken, please choose another";
 			return false;
 		} else {
@@ -60,12 +60,12 @@ function currentSiteURL() {
 if (checkUsername($_POST['name']) && checkPassword($_POST["pass1"], $_POST["pass2"]) && checkEmail($_POST["email"])) {
 	// save the user
 	$query = "insert into users (user, email, password) values ('{$_POST["name"]}', '{$_POST["email"]}', '".md5($_POST["pass1"])."');";
-	$result = mysql_query($query) or die("Error saving the user to the database");
+	$result = mysqli_query($query) or die("Error saving the user to the database");
 
 	// create an activation record
 	$hash = md5(time() + microtime());
 	$query = "insert into activation (userid, code, record) values (LAST_INSERT_ID(), '{$hash}', now());";
-	$result = mysql_query($query) or die ("Error writing the activation record tot he database");
+	$result = mysqli_query($query) or die ("Error writing the activation record tot he database");
 
 	// send an email giving the activation code
 	$emailText = "Thank you for signing up for the Thursday Night Golf League. You can activate your account by clicking on the link below. \n";

@@ -23,40 +23,40 @@
  		if (self::scoreExists($holeId, $playerId, $matchId)) {
  			$query = vsprintf(self::UPDATE_SCORE, array($score, $holeId, $playerId, $matchId));
  		}
- 		$result = @mysql_query($query);
+ 		$result = @mysqli_query($query);
  		if (!$result) {
- 			throw new Exception("DB : " . mysql_error());
+ 			throw new Exception("DB : " . mysqli_error());
  		}
  	}
  	
  	private static function scoreExists($holeId, $playerId, $matchId) {
  		$result = false;
  		$query = vsprintf(self::GET_SCORE, array($holeId, $playerId, $matchId));
- 		$results = @mysql_query($query);
+ 		$results = @mysqli_query($query);
  		if ($results) {
- 			$count = mysql_num_rows($results);
+ 			$count = mysqli_num_rows($results);
  			if ($count > 0) {
  				$result = true;
  			}
  		} else {
- 			throw new Exception("DB : " . mysql_error());
+ 			throw new Exception("DB : " . mysqli_error());
  		}
  		return $result;
  	}
  	
  	public static function getScoresByMatchIdAndPlayer($matchId, $playerId) {
  		$query = vsprintf(self::GET_SCORES_BY_MATCH_AND_PLAYER, array($matchId, $playerId));
- 		$result = @mysql_query($query);
+ 		$result = @mysqli_query($query);
  		$scores = null;
  		if ($result) {
  			$scores = new Scores();
  			$scores->match = $matchId;
  			$scores->player = $playerId;
- 			while ($row = mysql_fetch_array($result)) {
+ 			while ($row = mysqli_fetch_array($result)) {
  				$scores->scores[$row["hole_id"]] = $row["score"];
  			}
  		} else {
- 			throw new Exception("DB : " . mysql_error());
+ 			throw new Exception("DB : " . mysqli_error());
  		}
  		
  		return $scores;

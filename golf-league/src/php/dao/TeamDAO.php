@@ -34,9 +34,9 @@ class TeamDAO {
         $teams = array();
         $query = sprintf(self::LOOKUP_TEAMS_SQL, $seasonId);
 
-        $result = mysql_query($query) or die("No teams have been defined");
+        $result = mysqli_query($query) or die("No teams have been defined");
         // create team objects from the results and store it in a list to be returned
-        while ($row = mysql_fetch_array($result)) {
+        while ($row = mysqli_fetch_array($result)) {
             $team = new Team();
             // id
             $team->id = $row["id"];
@@ -64,12 +64,12 @@ class TeamDAO {
 
     public static function getTeamById($teamId) {
         $query = sprintf(self::LOOKUP_TEAM_BY_TEAM_ID_SQL, $teamId);
-        $result = mysql_query($query) or die("No teams have been defined for id = $teamId");
+        $result = mysqli_query($query) or die("No teams have been defined for id = $teamId");
 
         // create team objects from the results
         $team = new Team();
         if ($result) {
-        	$row = mysql_fetch_assoc($result);
+        	$row = mysqli_fetch_assoc($result);
             // id
             $team->id = $row["id"];
             $team->name = $row["name"];
@@ -104,13 +104,13 @@ class TeamDAO {
     	
     	$query = sprintf(self::LOOKUP_TEAM_BY_PLAYER_ID_SQL, "%,".$playerId, $playerId.",%", $seasonId);
     	
-    	$result = @mysql_query($query);
+    	$result = @mysqli_query($query);
     	$teamId = -1;
     	if ($result) {
-    		$row = mysql_fetch_array($result);
+    		$row = mysqli_fetch_array($result);
     		$teamId = $row["id"];
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . mysqli_error());
     	}
     	
     	return $teamId;
@@ -143,12 +143,12 @@ class TeamDAO {
     	if ($nextSeason) {
     		$query = self::GET_NEXT_SEASON_SQL;
     	}
-    	$result = @mysql_query($query);
+    	$result = @mysqli_query($query);
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = mysqli_fetch_assoc($result);
     		$seasonId = $row["id"];
     	} else {
-    		throw new Exception("DB : Could not determine the season that the team should belong to - " . mysql_errno());
+    		throw new Exception("DB : Could not determine the season that the team should belong to - " . mysqli_errno());
     	}
     	
         $data = array($name, $playerIds, $seasonId);
@@ -156,14 +156,14 @@ class TeamDAO {
         
         $query = vsprintf(self::ADD_TEAM_SQL, $data);
 
-        $result = @mysql_query($query);
+        $result = @mysqli_query($query);
 
         $teamId = "";
 
         if ($result) {
-            $teamId = mysql_insert_id();
+            $teamId = mysqli_insert_id();
         } else {
-            throw new Exception("DB : " . mysql_error());
+            throw new Exception("DB : " . mysqli_error());
         }
 
         return $teamId;
@@ -172,13 +172,13 @@ class TeamDAO {
     public static function deleteTeam($id) {
         $data = DBUtils::escapeData(array($id));
         $query = vsprintf(self::DELETE_TEAM_SQL, $data);
-        $result = mysql_query($query);
+        $result = mysqli_query($query);
         
         $returnValue = false;
         if ($result) {
             $returnValue = true;
         } else {
-            throw new Exception("DB : " . mysql_error());
+            throw new Exception("DB : " . mysqli_error());
         }
         
         return $returnValue;

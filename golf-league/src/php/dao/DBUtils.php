@@ -5,7 +5,7 @@ class DBUtils {
 		$temp = array();
 				
 		foreach($data as $item){
-			array_push($temp, mysql_real_escape_string($item));
+			array_push($temp, mysqli_real_escape_string($item));
 		}
 		
 		return $temp;

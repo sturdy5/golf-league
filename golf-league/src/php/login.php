@@ -4,13 +4,13 @@ include("./config/loadConfiguration.php");
 
 if ($_POST["username"] && $_POST["pass"]) {
 	$query = "select id from users where user = '{$_POST["username"]}' and active=1 and password = '".MD5($_POST["pass"])."'";
-	$result = mysql_query($query) or die("Login query error");
-	if (!mysql_num_rows($result)) {
+	$result = mysqli_query($query) or die("Login query error");
+	if (!mysqli_num_rows($result)) {
 		$error = "The username or password you entered is invalid. Be sure the account is activated";
 	} else {
-		$query = "select * from users where id=".mysql_result($result, 0, 0);
-		$result = mysql_query($query) or die ("User information query error");
-		while ($row = mysql_fetch_array($result)) {
+		$query = "select * from users where id=".mysqli_result($result, 0, 0);
+		$result = mysqli_query($query) or die ("User information query error");
+		while ($row = mysqli_fetch_array($result)) {
 			$_SESSION["team"] = $row["team"];
 			$_SESSION["userid"] = $row["id"];
 			$_SESSION["firstName"] = $row["firstName"];

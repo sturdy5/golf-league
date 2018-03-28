@@ -15,7 +15,7 @@ $db_database = "bcbsscgl";
  */
 
 // setup the database
-$link = mysql_connect($db_server, $db_user, $db_password) or die ("Could not connect to the database");
-mysql_select_db($db_database) or die ("Could not select the database");
+$link = mysqli_connect($db_server, $db_user, $db_password) or die ("Could not connect to the database");
+mysqli_select_db($link, $db_database) or die ("Could not select the database");
 
 ?>

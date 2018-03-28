@@ -173,13 +173,13 @@ class HandicapDAO {
 	private function getLatestCourseHandicap($playerId, $courseId) {
 		$data = DBUtils::escapeData(array($playerId, $courseId));
 		$query = vsprintf(self::GET_COURSE_HANDICAP_SQL, $data);
-		$result = @mysql_query($query);
+		$result = @mysqli_query($query);
 		$courseHandicap = 40.0; // this handicap is the default
 		if ($result) {
-			$row = mysql_fetch_assoc($result);
+			$row = mysqli_fetch_assoc($result);
 			$courseHandicap = $row["course_handicap"];
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . mysqli_error());
 		}
 		return $courseHandicap;
 	}
