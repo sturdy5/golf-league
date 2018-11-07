@@ -33,16 +33,18 @@ function sortMatchupByHole($a, $b) {
     return ($a->hole < $b->hole) ? -1 : 1;
 }
 
-$userId = $_SESSION['userid'];
+// $userId = $_SESSION['userid'];
+$matchDate = null;
+if (array_key_exists("matchDate", $_POST) && $_POST["matchDate"]) {
+    $matchDate = $_POST["matchDate"];
+} elseif (array_key_exists("matchDate", $_GET) && $_GET["matchDate"]) {
+    $matchDate = $_GET["matchDate"];
+}
 
-if ($_POST["matchDate"] || $_GET["matchDate"]) {
+if ($matchDate) {
     // if the matchDate was provided, then we need to get the actual lineup for that date
     
     // TODO Need to make sure this all works eventually with the new schedule_course table
-    $matchDate = $_POST["matchDate"];
-    if (!isset($matchDate)) {
-        $matchDate = $_GET["matchDate"];
-    }
 	$schedule = ScheduleDAO::getScheduleForDate($matchDate);
 	$seasonId = ScheduleDAO::getSeasonByDate($matchDate);
 	$teamStructure = ScheduleDAO::getSeasonTeamStructureByDate($matchDate);
