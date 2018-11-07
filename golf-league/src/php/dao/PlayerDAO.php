@@ -41,9 +41,10 @@ class PlayerDAO {
 
 	public static function getPlayer($id) {
 		$query = sprintf(self::GET_USER_BY_ID_SQL, $id);
+		$db = DBUtils::getInstance();
 
-		$result = mysql_query($query) or die("Could not search the database for the desired user - $id");
-		$row = mysql_fetch_array($result);
+		$result = $db->query($query) or die("Could not search the database for the desired user - $id");
+		$row = $db->getRow($result);
 		$user = new Player();
 		$user->id = $row["id"];
 		$user->emailAddress = $row["email"];
@@ -77,9 +78,9 @@ class PlayerDAO {
 		}
 
 		$query = sprintf(self::GET_LATEST_HANDICAP_SQL, $id);
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		if ($result) {
-			$row = mysql_fetch_array($result);
+			$row = $db->getRow($result);
 			$user->handicap = $row["handicap"];
 		}
 
@@ -96,9 +97,9 @@ class PlayerDAO {
 	public static function getPlayerByName($firstName, $lastName) {
 		$data = DBUtils::escapeData(array(strtolower($firstName), strtolower($lastName)));
 		$query = vsprintf(self::GET_USER_BY_NAME_SQL, $data);
-
-		$result = @mysql_query($query);
-		$row = mysql_fetch_array($result);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
+		$row = $db->getRow($result);
 		$user = new Player();
 		$user->id = $row["id"];
 		$user->emailAddress = $row["email"];
@@ -133,9 +134,9 @@ class PlayerDAO {
 
 		if (null != $user->id) {
 			$query = sprintf(self::GET_LATEST_HANDICAP_SQL, $user->id);
-			$result = @mysql_query($query);
+			$result = $db->query($query);
 			if ($result) {
-				$row = mysql_fetch_array($result);
+				$row = $db->getRow($result);
 				$user->handicap = $row["handicap"];
 			}
 
@@ -153,13 +154,14 @@ class PlayerDAO {
 	public static function getHandicapHistory($playerId) {
 		$history = array();
 		$query = vsprintf(self::GET_HANDICAP_HISTORY_SQL, array($playerId));
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			while ($row = mysql_fetch_array($result)) {
+			while ($row = $db->getRow($result)) {
 				$history[$row["date"]] = $row["handicap"];
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		return $history;
 	}
@@ -167,12 +169,13 @@ class PlayerDAO {
 	public static function getPlayerTee($playerId, $seasonId) {
 		$tee = -1;
 		$query = vsprintf(self::GET_PLAYER_TEE_SQL, array($playerId, $seasonId));
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			$row = mysql_fetch_array($result);
+			$row = $db->getRow($result);
 			$tee = $row["teeId"];
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		return $tee;
 	}
@@ -180,26 +183,28 @@ class PlayerDAO {
 	public static function setPlayerTee($playerId, $teeId, $seasonId) {
 		$data = DBUtils::escapeData(array($teeId, $playerId, $seasonId));
 		$query = vsprintf(self::UPDATE_PLAYER_TEE_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			if (mysql_affected_rows() == 0) {
-				$result = @mysql_query(vsprintf(self::INSERT_PLAYER_TEE_SQL, $data));
+			if ($db->getRowAffectedCount() == 0) {
+				$result = $db->query(vsprintf(self::INSERT_PLAYER_TEE_SQL, $data));
 				if (!$result) {        	// HARDCODE - only supports 9 hole
 
 
-					throw new Exception ("DB : " . mysql_error());
+					throw new Exception ("DB : " . $db->getError());
 				}
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 	}
 
 	public static function getAllPlayers() {
 		$players = array();
-		$result = mysql_query(self::GET_ALL_USERS_SQL) or die("Could not get all users from the database");
+		$db = DBUtils::getInstance();
+		$result = $db->query(self::GET_ALL_USERS_SQL) or die("Could not get all users from the database");
 		// create a list of players from the results
-		while($row = mysql_fetch_array($result)) {
+		while($row = $db->getRow($result)) {
 			$user = new Player();
 			$user->id = $row["id"];
 			$user->emailAddress = $row["email"];
@@ -269,11 +274,12 @@ class PlayerDAO {
 	public static function getSubEmails() {
 		$emails = array();
 		$query = self::GET_SUB_EMAILS_SQL;
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("Error getting substitute emails - DB : " . mysql_error());
+			throw new Exception("Error getting substitute emails - DB : " . $db->getError());
 		}
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = $db->getRow($result)) {
 			$email = $row["email"];
 			array_push($emails, $email);
 		}
@@ -283,12 +289,13 @@ class PlayerDAO {
 
 	private static function getPlayers($query) {
 		$players = array();
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		// create a list of players from the results
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = $db->getRow($result)) {
 			$user = new Player();
 			$user->id = $row["id"];
 			$user->emailAddress = $row["email"];
@@ -344,10 +351,11 @@ class PlayerDAO {
 	private static function sendPasswordHint($username) {
 		$data = DBUtils::escapeData(array($username));
 		$query = vsprintf(self::GET_PASSWORD_HINT_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			if (mysql_num_rows($result) > 0) {
-				$row = mysql_fetch_array($result);
+			if ($db->getRowCount($result) > 0) {
+				$row = $db->getRow($result);
 				$emailAddress = $row["email"];
 				$passwordHint = $row["passwordHint"];
 				$emailText = "You have requested that your Thursday Night Golf League password hint be emailed to you. Your password hint is \n\n $passwordHint \n\n If you are still unable to access your account with this hint, please contact an administrator at admin@bctngl.com. \n\n If you did not request this be sent to you, please contact a site administrator immediately at admin@bctngl.com";
@@ -360,16 +368,17 @@ class PlayerDAO {
 				throw new Exception("Setup : Could not ssend the password hint for username $username because it doesn't exist");
 			}
 		} else {
-			throw new Exception("DB : Could not send the password hint for username $username" . mysql_error());
+			throw new Exception("DB : Could not send the password hint for username $username" . $db->getError());
 		}
 	}
 
 	public static function editAccount($player) {
 		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $player->id));
 		$query = vsprintf(self::UPDATE_ACCOUNT_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB - Could not update the account information for id - $player->id : " . mysql_error());
+			throw new Exception("DB - Could not update the account information for id - $player->id : " . $db->getError());
 		}
 	}
 
@@ -392,36 +401,40 @@ class PlayerDAO {
 		}
 		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $fulltime, $active, $usercontrolled, $admin, $player->username, $player->id));
 		$query = vsprintf(self::UPDATE_USER_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB - Could not update the account information for id - $player->id : " . mysql_error());
+			throw new Exception("DB - Could not update the account information for id - $player->id : " . $db->getError());
 		}
 	}
 
 	public static function changePassword($id, $newPassword) {
 		$data = DBUtils::escapeData(array(MD5($newPassword), $id));
 		$query = vsprintf(self::CHANGE_PASSWORD_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB - Could not update the password for id - $id : " . mysql_error());
+			throw new Exception("DB - Could not update the password for id - $id : " . $db->getError());
 		}
 	}
 
 	public static function makePlayerAdmin($id) {
 		$data = DBUtils::escapeData(array($id));
 		$query = vsprintf(self::ADD_ADMIN_USER_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB - Could not make the player specified into an admin - $id : " . mysql_error());
+			throw new Exception("DB - Could not make the player specified into an admin - $id : " . $db->getError());
 		}
 	}
 
 	public static function removeAdmin($id) {
 		$data = DBUtils::escapeData(array($id));
 		$query = vsprintf(self::REMOVE_ADMIN_USER_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB - Could not remove an administrator from the database : " . mysql_error());
+			throw new Exception("DB - Could not remove an administrator from the database : " . $db->getError());
 		}
 	}
 
@@ -430,13 +443,14 @@ class PlayerDAO {
 		$data = DBUtils::escapeData($data);
 
 		$query = vsprintf(self::ADD_USER_BY_ADMIN_SQL, $data);
+		$db = DBUtils::getInstance();
 
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		$playerId = "";
 		if ($result) {
-			$playerId = mysql_insert_id();
+			$playerId = $db->getLastInsertId();
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 
 		return $playerId;
@@ -445,25 +459,27 @@ class PlayerDAO {
 	public static function assignPlayerHandicap($playerId, $handicap, $handicapMethod = HandicapMethod::STRAIGHT) {
 		$data = DBUtils::escapeData(array($handicap, $playerId));
 		$query = vsprintf(self::ASSIGN_USER_HANDICAP_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 
 		$data = DBUtils::escapeData(array($handicap, $playerId, $handicapMethod));
 		$query = vsprintf(self::UPDATE_HANDICAP_HISTORY_SQL, $data);
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 	}
 
 	public static function removePlayer($playerId) {
 		$data = DBUtils::escapeData(array($playerId));
 		$query = vsprintf(self::DELETE_USER_SQL, $data);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if (!$result) {
-			echo("DB : " . mysql_error());
+			echo("DB : " . $db->getError());
 		}
 	}
 
@@ -471,9 +487,10 @@ class PlayerDAO {
 		$scores = array();
 		$data1 = DBUtils::escapeData(array($playerId, $numberOfScores));
 		$query = vsprintf(self::LAST_N_MATCHES_SQL, $data1);
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			while ($row = mysql_fetch_array($result)) {
+			while ($row = $db->getRow($result)) {
 				$score = new Scores();
 				$score->match = $row["match_id"];
 				$score->matchDate = $row["date"];
@@ -481,18 +498,18 @@ class PlayerDAO {
 				array_push($scores, $score);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 
 		foreach ($scores as $score) {
 			$data2 = DBUtils::escapeData(array($playerId, $score->match));
 			$query = vsprintf(self::MATCH_SCORE_SQL, $data2);
-			$result = @mysql_query($query);
+			$result = $db->query($query);
 			if ($result) {
-				$row = mysql_fetch_array($result);
+				$row = $db->getRow($result);
 				$score->totalScore = $row["score"];
 			} else {
-				throw new Exception("DB : " . mysql_error());
+				throw new Exception("DB : " . $db->getError());
 			}
 		}
 

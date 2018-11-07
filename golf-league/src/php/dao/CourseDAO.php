@@ -13,16 +13,17 @@ class CourseDAO {
 		$data = DBUtils::escapeData(array($courseId));
 		$query = vsprintf(self::GET_COURSE_SIDES_SQL, $data);
 		$sides = array();
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			$count = mysql_num_rows($result);
+			$count = $db->getRowCount($result);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($result);
+				$row = $db->getRow($result);
 				$name = $row["name"];
 				array_push($sides, $name);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		
 		return $sides;
@@ -32,11 +33,12 @@ class CourseDAO {
 		$data = DBUtils::escapeData(array($id));
 		$query = vsprintf(self::GET_COURSE_SQL, $data);
 		$course = new Course();
-		$result = mysql_query($query) or die("Unable to get the course with the specified id ($id)");
+		$db = DBUtils::getInstance();
+		$result = $db->query($query) or die("Unable to get the course with the specified id ($id)");
 		if ($result) {
-			$count = mysql_num_rows($result);
+			$count = $db->getRowCount($result);
 			for ($i = 0; $i < $count; $i++) {
-			    $row = mysql_fetch_assoc($result);
+			    $row = $db->getRow($result);
 		    	$course->id = $row["courseId"];
 		    	$course->name = $row["name"]; 
 				$hole = new Hole();
@@ -58,18 +60,19 @@ class CourseDAO {
 	public static function getAllCourses() {
 		$query = self::GET_ALL_COURSES_SQL;
 		$courses = array();
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			$count = mysql_num_rows($result);
+			$count = $db->getRowCount($result);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($result);
+				$row = $db->getRow($result);
 				$course = new Course();
 				$course->id = $row["id"];
 				$course->name = $row["name"];
 				array_push($courses, $course);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		return $courses;
 	}
@@ -78,10 +81,11 @@ class CourseDAO {
 		$data = DBUtils::escapeData(array($courseId, $side));
 		$query = vsprintf(self::GET_HOLES_SQL, $data);
 		$holes = array();
-		$result = mysql_query($query) or die("Could not search for the holes for the course ($courseId) and side ($side)");
-		$count = mysql_num_rows($result);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query) or die("Could not search for the holes for the course ($courseId) and side ($side)");
+		$count = $db->getRowCount($result);
 		for ($i = 0; $i < $count; $i++) {
-			$row = mysql_fetch_assoc($result);
+			$row = $db->getRow($result);
 			$hole = new Hole();
 			$hole->number = $row["number"];
 			$hole->par = $row["par"];
@@ -98,11 +102,12 @@ class CourseDAO {
 		$query = vsprintf(self::GET_TEES_SQL, $data);
 		$tees = array();
 		if (null != $courseId) {
-    		$result = @mysql_query($query);
+			$db = DBUtils::getInstance();
+    		$result = $db->query($query);
 	    	if ($result) {
-		    	$count = mysql_num_rows($result);
+		    	$count = $db->getRowCount($result);
 			    for ($i = 0; $i < $count; $i++) {
-				    $row = mysql_fetch_assoc($result);
+				    $row = $db->getRow($result);
     				$tee = new Tee();
 	     			$tee->color = $row["color"];
 		    		$tee->id = $row["id"];
@@ -112,7 +117,7 @@ class CourseDAO {
 	    			array_push($tees, $tee);
 		    	}
 		    } else {
-			    throw new Exception("DB : " . mysql_error());
+			    throw new Exception("DB : " . $db->getError());
 		    }
 		}
 		return $tees;
@@ -122,16 +127,17 @@ class CourseDAO {
 		$data = DBUtils::escapeData(array($teeId));
 		$query = vsprintf(self::GET_TEE_BY_ID_SQL, $data);
 		$tee = new Tee();
-		$result = @mysql_query($query);
+		$db = DBUtils::getInstance();
+		$result = $db->query($query);
 		if ($result) {
-			$row = mysql_fetch_assoc($result);
+			$row = $db->getRow($result);
 			$tee->color = $row["color"];
 			$tee->id = $row["id"];
 			$tee->name = $row["name"];
 			$tee->rating = $row["rating"];
 			$tee->slope = $row["slope"];
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		return $tee;
 	}

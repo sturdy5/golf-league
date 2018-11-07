@@ -35,19 +35,20 @@ class BlogDAO {
 	 */
 	public function saveBlogPost($title, $body, $published) {
 		$data = array($title, $body, $published);
+		$db = DBUtils::getInstance();
 		
 		$data = DBUtils::escapeData($data);
 
 		$query = vsprintf(self::INSERT_POST_QUERY, $data);
 		
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		
 		$postId = "";
 		
 		if ($result) {
-			$postId = mysql_insert_id();
+			$postId = $db->getLastInsertId();
 		}else{
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		
 		return $postId;
@@ -55,36 +56,39 @@ class BlogDAO {
 	
 	public function deleteBlogPost($postId) {
 		$query = sprintf(self::DELETE_POST_QUERY, $postId);
+		$db = DBUtils::getInstance();
 		
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 	}
 	
 	public function updateBlogPost($postId, $title, $body, $published) {
 		$data = array($title, $body, $published, $postId);
+		$db = DBUtils::getInstance();
 		
 		$data = DBUtils::escapeData($data);
 		
 		$query = vsprintf(self::UPDATE_POST_QUERY, $data);
 		
-		$result = @mysql_query($query);
+		$result = $db->query($query);
 		
 		if (!$result) {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 	}
 	
 	private function getBlogPosts() {
 		$posts = array();
+		$db = DBUtils::getInstance();
 		
-		$results = @mysql_query(self::SELECT_POST_QUERY);
+		$results = $db->query(self::SELECT_POST_QUERY);
 		if ($results) {
-			$count = mysql_num_rows($results);
+			$count = $db->getRowCount($results);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($results);
+				$row = $db->getRow($results);
 				$post = new post();
 				$post->id = $row["id"];
 				$post->title = $row["title"];
@@ -100,7 +104,7 @@ class BlogDAO {
 				$postItem->comments = $this->getPostComments($postItem->id);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		
 		return $posts;
@@ -108,20 +112,21 @@ class BlogDAO {
 	
 	private function getPostComments($postId) {
 		$comments = array();
+		$db = DBUtils::getInstance();
 		
 		$query = sprintf(self::SELECT_POST_QUERY, $postId);
-		$results = @mysql_query($query);
+		$results = $db->query($query);
 		if ($results) {
-			$count = mysql_num_rows($results);
+			$count = $db->getRowCount($results);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysql_fetch_assoc($results);
+				$row = $db->getRow($results);
 				$comment = new comment();
 				$comment->body = $row["body"];
 				
 				array_push($comments, $comment);
 			}
 		} else {
-			throw new Exception("DB : " . mysql_error());
+			throw new Exception("DB : " . $db->getError());
 		}
 		
 		return $comments;

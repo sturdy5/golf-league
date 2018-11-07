@@ -77,13 +77,14 @@ class ScheduleDAO {
     public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
     	$data = DBUtils::escapeData(array($startDate, $endDate, $courseId, $teamStructure, $scoreStyle));
     	$query = vsprintf(self::CREATE_SEASON_SQL, $data);
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query);
 
     	$seasonId = "";
     	if ($result) {
-    		$seasonId = mysql_insert_id();
+    		$seasonId = $db->getLastInsertId();
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
 
     	// now that the season exists, let's add the dates to the schedule.
@@ -91,7 +92,7 @@ class ScheduleDAO {
     	// now let's assume for now that all scheduled dates will be on Wednesdays
     	$date = new DateTime($startDate);
     	$stopDate = new DateTime($endDate);
-    	$wednesday = array();
+    	$scheduleDays = array();
 
     	while ($date <= $stopDate) {
     		/*
@@ -100,7 +101,7 @@ class ScheduleDAO {
     		 */
     		$dayOfWeek = date("w", $date->format('U'));
     		if ($dayOfWeek == 4) {
-    			array_push($wednesdays, $date->format("Y-m-d"));
+    			array_push($scheduleDays, $date->format("Y-m-d"));
     		}
     		/*
     		 * PHP >= 5.3
@@ -110,14 +111,14 @@ class ScheduleDAO {
     	}
 
     	$sideIndex = 0;
-    	foreach($wednesdays as $wednesdays) {
+    	foreach($scheduleDays as $scheduleDay) {
     		// create a match date
     		$side = $sides[$sideIndex];
     		$sideIndex++;
     		if ($sideIndex >= $numberOfSides) {
     			$sideIndex = 0;
     		}
-            self::addCourseScheduleMatch($wednesday, $courseId, $sides[$sideIndex], 0);
+            self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
     	}
 
     	return $seasonId;
@@ -138,13 +139,14 @@ class ScheduleDAO {
     public static function addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole = 0) {
     	$data = DBUtils::escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole));
     	$query = vsprintf(self::ADD_SCHEDULE_SQL, $data);
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query);
 
     	$matchId = "";
     	if ($result) {
-    		$matchId = mysql_insert_id();
+    		$matchId = $db->getLastInsertId();
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
 
     	return $matchId;
@@ -159,13 +161,14 @@ class ScheduleDAO {
      */
     public static function getSeasonByDate($date) {
     	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query);
     	$seasonId = -1;
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = $db->getRow($result);
     		$seasonId = $row["id"];
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
     	return $seasonId;
     }
@@ -179,13 +182,14 @@ class ScheduleDAO {
      */
     public static function getSeasonTeamStructureByDate($date) {
     	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query);
     	$teamStructure = "INDIVIDUAL";
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = $db->getRow($result);
     		$teamStructure = $row["team_structure"];
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
     	return $teamStructure;
     }
@@ -197,10 +201,11 @@ class ScheduleDAO {
      * @return number
      */
     public static function getCurrentSeason() {
-    	$result = @mysql_query(self::GET_SEASON_SQL);
+        $db = DBUtils::getInstance();
+    	$result = $db->query(self::GET_SEASON_SQL);
     	$seasonId = -1;
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = $db->getRow($result);
     		$seasonId = $row["id"];
     	} else {
     		throw new Exception ("DB : Could not get the current season");
@@ -221,13 +226,14 @@ class ScheduleDAO {
     	}
 
     	$query = vsprintf(self::GET_COURSE_BY_SEASON_SQL, array($seasonId));
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query);
     	$courseId = -1;
     	if ($result) {
-    		$row = mysql_fetch_array($result);
+    		$row = $db->getRow($result);
     		$courseId = $row["courseId"];
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
     	return $courseId;
     }
@@ -242,19 +248,20 @@ class ScheduleDAO {
         $seasonId = "none";
         $startDate = null;
         $endDate = null;
-        $result = mysql_query(self::GET_SEASON_SQL) or die("Could not determine the season that is currently in session");
+        $db = DBUtils::getInstance();
+        $result = $db->query(self::GET_SEASON_SQL) or die("Could not determine the season that is currently in session");
         if ($result) {
-        	$count = mysql_num_rows($result);
+        	$count = $db->getRowCount($result);
             for ($i = 0; $i < $count; $i++) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $seasonId = $row["id"];
                 $startDate = $row["startDate"];
                 $endDate = $row["endDate"];
         	}
         } else {
-            $result = mysql_query(self::GET_LAST_SEASON_SQL) or die("Could not determine the season that was last in session");
+            $result = $db->query(self::GET_LAST_SEASON_SQL) or die("Could not determine the season that was last in session");
             if ($result) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $seasonId = $row["id"];
                 $startDate = $row["startDate"];
                 $endDate = $row["endDate"];
@@ -278,10 +285,11 @@ class ScheduleDAO {
     public static function getMatchSubstitute($matchId, $playerId) {
         $data = DBUtils::escapeData(array($matchId, $playerId));
         $query = vsprintf(self::GET_SUBS_BY_MATCH_SQL, $data);
-        $result = mysql_query($query) or die("Could not get the substitutes for the match $matchId and player $playerId");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not get the substitutes for the match $matchId and player $playerId");
         $subId = null;
         if ($result) {
-            $row = mysql_fetch_assoc($result);
+            $row = $db->getRow($result);
             $subId = $row["sub_id"];
         }
         return $subId;
@@ -294,12 +302,13 @@ class ScheduleDAO {
      */
     public static function getFutureAvailableDateSubs() {
     	$query = self::GET_FUTURE_AVAILABLE_DATE_SUBS_SQL;
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = @$db->query($query);
     	$subsList = array();
     	if ($result) {
-    		$count = mysql_num_rows($result);
+    		$count = $db->getRowCount($result);
     		for ($i = 0; $i < $count; $i++) {
-    			$row = mysql_fetch_assoc($result);
+    			$row = $db->getRow($result);
     			$subEntry = array(
     					"date" => $row["date"],
     					"player" => $row["player_id"]);
@@ -316,12 +325,13 @@ class ScheduleDAO {
      */
     public static function getFutureTakenDateSubs() {
     	$query = self::GET_FUTUTE_TAKEN_DATE_SUBS_SQL;
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = @$db->query($query);
     	$subsList = array();
     	if ($result) {
-    		$count = mysql_num_rows($result);
+    		$count = $db->getRowCount($result);
     		for ($i = 0; $i < $count; $i++) {
-    			$row = mysql_fetch_assoc($result);
+    			$row = $db->getRow($result);
     			$subEntry = array(
     					"date" => $row["date"],
     					"player" => $row["player_id"],
@@ -341,12 +351,13 @@ class ScheduleDAO {
     public static function getTakenDateSubsByDate($date) {
     	$data = DBUtils::escapeData(array($date));
     	$query = vsprintf(self::GET_TAKEN_DATE_SUBS_SQL, $data);
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = @$db->query($query);
     	$subsList = array();
     	if ($result) {
-    		$count = mysql_num_rows($result);
+    		$count = $db->getRowCount($result);
     		for ($i = 0; $i < $count; $i++) {
-    			$row = mysql_fetch_assoc($result);
+    			$row = $db->getRow($result);
     			array_push($subsList, $row["sub_id"]);
     		}
     	}
@@ -364,13 +375,14 @@ class ScheduleDAO {
     public static function getSubstituteByDate($date, $playerId) {
     	$data = DBUtils::escapeData(array($date, $playerId));
     	$query = vsprintf(self::GET_SUBS_BY_DATE_SQL, $data);
-    	$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+    	$result = @$db->query($query);
     	$subId = null;
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = $db->getRow($result);
     		$subId = $row["sub_id"];
     	} else {
-    		throw new Exception("DB : " . mysql_error());
+    		throw new Exception("DB : " . $db->getError());
     	}
     	return $subId;
     }
@@ -384,7 +396,8 @@ class ScheduleDAO {
     public static function removeMatchSubstitute($matchId, $subId) {
     	$data = DBUtils::escapeData(array($matchId, $subId));
     	$query = vsprintf(self::REMOVE_SUB_SQL, $data);
-    	$result = mysql_query($query) or die("Couldn't remove the sub");
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query) or die("Couldn't remove the sub");
     }
 
     /**
@@ -396,7 +409,8 @@ class ScheduleDAO {
     public static function removeSubByDate($date, $playerId) {
     	$data = DBUtils::escapeData(array($playerId, $date));
     	$query = vsprintf(self::REMOVE_SUB_BY_DATE_SQL, $data);
-    	$result = mysql_query($query) or die("Couldn't remove the sub request");
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query) or die("Couldn't remove the sub request");
     }
 
     /**
@@ -409,10 +423,11 @@ class ScheduleDAO {
     public static function getPlayerBySubstitute($matchId, $subId) {
     	$data = DBUtils::escapeData(array($matchId, $subId));
     	$query = vsprintf(self::GET_PLAYER_BY_MATCH_AND_SUB_SQL, $data);
-    	$result = mysql_query($query) or die("Could not get the player for the match $matchId and sub $subId");
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query) or die("Could not get the player for the match $matchId and sub $subId");
     	$playerId = null;
     	if ($result) {
-    		$row = mysql_fetch_assoc($result);
+    		$row = $db->getRow($result);
     		$playerId = $row["player_id"];
     	}
     	return $playerId;
@@ -435,7 +450,8 @@ class ScheduleDAO {
     	} else {
     		$query = vsprintf(self::ASSIGN_SUBS_SQL, $data);
     	}
-    	$result = mysql_query($query) or die("Could not assign the sub for the hole");
+        $db = DBUtils::getInstance();
+    	$result = $db->query($query) or die("Could not assign the sub for the hole");
     }
 
     /**
@@ -452,13 +468,14 @@ class ScheduleDAO {
     	$newSub = (null == $existingSub);
     	$alreadyTaken = ("X" != $existingSub);
     	$success = false;
+        $db = DBUtils::getInstance();
     	if ($newSub) {
     		$query = vsprintf(self::ADD_SUB_BY_DATE_SQL, DBUtils::escapeData(array($date, $playerId, $subId)));
-    		mysql_query($query);
+    		$db->query($query);
     		$success = true;
     	} else if (!$alreadyTaken) {
     		$query = vsprintf(self::UPDATE_SUB_BY_DATE_SQL, DBUtils::escapeData(array($subId, $date, $playerId)));
-    		mysql_query($query);
+    		$db->query($query);
     		$success = true;
     	}
 
@@ -476,9 +493,10 @@ class ScheduleDAO {
         $matchup = new Matchup();
         $data = DBUtils::escapeData(array($id));
         $query = vsprintf(self::GET_MATCH_SQL, $data);
-        $result = mysql_query($query) or die("Could not get the match specified ($id)");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not get the match specified ($id)");
         if ($result) {
-            $row = mysql_fetch_assoc($result);
+            $row = $db->getRow($result);
             $side = $row["side"];
             $hole = $row["startingHole"];
             $homeTeam = $row["home"];
@@ -517,11 +535,12 @@ class ScheduleDAO {
         $matchSide = "";
         $matchCourse = "";
         $query = vsprintf(self::GET_SCHEDULE_BY_DATE_SQL, $data);
-        $result = mysql_query($query) or die("Could not get the schedule of matches by the date specified - $date");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not get the schedule of matches by the date specified - $date");
         if ($result) {
-            $count = mysql_num_rows($result);
+            $count = $db->getRowCount($result);
             for ($i = 0; $i < $count; $i++) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $matchup = new Matchup();
                 $side = $row["side"];
                 $hole = $row["startingHole"];
@@ -615,10 +634,10 @@ class ScheduleDAO {
             		self::addMatch($matchDate, $matchup->teams[0], $matchup->teams[1], $matchSide, $matchCourse, $matchup->hole);
             		// delete the placeholder
             		$query = sprintf(self::DELETE_PLACEHOLDER_SQL, $matchDate);
-            		$result = mysql_query($query);
+            		$result = $db->query($query);
             	} else {
                     $query = sprintf(self::ASSIGN_HOLE_SQL, $matchup->hole, $matchup->id);
-                    $result = mysql_query($query);
+                    $result = $db->query($query);
             	}
             }
         }
@@ -636,11 +655,12 @@ class ScheduleDAO {
         $scheduleDate = null;
         $data = DBUtils::escapeData(array($date));
         $query = vsprintf(self::GET_SCHEDULE_NOTES, $data);
-        $result = mysql_query($query) or die("Could not get the notes for the date specified - $date");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not get the notes for the date specified - $date");
         if ($result) {
-        	$count = mysql_num_rows($result);
+        	$count = $db->getRowCount($result);
         	if ($count > 0) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->date = $row["date"];
                 $scheduleDate->notes = $row["notes"];
@@ -652,9 +672,10 @@ class ScheduleDAO {
 	public static function deleteNotesForDate($date) {
 		$data = DBUtils::escapeData(array($date));
 		$query = vsprintf(self::DELETE_SCHEDULE_NOTES, $data);
-		$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+		$result = @$db->query($query);
 		if (!$result) {
-			throw new Exception("Unable to delete the notes - DB : " . mysql_error());
+			throw new Exception("Unable to delete the notes - DB : " . $db->getError());
 		}
 	}
 
@@ -673,7 +694,8 @@ class ScheduleDAO {
         } else {
             $query = vsprintf(self::ADD_SCHEDULE_NOTES, $data);
         }
-        $result = mysql_query($query) or die("Could not set the notes for the values (date: $date - update: $update - notes: $notes");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not set the notes for the values (date: $date - update: $update - notes: $notes");
     }
 
     /**
@@ -685,7 +707,8 @@ class ScheduleDAO {
     private static function updateNotesDate($oldDate, $newDate) {
         $data = DBUtils::escapeData(array($newDate, $oldDate));
         $query = vsprintf(self::UPDATE_SCHEDULE_NOTES_DATE, $data);
-        $result = mysql_query($query) or die("Could not update the notes date. Parameters - old date: $oldDate - new date: $newDate");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not update the notes date. Parameters - old date: $oldDate - new date: $newDate");
     }
 
     /**
@@ -698,7 +721,8 @@ class ScheduleDAO {
         // TODO This needs to be updated to reflect the new table structure for courses vs players
         $data = DBUtils::escapeData(array($newDate, $oldDate));
         $query = vsprintf(self::UPDATE_SCHEDULE_DATE, $data);
-        $result = mysql_query($query) or die("Could not reschedule a date. Parameters - old date: $oldDate - new date: $newDate");
+        $db = DBUtils::getInstance();
+        $result = $db->query($query) or die("Could not reschedule a date. Parameters - old date: $oldDate - new date: $newDate");
 
         if ($result) {
             self::updateNotesDate($oldDate, $newDate);
@@ -716,10 +740,11 @@ class ScheduleDAO {
     public static function addCourseScheduleMatch($date, $courseId, $side, $detailsExist) {
         $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist));
         $query = vsprintf(self::ADD_SINGLE_COURSE_SCHEDULE, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         if (!$result) {
-            throw new Exception("Unable to add a scheduled date for the course - DB : " . mysql_error());
+            throw new Exception("Unable to add a scheduled date for the course - DB : " . $db->getError());
         }
     }
 
@@ -733,13 +758,14 @@ class ScheduleDAO {
     public static function getCourseScheduleMatch($matchId) {
         $data = DBUtils::escapeData(array($matchId));
         $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         $scheduleDate = null;
         if ($result) {
-            $count = mysql_num_rows($result);
+            $count = $db->getRowCount($result);
             if ($count > 0) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
@@ -749,7 +775,7 @@ class ScheduleDAO {
                 $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
-            throw new Exception("Unable to get the scheduled match for the id given - DB : " . mysql_error());
+            throw new Exception("Unable to get the scheduled match for the id given - DB : " . $db->getError());
         }
 
         return $scheduleDate;
@@ -765,13 +791,14 @@ class ScheduleDAO {
     public static function getCourseScheduleMatchByDate($matchDate) {
         $data = DBUtils::escapeData(array($matchDate));
         $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE_BY_DATE, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         $scheduleDate = null;
         if ($result) {
-            $count = mysql_num_rows($result);
+            $count = $db->getRowCount($result);
             if ($count > 0) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
@@ -782,7 +809,7 @@ class ScheduleDAO {
                 $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
-            throw new Exception("Unable to get the scheduled match for the date given - DB : " . mysql_error());
+            throw new Exception("Unable to get the scheduled match for the date given - DB : " . $db->getError());
         }
 
         return $scheduleDate;
@@ -795,13 +822,14 @@ class ScheduleDAO {
      * @return An instance of ScheduleDate if the match was found, otherwise NULL
      */
     public static function getNextCourseScheduleMatch() {
-        $result = @mysql_query(self::GET_NEXT_SINGLE_COURSE_SCHEDULE);
+        $db = DBUtils::getInstance();
+        $result = $db->query(self::GET_NEXT_SINGLE_COURSE_SCHEDULE);
 
         $scheduleDate = null;
         if ($result) {
-            $count = mysql_num_rows($result);
+            $count = $db->getRowCount($result);
             if ($count > 0) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
@@ -811,7 +839,7 @@ class ScheduleDAO {
                 $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
-            throw new Exception("Unable to get the next scheduled match - DB : " . mysql_error());
+            throw new Exception("Unable to get the next scheduled match - DB : " . $db->getError());
         }
 
         return $scheduleDate;
@@ -828,13 +856,14 @@ class ScheduleDAO {
     public static function getCourseScheduleMatches($startDate, $endDate) {
         $data = DBUtils::escapeData(array($startDate, $endDate));
         $query = vsprintf(self::GET_CURRENT_COURSE_SCHEDULE, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         $scheduleDates = array();
         if ($result) {
-            $count = mysql_num_rows($result);
+            $count = $db->getRowCount($result);
             for ($i = 0; $i < $count; $i++) {
-                $row = mysql_fetch_assoc($result);
+                $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->id = $row["id"];
                 $scheduleDate->date = $row["match_date"];
@@ -845,7 +874,7 @@ class ScheduleDAO {
                 array_push($scheduleDates, $scheduleDate);
             }
         } else {
-            throw new Exception("Unable to get the scheduled matches between the dates given - DB : " . mysql_error());
+            throw new Exception("Unable to get the scheduled matches between the dates given - DB : " . $db->getError());
         }
         return $scheduleDates;
     }
@@ -861,10 +890,11 @@ class ScheduleDAO {
     public static function updateCourseScheduleMatch($date, $courseId, $side, $detailsExist, $id) {
         $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist, $id));
         $query = vsprintf(self::UPDATE_SINGLE_COURSE_SCHEDULE, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         if (!$result) {
-            throw new Exception("Unable to update a scheduled date for the course - DB : " . mysql_error());
+            throw new Exception("Unable to update a scheduled date for the course - DB : " . $db->getError());
         }
     }
 
@@ -879,10 +909,11 @@ class ScheduleDAO {
         $detailsExist = ($detailsExist) ? 1 : 0;
         $data = DBUtils::escapeData(array($detailsExist, $id));
         $query = vsprintf(self::SET_COURSE_SCHEDULE_DETAILS, $data);
-        $result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+        $result = @$db->query($query);
 
         if (!$result) {
-            throw new Exception("Unable to update the scheduled date for the course - DB : " . mysql_error());
+            throw new Exception("Unable to update the scheduled date for the course - DB : " . $db->getError());
         }
     }
 
@@ -897,12 +928,13 @@ class ScheduleDAO {
     	$schedule = self::getCourseScheduleMatch($matchId);
     	$data = DBUtils::escapeData(array($matchId));
     	$query = vsprintf(self::REMOVE_SINGLE_COURSE_SCHEDULE, $data);
-		$result = @mysql_query($query);
+        $db = DBUtils::getInstance();
+		$result = @$db->query($query);
 
 		if ($result) {
 			self::deleteNotesForDate($schedule->date);
 		} else {
-			throw new Exception("Unable to delete a scheduled date for the course - DB : " . mysql_error());
+			throw new Exception("Unable to delete a scheduled date for the course - DB : " . $db->getError());
 		}
     }
 }

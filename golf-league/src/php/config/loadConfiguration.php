@@ -1,9 +1,8 @@
 <?php
 // pull the configuration out of the database.
-$config = $_SESSION["config"];
-if (!isset($config)) {
+if (!array_key_exists("config", $_SESSION)) {
 	$config = ConfigDAO::getConfiguration();
-	$_SESSION["config"];
+	$_SESSION["config"] = $config;
 }
 
 function getConfigValue($category, $variable) {

@@ -30,10 +30,12 @@
       <div class="row topspace">
         <div class="col-sm-8 col-sm-offset-2">
 <?php
-          if ($_SESSION["admin"] == 1) {
+          if (array_key_exists("admin", $_SESSION)) {
+            if ($_SESSION["admin"] == 1) {
 ?>
-            <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
+              <div class="addPost"><a href="admin-addPost.php">Add Post</a></div>
 <?php
+            }
           }
           $blogDao = new BlogDAO();
           echo $blogDao->getBlogInformation()->toHTML();
