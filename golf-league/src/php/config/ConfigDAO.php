@@ -6,11 +6,12 @@ class ConfigDAO {
 	
 	public static function getConfiguration() {
 		$config = array();
-		$configResult = @mysqli_query(self::GET_CONFIG_SQL);
+		$db = DBUtils::getInstance();
+		$configResult = $db->query(self::GET_CONFIG_SQL);
 		if ($configResult) {
-			$count = mysqli_num_rows($configResult);
+			$count = $db->getRowCount($configResult);
 			for ($i = 0; $i < $count; $i++) {
-				$row = mysqli_fetch_assoc($configResult);
+				$row = $db->getRow($configResult);
 				$category = $row["category"];
 				$name = $row["name"];
 				$value = $row["value"];
@@ -31,9 +32,10 @@ class ConfigDAO {
 			foreach($category as $valueName => $value) {
 				$data = DBUtils::escapeData(array($value, $valueName, $categoryName));
 				$query = vsprintf(self::UPDATE_CONFIG_SQL, $data);
-				$result = @mysqli_query($query);
+				$db = DBUtils::getInstance();
+				$result = $db->query($query);
 				if (!$result) {
-					throw new Exception("Error saving configuration - " . mysqli_error());
+					throw new Exception("Error saving configuration - " . $db->getError());
 				}
 			}
 		}
