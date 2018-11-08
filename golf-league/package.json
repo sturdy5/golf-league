@@ -19,9 +19,6 @@
   },
   "author": "Jonathon Sturdevant",
   "license": "MIT",
-  "engines": {
-    "node": ">8.0.0"
-  },
   "devDependencies": {
     "apache-server-configs": "^2.14.0",
     "assemble": "^0.4.42",
