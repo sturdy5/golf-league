@@ -2,7 +2,7 @@
 include("./requires.inc.php");
 include("./config/loadConfiguration.php");
 
-if ($_POST["username"] && $_POST["pass"]) {
+if (array_key_exists("username", $_POST) && array_key_exists("pass", $_POST)) {
 	$query = "select id from users where user = '{$_POST["username"]}' and active=1 and password = '".MD5($_POST["pass"])."'";
 	$db = DBUtils::getInstance();
 	$result = $db->query($query) or die("Login query error");
@@ -24,7 +24,7 @@ if ($_POST["username"] && $_POST["pass"]) {
 	}
 }
 
-if ($_GET["logout"] && $_GET["logout"] = 1) {
+if (array_key_exists("logout", $_GET) && $_GET["logout"] && $_GET["logout"] = 1) {
 	session_unset();
 	$_SESSION = array();
 	if (session_destroy()) {
