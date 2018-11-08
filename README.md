@@ -1,4 +1,4 @@
-[ ![Codeship Status for jsturdevant/golf-league](https://www.codeship.io/projects/052e2d90-de36-0131-2070-0e279870539b/status)](https://www.codeship.io/projects/24783)
+[ ![Codeship Status for jsturdevant/golf-league](https://app.codeship.com/projects/865f3620-c46f-0136-7e40-5e5b655f6c4d/status?branch=master)](https://app.codeship.com/projects/314137)
 
 Overview
 ========
