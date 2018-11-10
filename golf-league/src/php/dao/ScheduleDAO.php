@@ -74,7 +74,7 @@ class ScheduleDAO {
      * @throws Exception
      * @return The id of the season that was created
      */
-    public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
+    public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle, $matchDay) {
     	$data = DBUtils::escapeData(array($startDate, $endDate, $courseId, $teamStructure, $scoreStyle));
     	$query = vsprintf(self::CREATE_SEASON_SQL, $data);
         $db = DBUtils::getInstance();
@@ -100,7 +100,7 @@ class ScheduleDAO {
     		 *    $dayOfWeek = date("w", $date->getTimestamp());
     		 */
     		$dayOfWeek = date("w", $date->format('U'));
-    		if ($dayOfWeek == 4) {
+    		if ($dayOfWeek == $matchDay) {
     			array_push($scheduleDays, $date->format("Y-m-d"));
     		}
     		/*

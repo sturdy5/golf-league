@@ -32,7 +32,7 @@ include_once("../analyticstracking.php");
 <?php
     $courses = CourseDAO::getAllCourses();
     $message = "";
-    if (isset($_POST["startDate"]) && isset($_POST["endDate"]) && isset($_POST["course"]) && isset($_POST["teamStructure"]) && isset($_POST["scoreStyle"])) {
+    if (isset($_POST["startDate"]) && isset($_POST["endDate"]) && isset($_POST["course"]) && isset($_POST["teamStructure"]) && isset($_POST["scoreStyle"]) && isset($_POST["dayOfWeek"])) {
         ScheduleDAO::createSeason($_POST["startDate"], $_POST["endDate"], $_POST["course"], $_POST["teamStructure"], $_POST["scoreStyle"]);
         $message = "Successfully create season!";
     }
@@ -54,6 +54,20 @@ include_once("../analyticstracking.php");
     			        <input type="text" name="endDate" id="endDate" data-dojo-type="dijit/form/DateTextBox" required="true"/>
     			    </span>
     			</p>
+                <p>
+                    <label for="dayOfWeek" class="fieldTitle">Day of the Week:</label>
+                    <span class="textbox">
+                        <select name="dayOfWeek" id="dayOfWeek">
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                        </select>
+                    </span>
+                </p>
     			<p>
     			    <label for="course" class="fieldTitle">Course:</label>
     			    <span class="textbox">
