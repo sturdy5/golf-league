@@ -1,8 +1,0 @@
-{
-    "id": "golf-league",
-    "host": "golf-league.dev",
-    "docroot": "/vagrant-web/golf-league/",
-    "aliases": [
-        "dev.golf-league.com"
-    ]
-}
