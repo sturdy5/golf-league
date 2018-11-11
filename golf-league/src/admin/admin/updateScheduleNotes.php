@@ -29,7 +29,7 @@ include_once("../analyticstracking.php");
 ?>
 <div class="content">
 <?php
-    if (isset($_POST["oldDate"]) && isset($_POST["newDate"]) && isset($_POST["notes"]) && isset($_POST["alreadyExists"]) && isset($_POST["side"]) && isset($_POST["course"]) && isset($_POST["detailsExist"]) && isset($_POST["matchId"])) {
+    if (isset($_POST["oldDate"]) && isset($_POST["newDate"]) && isset($_POST["alreadyExists"]) && isset($_POST["side"]) && isset($_POST["course"]) && isset($_POST["detailsExist"]) && isset($_POST["matchId"])) {
     	$oldDate = $_POST["oldDate"];
     	$newDate = $_POST["newDate"];
     	$updateDate = false;
@@ -151,7 +151,5 @@ include_once("../analyticstracking.php");
 <?php
     include("./../utilities.inc.php"); 
 ?>
-
-<?php 
-include("./../footer.inc.php");
-?>
+</body>
+</html>

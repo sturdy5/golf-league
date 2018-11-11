@@ -6,7 +6,7 @@ include('./../navigation.inc.php');
 ?>
 <html>
 <head>
-    <title><?=$config["General"]["siteTitle"]["value"]?></title>
+    <title><?=getConfigValue("General", "siteTitle")?></title>
     <link href="/theme/style.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="./../js/selector.js"></script>
 </head>
@@ -29,6 +29,5 @@ include_once("../analyticstracking.php");
     include("./../utilities.inc.php"); 
 ?>
 
-<?php 
-include("./../footer.inc.php");
-?>
+</body>
+</html>
