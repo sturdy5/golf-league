@@ -1,12 +1,12 @@
 <?php
 /*
  * Please add the following as required elements when including this file
-*     - config.inc.php
-*     - dao/PlayerDAO.php
-*     - dao/ScheduleDAO.php
-*     - model/Team.php
-*     - model/Player.php
-*/
+ *     - config.inc.php
+ *     - dao/PlayerDAO.php
+ *     - dao/ScheduleDAO.php
+ *     - model/Team.php
+ *     - model/Player.php
+ */
 
 /**
  * This class is used to retrieve all of the information relating to
@@ -156,7 +156,7 @@ class TeamDAO {
     	}
     	
         $data = array($name, $playerIds, $seasonId);
-        $data = DBUtils::escapeData($data);
+        $data = $db->escapeData($data);
         
         $query = vsprintf(self::ADD_TEAM_SQL, $data);
 
@@ -174,9 +174,9 @@ class TeamDAO {
     }
     
     public static function deleteTeam($id) {
-        $data = DBUtils::escapeData(array($id));
-        $query = vsprintf(self::DELETE_TEAM_SQL, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($id));
+        $query = vsprintf(self::DELETE_TEAM_SQL, $data);
         $result = $db->query($query);
         
         $returnValue = false;

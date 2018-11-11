@@ -171,9 +171,9 @@ class HandicapDAO {
 	}
 
 	private function getLatestCourseHandicap($playerId, $courseId) {
-		$data = DBUtils::escapeData(array($playerId, $courseId));
-		$query = vsprintf(self::GET_COURSE_HANDICAP_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($playerId, $courseId));
+		$query = vsprintf(self::GET_COURSE_HANDICAP_SQL, $data);
 		$result = $db->query($query);
 		$courseHandicap = 40.0; // this handicap is the default
 		if ($result) {

@@ -2,6 +2,8 @@
 include("./requires.inc.php");
 include("./config/loadConfiguration.php");
 
+$error = "";
+
 if (array_key_exists("username", $_POST) && array_key_exists("pass", $_POST)) {
 	$query = "select id from users where user = '{$_POST["username"]}' and active=1 and password = '".MD5($_POST["pass"])."'";
 	$db = DBUtils::getInstance();
@@ -9,7 +11,7 @@ if (array_key_exists("username", $_POST) && array_key_exists("pass", $_POST)) {
 	if (!$db->getRowCount($result)) {
 		$error = "The username or password you entered is invalid. Be sure the account is activated";
 	} else {
-		$row = $db->getRow();
+		$row = $db->getRow($result);
 		$query = "select * from users where id=".$row["id"];
 		$result = $db->query($query) or die ("User information query error");
 		while ($row = $db->getRow($result)) {

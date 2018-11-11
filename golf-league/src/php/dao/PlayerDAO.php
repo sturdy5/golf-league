@@ -95,9 +95,9 @@ class PlayerDAO {
 	}
 
 	public static function getPlayerByName($firstName, $lastName) {
-		$data = DBUtils::escapeData(array(strtolower($firstName), strtolower($lastName)));
-		$query = vsprintf(self::GET_USER_BY_NAME_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array(strtolower($firstName), strtolower($lastName)));
+		$query = vsprintf(self::GET_USER_BY_NAME_SQL, $data);
 		$result = $db->query($query);
 		$row = $db->getRow($result);
 		$user = new Player();
@@ -181,9 +181,9 @@ class PlayerDAO {
 	}
 
 	public static function setPlayerTee($playerId, $teeId, $seasonId) {
-		$data = DBUtils::escapeData(array($teeId, $playerId, $seasonId));
-		$query = vsprintf(self::UPDATE_PLAYER_TEE_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($teeId, $playerId, $seasonId));
+		$query = vsprintf(self::UPDATE_PLAYER_TEE_SQL, $data);
 		$result = $db->query($query);
 		if ($result) {
 			if ($db->getRowAffectedCount() == 0) {
@@ -349,9 +349,9 @@ class PlayerDAO {
 	 * @throws Exception
 	 */
 	private static function sendPasswordHint($username) {
-		$data = DBUtils::escapeData(array($username));
-		$query = vsprintf(self::GET_PASSWORD_HINT_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($username));
+		$query = vsprintf(self::GET_PASSWORD_HINT_SQL, $data);
 		$result = $db->query($query);
 		if ($result) {
 			if ($db->getRowCount($result) > 0) {
@@ -373,9 +373,9 @@ class PlayerDAO {
 	}
 
 	public static function editAccount($player) {
-		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $player->id));
-		$query = vsprintf(self::UPDATE_ACCOUNT_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $player->id));
+		$query = vsprintf(self::UPDATE_ACCOUNT_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB - Could not update the account information for id - $player->id : " . $db->getError());
@@ -399,9 +399,9 @@ class PlayerDAO {
 		if ($player->admin) {
 			$admin = "1";
 		}
-		$data = DBUtils::escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $fulltime, $active, $usercontrolled, $admin, $player->username, $player->id));
-		$query = vsprintf(self::UPDATE_USER_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($player->firstName, $player->lastName, $player->emailAddress, $player->phoneNumber, $fulltime, $active, $usercontrolled, $admin, $player->username, $player->id));
+		$query = vsprintf(self::UPDATE_USER_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB - Could not update the account information for id - $player->id : " . $db->getError());
@@ -409,9 +409,9 @@ class PlayerDAO {
 	}
 
 	public static function changePassword($id, $newPassword) {
-		$data = DBUtils::escapeData(array(MD5($newPassword), $id));
-		$query = vsprintf(self::CHANGE_PASSWORD_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array(MD5($newPassword), $id));
+		$query = vsprintf(self::CHANGE_PASSWORD_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB - Could not update the password for id - $id : " . $db->getError());
@@ -419,9 +419,9 @@ class PlayerDAO {
 	}
 
 	public static function makePlayerAdmin($id) {
-		$data = DBUtils::escapeData(array($id));
-		$query = vsprintf(self::ADD_ADMIN_USER_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($id));
+		$query = vsprintf(self::ADD_ADMIN_USER_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB - Could not make the player specified into an admin - $id : " . $db->getError());
@@ -429,9 +429,9 @@ class PlayerDAO {
 	}
 
 	public static function removeAdmin($id) {
-		$data = DBUtils::escapeData(array($id));
-		$query = vsprintf(self::REMOVE_ADMIN_USER_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($id));
+		$query = vsprintf(self::REMOVE_ADMIN_USER_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB - Could not remove an administrator from the database : " . $db->getError());
@@ -440,10 +440,10 @@ class PlayerDAO {
 
 	public static function addPlayerByAdmin($firstName, $lastName, $email, $phoneNumber, $fullTime) {
 		$data = array($firstName, $lastName, $email, $phoneNumber, $fullTime, MD5("temp"));
-		$data = DBUtils::escapeData($data);
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData($data);
 
 		$query = vsprintf(self::ADD_USER_BY_ADMIN_SQL, $data);
-		$db = DBUtils::getInstance();
 
 		$result = $db->query($query);
 		$playerId = "";
@@ -457,15 +457,15 @@ class PlayerDAO {
 	}
 
 	public static function assignPlayerHandicap($playerId, $handicap, $handicapMethod = HandicapMethod::STRAIGHT) {
-		$data = DBUtils::escapeData(array($handicap, $playerId));
-		$query = vsprintf(self::ASSIGN_USER_HANDICAP_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($handicap, $playerId));
+		$query = vsprintf(self::ASSIGN_USER_HANDICAP_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			throw new Exception("DB : " . $db->getError());
 		}
 
-		$data = DBUtils::escapeData(array($handicap, $playerId, $handicapMethod));
+		$data = $db->escapeData(array($handicap, $playerId, $handicapMethod));
 		$query = vsprintf(self::UPDATE_HANDICAP_HISTORY_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
@@ -474,9 +474,9 @@ class PlayerDAO {
 	}
 
 	public static function removePlayer($playerId) {
-		$data = DBUtils::escapeData(array($playerId));
-		$query = vsprintf(self::DELETE_USER_SQL, $data);
 		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($playerId));
+		$query = vsprintf(self::DELETE_USER_SQL, $data);
 		$result = $db->query($query);
 		if (!$result) {
 			echo("DB : " . $db->getError());
@@ -485,9 +485,9 @@ class PlayerDAO {
 
 	public static function getLastNScores($playerId, $numberOfScores) {
 		$scores = array();
-		$data1 = DBUtils::escapeData(array($playerId, $numberOfScores));
-		$query = vsprintf(self::LAST_N_MATCHES_SQL, $data1);
 		$db = DBUtils::getInstance();
+		$data1 = $db->escapeData(array($playerId, $numberOfScores));
+		$query = vsprintf(self::LAST_N_MATCHES_SQL, $data1);
 		$result = $db->query($query);
 		if ($result) {
 			while ($row = $db->getRow($result)) {
@@ -502,7 +502,7 @@ class PlayerDAO {
 		}
 
 		foreach ($scores as $score) {
-			$data2 = DBUtils::escapeData(array($playerId, $score->match));
+			$data2 = $db->escapeData(array($playerId, $score->match));
 			$query = vsprintf(self::MATCH_SCORE_SQL, $data2);
 			$result = $db->query($query);
 			if ($result) {

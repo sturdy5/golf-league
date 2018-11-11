@@ -37,7 +37,7 @@ class BlogDAO {
 		$data = array($title, $body, $published);
 		$db = DBUtils::getInstance();
 		
-		$data = DBUtils::escapeData($data);
+		$data = $db->escapeData($data);
 
 		$query = vsprintf(self::INSERT_POST_QUERY, $data);
 		
@@ -69,7 +69,7 @@ class BlogDAO {
 		$data = array($title, $body, $published, $postId);
 		$db = DBUtils::getInstance();
 		
-		$data = DBUtils::escapeData($data);
+		$data = $db->escapeData($data);
 		
 		$query = vsprintf(self::UPDATE_POST_QUERY, $data);
 		

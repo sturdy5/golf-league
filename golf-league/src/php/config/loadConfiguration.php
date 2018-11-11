@@ -8,6 +8,7 @@ if (!array_key_exists("config", $_SESSION)) {
 function getConfigValue($category, $variable) {
 	$returnVar = "";
 	global $config;
+	$config = $_SESSION["config"];
 	if (isset($config) && isset($config[$category]) && isset($config[$category][$variable])) {
 	    $returnVar = $config[$category][$variable]["value"];
 	}
