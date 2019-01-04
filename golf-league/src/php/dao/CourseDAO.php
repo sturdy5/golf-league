@@ -10,10 +10,10 @@ class CourseDAO {
 	const GET_COURSE_SIDES_SQL = "select * from course_sides where courseId = %s";
 	
 	public static function getCourseSides($courseId) {
-		$data = DBUtils::escapeData(array($courseId));
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($courseId));
 		$query = vsprintf(self::GET_COURSE_SIDES_SQL, $data);
 		$sides = array();
-		$db = DBUtils::getInstance();
 		$result = $db->query($query);
 		if ($result) {
 			$count = $db->getRowCount($result);
@@ -30,10 +30,10 @@ class CourseDAO {
 	}
 	
 	public static function getCourseById($id) {
-		$data = DBUtils::escapeData(array($id));
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($id));
 		$query = vsprintf(self::GET_COURSE_SQL, $data);
 		$course = new Course();
-		$db = DBUtils::getInstance();
 		$result = $db->query($query) or die("Unable to get the course with the specified id ($id)");
 		if ($result) {
 			$count = $db->getRowCount($result);
@@ -78,10 +78,10 @@ class CourseDAO {
 	}
 	
 	public static function getHolesPerSide($courseId, $side) {
-		$data = DBUtils::escapeData(array($courseId, $side));
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($courseId, $side));
 		$query = vsprintf(self::GET_HOLES_SQL, $data);
 		$holes = array();
-		$db = DBUtils::getInstance();
 		$result = $db->query($query) or die("Could not search for the holes for the course ($courseId) and side ($side)");
 		$count = $db->getRowCount($result);
 		for ($i = 0; $i < $count; $i++) {
@@ -98,11 +98,11 @@ class CourseDAO {
 	}
 	
 	public static function getTees($courseId) {
-		$data = DBUtils::escapeData(array($courseId));
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($courseId));
 		$query = vsprintf(self::GET_TEES_SQL, $data);
 		$tees = array();
 		if (null != $courseId) {
-			$db = DBUtils::getInstance();
     		$result = $db->query($query);
 	    	if ($result) {
 		    	$count = $db->getRowCount($result);
@@ -124,10 +124,10 @@ class CourseDAO {
 	}
 	
 	public static function getTeeById($teeId) {
-		$data = DBUtils::escapeData(array($teeId));
+		$db = DBUtils::getInstance();
+		$data = $db->escapeData(array($teeId));
 		$query = vsprintf(self::GET_TEE_BY_ID_SQL, $data);
 		$tee = new Tee();
-		$db = DBUtils::getInstance();
 		$result = $db->query($query);
 		if ($result) {
 			$row = $db->getRow($result);

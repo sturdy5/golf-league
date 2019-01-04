@@ -28,11 +28,11 @@ class ConfigDAO {
 	}
 	
 	public static function saveConfiguration($configArray) {
+		$db = DBUtils::getInstance();
 		foreach($configArray as $categoryName => $category) {
 			foreach($category as $valueName => $value) {
-				$data = DBUtils::escapeData(array($value, $valueName, $categoryName));
+				$data = $db->escapeData(array($value, $valueName, $categoryName));
 				$query = vsprintf(self::UPDATE_CONFIG_SQL, $data);
-				$db = DBUtils::getInstance();
 				$result = $db->query($query);
 				if (!$result) {
 					throw new Exception("Error saving configuration - " . $db->getError());

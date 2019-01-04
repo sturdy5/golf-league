@@ -113,7 +113,7 @@ include_once("../analyticstracking.php");
     	    PlayerDAO::changePassword($player->id, $newPassword);
     	}
     	
-    	if (isset($_POST["teeBox"])) {
+    	if (isset($_POST["teeBox"]) && !is_null($seasonId)) {
     		PlayerDAO::setPlayerTee($player->id, $_POST["teeBox"], $seasonId);
     	}
 ?>
@@ -123,17 +123,19 @@ include_once("../analyticstracking.php");
 <?php
     } else {
         $player = PlayerDAO::getPlayer($_GET["id"]);
-        $courseId = ScheduleDAO::getCourseBySeason($seasonId);
-        $playerTeeId = PlayerDAO::getPlayerTee($player->id, $seasonId);
-        $courseIds = explode(",", $courseId);
-        $courseTees = array();
-        $courses = array();
-        foreach ($courseIds as $aCourseId) {
-            $tees = CourseDAO::getTees($aCourseId);
-            array_push($courseTees, $tees);
+        if (!is_null($seasonId)) {
+            $courseId = ScheduleDAO::getCourseBySeason($seasonId);
+            $playerTeeId = PlayerDAO::getPlayerTee($player->id, $seasonId);
+            $courseIds = explode(",", $courseId);
+            $courseTees = array();
+            $courses = array();
+            foreach ($courseIds as $aCourseId) {
+                $tees = CourseDAO::getTees($aCourseId);
+                array_push($courseTees, $tees);
 
-            $course = CourseDAO::getCourseById($aCourseId);
-            array_push($courses, $course);
+                $course = CourseDAO::getCourseById($aCourseId);
+                array_push($courses, $course);
+            }
         }
         
         if (null == $player) {
@@ -265,7 +267,5 @@ include_once("../analyticstracking.php");
 <?php
     include("./../utilities.inc.php"); 
 ?>
-
-<?php 
-include("./../footer.inc.php");
-?>
+</body>
+</html>

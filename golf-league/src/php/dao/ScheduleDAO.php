@@ -74,54 +74,55 @@ class ScheduleDAO {
      * @throws Exception
      * @return The id of the season that was created
      */
-    public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle) {
-    	$data = DBUtils::escapeData(array($startDate, $endDate, $courseId, $teamStructure, $scoreStyle));
-    	$query = vsprintf(self::CREATE_SEASON_SQL, $data);
+    public static function createSeason($startDate, $endDate, $courseId, $teamStructure, $scoreStyle, $matchDay) {
         $db = DBUtils::getInstance();
-    	$result = $db->query($query);
+        $data = $db->escapeData(array($startDate, $endDate, $courseId, $teamStructure, $scoreStyle));
+        $query = vsprintf(self::CREATE_SEASON_SQL, $data);
+        $result = $db->query($query);
 
-    	$seasonId = "";
-    	if ($result) {
-    		$seasonId = $db->getLastInsertId();
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
+        $seasonId = "";
+        if ($result) {
+            $seasonId = $db->getLastInsertId();
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
 
-    	// now that the season exists, let's add the dates to the schedule.
+        // now that the season exists, let's add the dates to the schedule.
 
-    	// now let's assume for now that all scheduled dates will be on Wednesdays
-    	$date = new DateTime($startDate);
-    	$stopDate = new DateTime($endDate);
-    	$scheduleDays = array();
+        // now let's assume for now that all scheduled dates will be on Wednesdays
+        $date = new DateTime($startDate);
+        $stopDate = new DateTime($endDate);
+        $scheduleDays = array();
 
-    	while ($date <= $stopDate) {
-    		/*
-    		 * PHP >= 5.3
-    		 *    $dayOfWeek = date("w", $date->getTimestamp());
-    		 */
-    		$dayOfWeek = date("w", $date->format('U'));
-    		if ($dayOfWeek == 4) {
-    			array_push($scheduleDays, $date->format("Y-m-d"));
-    		}
-    		/*
-    		 * PHP >= 5.3
-    		 *    $date = $date->modify("+1 day");
-    		 */
-    		$date = new DateTime('@' . ($date->format('U') + 86400));
-    	}
+        while ($date <= $stopDate) {
+            /*
+             * PHP >= 5.3
+             *    $dayOfWeek = date("w", $date->getTimestamp());
+             */
+            $dayOfWeek = date("w", $date->format('U'));
+            if ($dayOfWeek == $matchDay) {
+                array_push($scheduleDays, $date->format("Y-m-d"));
+            }
+            /*
+             * PHP >= 5.3
+             *    $date = $date->modify("+1 day");
+             */
+            $date = new DateTime('@' . ($date->format('U') + 86400));
+        }
 
-    	$sideIndex = 0;
-    	foreach($scheduleDays as $scheduleDay) {
-    		// create a match date
-    		$side = $sides[$sideIndex];
-    		$sideIndex++;
-    		if ($sideIndex >= $numberOfSides) {
-    			$sideIndex = 0;
-    		}
+        $sideIndex = 0;
+        foreach($scheduleDays as $scheduleDay) {
+            // create a match date
+            // TODO None of this works because the variables $sides and $numberOfSides doesn't exist
+            $side = $sides[$sideIndex];
+            $sideIndex++;
+            if ($sideIndex >= $numberOfSides) {
+                $sideIndex = 0;
+            }
             self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
-    	}
+        }
 
-    	return $seasonId;
+        return $seasonId;
     }
 
     /**
@@ -137,19 +138,19 @@ class ScheduleDAO {
      * @return Ambigous <string, number>
      */
     public static function addMatch($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole = 0) {
-    	$data = DBUtils::escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole));
-    	$query = vsprintf(self::ADD_SCHEDULE_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = $db->query($query);
+        $data = $db->escapeData(array($date, $homeTeamId, $awayTeamId, $sideName, $courseId, $hole));
+        $query = vsprintf(self::ADD_SCHEDULE_SQL, $data);
+        $result = $db->query($query);
 
-    	$matchId = "";
-    	if ($result) {
-    		$matchId = $db->getLastInsertId();
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
+        $matchId = "";
+        if ($result) {
+            $matchId = $db->getLastInsertId();
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
 
-    	return $matchId;
+        return $matchId;
     }
 
     /**
@@ -160,17 +161,17 @@ class ScheduleDAO {
      * @return number
      */
     public static function getSeasonByDate($date) {
-    	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
+        $query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
         $db = DBUtils::getInstance();
-    	$result = $db->query($query);
-    	$seasonId = -1;
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$seasonId = $row["id"];
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
-    	return $seasonId;
+        $result = $db->query($query);
+        $seasonId = -1;
+        if ($result) {
+            $row = $db->getRow($result);
+            $seasonId = $row["id"];
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
+        return $seasonId;
     }
 
     /**
@@ -181,17 +182,17 @@ class ScheduleDAO {
      * @return string
      */
     public static function getSeasonTeamStructureByDate($date) {
-    	$query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
+        $query = vsprintf(self::GET_SEASON_BY_DATE_SQL, array($date, $date));
         $db = DBUtils::getInstance();
-    	$result = $db->query($query);
-    	$teamStructure = "INDIVIDUAL";
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$teamStructure = $row["team_structure"];
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
-    	return $teamStructure;
+        $result = $db->query($query);
+        $teamStructure = "INDIVIDUAL";
+        if ($result) {
+            $row = $db->getRow($result);
+            $teamStructure = $row["team_structure"];
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
+        return $teamStructure;
     }
 
     /**
@@ -202,15 +203,15 @@ class ScheduleDAO {
      */
     public static function getCurrentSeason() {
         $db = DBUtils::getInstance();
-    	$result = $db->query(self::GET_SEASON_SQL);
-    	$seasonId = -1;
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$seasonId = $row["id"];
-    	} else {
-    		throw new Exception ("DB : Could not get the current season");
-    	}
-    	return $seasonId;
+        $result = $db->query(self::GET_SEASON_SQL);
+        $seasonId = -1;
+        if ($result) {
+            $row = $db->getRow($result);
+            $seasonId = $row["id"];
+        } else {
+            throw new Exception ("DB : Could not get the current season");
+        }
+        return $seasonId;
     }
 
     /**
@@ -221,21 +222,21 @@ class ScheduleDAO {
      * @return unknown
      */
     public static function getCourseBySeason($seasonId = -1) {
-    	if ($seasonId == -1) {
-    		$seasonId = self::getCurrentSeason();
-    	}
+        if ($seasonId == -1) {
+            $seasonId = self::getCurrentSeason();
+        }
 
-    	$query = vsprintf(self::GET_COURSE_BY_SEASON_SQL, array($seasonId));
+        $query = vsprintf(self::GET_COURSE_BY_SEASON_SQL, array($seasonId));
         $db = DBUtils::getInstance();
-    	$result = $db->query($query);
-    	$courseId = -1;
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$courseId = $row["courseId"];
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
-    	return $courseId;
+        $result = $db->query($query);
+        $courseId = -1;
+        if ($result) {
+            $row = $db->getRow($result);
+            $courseId = $row["courseId"];
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
+        return $courseId;
     }
 
     /**
@@ -251,13 +252,13 @@ class ScheduleDAO {
         $db = DBUtils::getInstance();
         $result = $db->query(self::GET_SEASON_SQL) or die("Could not determine the season that is currently in session");
         if ($result) {
-        	$count = $db->getRowCount($result);
+            $count = $db->getRowCount($result);
             for ($i = 0; $i < $count; $i++) {
                 $row = $db->getRow($result);
                 $seasonId = $row["id"];
                 $startDate = $row["startDate"];
                 $endDate = $row["endDate"];
-        	}
+            }
         } else {
             $result = $db->query(self::GET_LAST_SEASON_SQL) or die("Could not determine the season that was last in session");
             if ($result) {
@@ -283,9 +284,9 @@ class ScheduleDAO {
      * @return NULL
      */
     public static function getMatchSubstitute($matchId, $playerId) {
-        $data = DBUtils::escapeData(array($matchId, $playerId));
-        $query = vsprintf(self::GET_SUBS_BY_MATCH_SQL, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($matchId, $playerId));
+        $query = vsprintf(self::GET_SUBS_BY_MATCH_SQL, $data);
         $result = $db->query($query) or die("Could not get the substitutes for the match $matchId and player $playerId");
         $subId = null;
         if ($result) {
@@ -301,21 +302,21 @@ class ScheduleDAO {
      * @return multitype:
      */
     public static function getFutureAvailableDateSubs() {
-    	$query = self::GET_FUTURE_AVAILABLE_DATE_SUBS_SQL;
+        $query = self::GET_FUTURE_AVAILABLE_DATE_SUBS_SQL;
         $db = DBUtils::getInstance();
-    	$result = @$db->query($query);
-    	$subsList = array();
-    	if ($result) {
-    		$count = $db->getRowCount($result);
-    		for ($i = 0; $i < $count; $i++) {
-    			$row = $db->getRow($result);
-    			$subEntry = array(
-    					"date" => $row["date"],
-    					"player" => $row["player_id"]);
-    			array_push($subsList, $subEntry);
-    		}
-    	}
-    	return $subsList;
+        $result = @$db->query($query);
+        $subsList = array();
+        if ($result) {
+            $count = $db->getRowCount($result);
+            for ($i = 0; $i < $count; $i++) {
+                $row = $db->getRow($result);
+                $subEntry = array(
+                        "date" => $row["date"],
+                        "player" => $row["player_id"]);
+                array_push($subsList, $subEntry);
+            }
+        }
+        return $subsList;
     }
 
     /**
@@ -324,22 +325,22 @@ class ScheduleDAO {
      * @return multitype:
      */
     public static function getFutureTakenDateSubs() {
-    	$query = self::GET_FUTUTE_TAKEN_DATE_SUBS_SQL;
+        $query = self::GET_FUTUTE_TAKEN_DATE_SUBS_SQL;
         $db = DBUtils::getInstance();
-    	$result = @$db->query($query);
-    	$subsList = array();
-    	if ($result) {
-    		$count = $db->getRowCount($result);
-    		for ($i = 0; $i < $count; $i++) {
-    			$row = $db->getRow($result);
-    			$subEntry = array(
-    					"date" => $row["date"],
-    					"player" => $row["player_id"],
-    					"sub" => $row["sub_id"]);
-    			array_push($subsList, $subEntry);
-    		}
-    	}
-    	return $subsList;
+        $result = @$db->query($query);
+        $subsList = array();
+        if ($result) {
+            $count = $db->getRowCount($result);
+            for ($i = 0; $i < $count; $i++) {
+                $row = $db->getRow($result);
+                $subEntry = array(
+                        "date" => $row["date"],
+                        "player" => $row["player_id"],
+                        "sub" => $row["sub_id"]);
+                array_push($subsList, $subEntry);
+            }
+        }
+        return $subsList;
     }
 
     /**
@@ -349,19 +350,19 @@ class ScheduleDAO {
      * @return multitype:
      */
     public static function getTakenDateSubsByDate($date) {
-    	$data = DBUtils::escapeData(array($date));
-    	$query = vsprintf(self::GET_TAKEN_DATE_SUBS_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = @$db->query($query);
-    	$subsList = array();
-    	if ($result) {
-    		$count = $db->getRowCount($result);
-    		for ($i = 0; $i < $count; $i++) {
-    			$row = $db->getRow($result);
-    			array_push($subsList, $row["sub_id"]);
-    		}
-    	}
-    	return $subsList;
+        $data = $db->escapeData(array($date));
+        $query = vsprintf(self::GET_TAKEN_DATE_SUBS_SQL, $data);
+        $result = @$db->query($query);
+        $subsList = array();
+        if ($result) {
+            $count = $db->getRowCount($result);
+            for ($i = 0; $i < $count; $i++) {
+                $row = $db->getRow($result);
+                array_push($subsList, $row["sub_id"]);
+            }
+        }
+        return $subsList;
     }
 
     /**
@@ -373,18 +374,18 @@ class ScheduleDAO {
      * @return NULL
      */
     public static function getSubstituteByDate($date, $playerId) {
-    	$data = DBUtils::escapeData(array($date, $playerId));
-    	$query = vsprintf(self::GET_SUBS_BY_DATE_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = @$db->query($query);
-    	$subId = null;
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$subId = $row["sub_id"];
-    	} else {
-    		throw new Exception("DB : " . $db->getError());
-    	}
-    	return $subId;
+        $data = $db->escapeData(array($date, $playerId));
+        $query = vsprintf(self::GET_SUBS_BY_DATE_SQL, $data);
+        $result = @$db->query($query);
+        $subId = null;
+        if ($result) {
+            $row = $db->getRow($result);
+            $subId = $row["sub_id"];
+        } else {
+            throw new Exception("DB : " . $db->getError());
+        }
+        return $subId;
     }
 
     /**
@@ -394,10 +395,10 @@ class ScheduleDAO {
      * @param unknown $subId
      */
     public static function removeMatchSubstitute($matchId, $subId) {
-    	$data = DBUtils::escapeData(array($matchId, $subId));
-    	$query = vsprintf(self::REMOVE_SUB_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = $db->query($query) or die("Couldn't remove the sub");
+        $data = $db->escapeData(array($matchId, $subId));
+        $query = vsprintf(self::REMOVE_SUB_SQL, $data);
+        $result = $db->query($query) or die("Couldn't remove the sub");
     }
 
     /**
@@ -407,10 +408,10 @@ class ScheduleDAO {
      * @param unknown $playerId
      */
     public static function removeSubByDate($date, $playerId) {
-    	$data = DBUtils::escapeData(array($playerId, $date));
-    	$query = vsprintf(self::REMOVE_SUB_BY_DATE_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = $db->query($query) or die("Couldn't remove the sub request");
+        $data = $db->escapeData(array($playerId, $date));
+        $query = vsprintf(self::REMOVE_SUB_BY_DATE_SQL, $data);
+        $result = $db->query($query) or die("Couldn't remove the sub request");
     }
 
     /**
@@ -421,16 +422,16 @@ class ScheduleDAO {
      * @return NULL
      */
     public static function getPlayerBySubstitute($matchId, $subId) {
-    	$data = DBUtils::escapeData(array($matchId, $subId));
-    	$query = vsprintf(self::GET_PLAYER_BY_MATCH_AND_SUB_SQL, $data);
         $db = DBUtils::getInstance();
-    	$result = $db->query($query) or die("Could not get the player for the match $matchId and sub $subId");
-    	$playerId = null;
-    	if ($result) {
-    		$row = $db->getRow($result);
-    		$playerId = $row["player_id"];
-    	}
-    	return $playerId;
+        $data = $db->escapeData(array($matchId, $subId));
+        $query = vsprintf(self::GET_PLAYER_BY_MATCH_AND_SUB_SQL, $data);
+        $result = $db->query($query) or die("Could not get the player for the match $matchId and sub $subId");
+        $playerId = null;
+        if ($result) {
+            $row = $db->getRow($result);
+            $playerId = $row["player_id"];
+        }
+        return $playerId;
     }
 
     /**
@@ -441,17 +442,17 @@ class ScheduleDAO {
      * @param unknown $subId
      */
     public static function assignSub($matchId, $playerId, $subId) {
-    	// need to figure out if a sub is already assigned
-    	$existingSub = ScheduleDAO::getMatchSubstitute($matchId, $playerId);
-    	$useUpdate = (null != $existingSub);
-    	$data = DBUtils::escapeData(array($subId, $matchId, $playerId));
-    	if ($useUpdate) {
-    		$query = vsprintf(self::UPDATE_SUBS_SQL, $data);
-    	} else {
-    		$query = vsprintf(self::ASSIGN_SUBS_SQL, $data);
-    	}
+        // need to figure out if a sub is already assigned
+        $existingSub = ScheduleDAO::getMatchSubstitute($matchId, $playerId);
+        $useUpdate = (null != $existingSub);
         $db = DBUtils::getInstance();
-    	$result = $db->query($query) or die("Could not assign the sub for the hole");
+        $data = $db->escapeData(array($subId, $matchId, $playerId));
+        if ($useUpdate) {
+            $query = vsprintf(self::UPDATE_SUBS_SQL, $data);
+        } else {
+            $query = vsprintf(self::ASSIGN_SUBS_SQL, $data);
+        }
+        $result = $db->query($query) or die("Could not assign the sub for the hole");
     }
 
     /**
@@ -463,23 +464,23 @@ class ScheduleDAO {
      * @return boolean
      */
     public static function assignSubByDate($date, $playerId, $subId = "X") {
-    	// need to figure out if a sub is already assigned
-    	$existingSub = ScheduleDAO::getSubstituteByDate($date, $playerId);
-    	$newSub = (null == $existingSub);
-    	$alreadyTaken = ("X" != $existingSub);
-    	$success = false;
+        // need to figure out if a sub is already assigned
+        $existingSub = ScheduleDAO::getSubstituteByDate($date, $playerId);
+        $newSub = (null == $existingSub);
+        $alreadyTaken = ("X" != $existingSub);
+        $success = false;
         $db = DBUtils::getInstance();
-    	if ($newSub) {
-    		$query = vsprintf(self::ADD_SUB_BY_DATE_SQL, DBUtils::escapeData(array($date, $playerId, $subId)));
-    		$db->query($query);
-    		$success = true;
-    	} else if (!$alreadyTaken) {
-    		$query = vsprintf(self::UPDATE_SUB_BY_DATE_SQL, DBUtils::escapeData(array($subId, $date, $playerId)));
-    		$db->query($query);
-    		$success = true;
-    	}
+        if ($newSub) {
+            $query = vsprintf(self::ADD_SUB_BY_DATE_SQL, $db->escapeData(array($date, $playerId, $subId)));
+            $db->query($query);
+            $success = true;
+        } else if (!$alreadyTaken) {
+            $query = vsprintf(self::UPDATE_SUB_BY_DATE_SQL, $db->escapeData(array($subId, $date, $playerId)));
+            $db->query($query);
+            $success = true;
+        }
 
-    	return $success;
+        return $success;
     }
 
     /**
@@ -491,9 +492,9 @@ class ScheduleDAO {
     public static function getMatchById($id) {
         // TODO This needs to be updated to reflect the new table structure for courses vs players
         $matchup = new Matchup();
-        $data = DBUtils::escapeData(array($id));
-        $query = vsprintf(self::GET_MATCH_SQL, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($id));
+        $query = vsprintf(self::GET_MATCH_SQL, $data);
         $result = $db->query($query) or die("Could not get the match specified ($id)");
         if ($result) {
             $row = $db->getRow($result);
@@ -525,7 +526,8 @@ class ScheduleDAO {
     public static function getScheduleForDate($date) {
         // TODO This needs to be updated to reflect the new table structure for courses vs players
         $schedule = new Schedule();
-        $data = DBUtils::escapeData(array($date));
+        $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($date));
         $saveHoleData = false;
         $createTeams = false;
         $frontHoles = range(1, 9);
@@ -535,7 +537,6 @@ class ScheduleDAO {
         $matchSide = "";
         $matchCourse = "";
         $query = vsprintf(self::GET_SCHEDULE_BY_DATE_SQL, $data);
-        $db = DBUtils::getInstance();
         $result = $db->query($query) or die("Could not get the schedule of matches by the date specified - $date");
         if ($result) {
             $count = $db->getRowCount($result);
@@ -558,16 +559,16 @@ class ScheduleDAO {
                 $schedule->date = $matchDate;
 
                 if ($homeTeam == 0 && $awayTeam == 0) {
-                	$createTeams = true;
+                    $createTeams = true;
                 } else {
-                	if ($hole == 0) {
-                    	if (strpos(strtolower($side), "back") === false) {
-                	    	$hole = $frontHoles[$i];
-                	    } else {
-                		    $hole = $backHoles[$i];
-                	    }
-                		$saveHoleData = true;
-                	}
+                    if ($hole == 0) {
+                        if (strpos(strtolower($side), "back") === false) {
+                            $hole = $frontHoles[$i];
+                        } else {
+                            $hole = $backHoles[$i];
+                        }
+                        $saveHoleData = true;
+                    }
                     $matchup->hole = $hole;
                     array_push($matchup->teams, $homeTeam);
                     array_push($matchup->teams, $awayTeam);
@@ -577,68 +578,68 @@ class ScheduleDAO {
         }
 
         if ($createTeams) {
-        	// get the list of full time members
-        	$fulltimePlayers = PlayerDAO::getFulltimePlayers();
-        	shuffle($fulltimePlayers);
-        	$playerIndex = 0;
-        	$saveHoleData = true;
-        	$totalPlayers = count($fulltimePlayers);
-        	// HARDCODE - only supports 9 hole
-        	for ($i = 0; $i < 9; $i++) {
-        		if ($playerIndex >= $totalPlayers) {
-        			break;
-        		}
-        		$hole = 0;
-        		if (strpos(strtolower($matchSide), "back") === false) {
-        			$hole = $frontHoles[$i];
-        		} else {
-        			$hole = $backHoles[$i];
-        		}
-        		$matchup = new Matchup();
-        		$matchup->id = 0;
-        		$matchup->course = $matchCourse;
-        		$matchup->side = $matchSide;
-        		$matchup->hole = $hole;
-        		$homeTeam = $fulltimePlayers[$playerIndex]->id;
-        		// increment the player index to get the next player
-        		$playerIndex++;
-        		// make sure there are enough players to get another
-        		if ($playerIndex < $totalPlayers) {
-        			$homeTeam = $homeTeam . '^' . $fulltimePlayers[$playerIndex]->id;
-        		}
-        		array_push($matchup->teams, $homeTeam);
-        		// now let's try to get an away team
-        		$awayTeam = "";
-        		$playerIndex++;
-        		// again, make sure there are enough players
-        		if ($playerIndex < $totalPlayers) {
-        			$awayTeam = $fulltimePlayers[$playerIndex]->id;
-        		}
-        		// increment the player index to get the next player
-        		$playerIndex++;
-        		// lastly, make sure there are enough players
-        		if ($playerIndex < $totalPlayers) {
-        			$awayTeam = $awayTeam . '^' . $fulltimePlayers[$playerIndex]->id;
-        		}
-        		array_push($matchup->teams, $awayTeam);
-        		// put the match into the schedule
-        		array_push($schedule->matchups, $matchup);
-        		// increment the player index for the next time around
-        		$playerIndex++;
-        	}
+            // get the list of full time members
+            $fulltimePlayers = PlayerDAO::getFulltimePlayers();
+            shuffle($fulltimePlayers);
+            $playerIndex = 0;
+            $saveHoleData = true;
+            $totalPlayers = count($fulltimePlayers);
+            // HARDCODE - only supports 9 hole
+            for ($i = 0; $i < 9; $i++) {
+                if ($playerIndex >= $totalPlayers) {
+                    break;
+                }
+                $hole = 0;
+                if (strpos(strtolower($matchSide), "back") === false) {
+                    $hole = $frontHoles[$i];
+                } else {
+                    $hole = $backHoles[$i];
+                }
+                $matchup = new Matchup();
+                $matchup->id = 0;
+                $matchup->course = $matchCourse;
+                $matchup->side = $matchSide;
+                $matchup->hole = $hole;
+                $homeTeam = $fulltimePlayers[$playerIndex]->id;
+                // increment the player index to get the next player
+                $playerIndex++;
+                // make sure there are enough players to get another
+                if ($playerIndex < $totalPlayers) {
+                    $homeTeam = $homeTeam . '^' . $fulltimePlayers[$playerIndex]->id;
+                }
+                array_push($matchup->teams, $homeTeam);
+                // now let's try to get an away team
+                $awayTeam = "";
+                $playerIndex++;
+                // again, make sure there are enough players
+                if ($playerIndex < $totalPlayers) {
+                    $awayTeam = $fulltimePlayers[$playerIndex]->id;
+                }
+                // increment the player index to get the next player
+                $playerIndex++;
+                // lastly, make sure there are enough players
+                if ($playerIndex < $totalPlayers) {
+                    $awayTeam = $awayTeam . '^' . $fulltimePlayers[$playerIndex]->id;
+                }
+                array_push($matchup->teams, $awayTeam);
+                // put the match into the schedule
+                array_push($schedule->matchups, $matchup);
+                // increment the player index for the next time around
+                $playerIndex++;
+            }
         }
 
         if ($saveHoleData) {
             foreach ($schedule->matchups as $matchup) {
-            	if ($matchup->id == 0) {
-            		self::addMatch($matchDate, $matchup->teams[0], $matchup->teams[1], $matchSide, $matchCourse, $matchup->hole);
-            		// delete the placeholder
-            		$query = sprintf(self::DELETE_PLACEHOLDER_SQL, $matchDate);
-            		$result = $db->query($query);
-            	} else {
+                if ($matchup->id == 0) {
+                    self::addMatch($matchDate, $matchup->teams[0], $matchup->teams[1], $matchSide, $matchCourse, $matchup->hole);
+                    // delete the placeholder
+                    $query = sprintf(self::DELETE_PLACEHOLDER_SQL, $matchDate);
+                    $result = $db->query($query);
+                } else {
                     $query = sprintf(self::ASSIGN_HOLE_SQL, $matchup->hole, $matchup->id);
                     $result = $db->query($query);
-            	}
+                }
             }
         }
 
@@ -653,31 +654,31 @@ class ScheduleDAO {
      */
     public static function getNotesForDate($date) {
         $scheduleDate = null;
-        $data = DBUtils::escapeData(array($date));
-        $query = vsprintf(self::GET_SCHEDULE_NOTES, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($date));
+        $query = vsprintf(self::GET_SCHEDULE_NOTES, $data);
         $result = $db->query($query) or die("Could not get the notes for the date specified - $date");
         if ($result) {
-        	$count = $db->getRowCount($result);
-        	if ($count > 0) {
+            $count = $db->getRowCount($result);
+            if ($count > 0) {
                 $row = $db->getRow($result);
                 $scheduleDate = new ScheduleDate();
                 $scheduleDate->date = $row["date"];
                 $scheduleDate->notes = $row["notes"];
-        	}
+            }
         }
         return $scheduleDate;
     }
 
-	public static function deleteNotesForDate($date) {
-		$data = DBUtils::escapeData(array($date));
-		$query = vsprintf(self::DELETE_SCHEDULE_NOTES, $data);
+    public static function deleteNotesForDate($date) {
         $db = DBUtils::getInstance();
-		$result = @$db->query($query);
-		if (!$result) {
-			throw new Exception("Unable to delete the notes - DB : " . $db->getError());
-		}
-	}
+        $data = $db->escapeData(array($date));
+        $query = vsprintf(self::DELETE_SCHEDULE_NOTES, $data);
+        $result = @$db->query($query);
+        if (!$result) {
+            throw new Exception("Unable to delete the notes - DB : " . $db->getError());
+        }
+    }
 
     /**
      * TODO Document this function
@@ -688,13 +689,13 @@ class ScheduleDAO {
      */
     public static function setNotesForDate($date, $notes, $update) {
         $query = null;
-        $data = DBUtils::escapeData(array($notes, $date));
+        $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($notes, $date));
         if ($update) {
             $query = vsprintf(self::UPDATE_SCHEDULE_NOTES, $data);
         } else {
             $query = vsprintf(self::ADD_SCHEDULE_NOTES, $data);
         }
-        $db = DBUtils::getInstance();
         $result = $db->query($query) or die("Could not set the notes for the values (date: $date - update: $update - notes: $notes");
     }
 
@@ -705,9 +706,9 @@ class ScheduleDAO {
      * @param unknown $newDate
      */
     private static function updateNotesDate($oldDate, $newDate) {
-        $data = DBUtils::escapeData(array($newDate, $oldDate));
-        $query = vsprintf(self::UPDATE_SCHEDULE_NOTES_DATE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($newDate, $oldDate));
+        $query = vsprintf(self::UPDATE_SCHEDULE_NOTES_DATE, $data);
         $result = $db->query($query) or die("Could not update the notes date. Parameters - old date: $oldDate - new date: $newDate");
     }
 
@@ -719,9 +720,9 @@ class ScheduleDAO {
      */
     public static function moveScheduledDate($oldDate, $newDate) {
         // TODO This needs to be updated to reflect the new table structure for courses vs players
-        $data = DBUtils::escapeData(array($newDate, $oldDate));
-        $query = vsprintf(self::UPDATE_SCHEDULE_DATE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($newDate, $oldDate));
+        $query = vsprintf(self::UPDATE_SCHEDULE_DATE, $data);
         $result = $db->query($query) or die("Could not reschedule a date. Parameters - old date: $oldDate - new date: $newDate");
 
         if ($result) {
@@ -738,9 +739,9 @@ class ScheduleDAO {
      * @throws Exception An exception is thrown if there is an issue adding the date to the database
      */
     public static function addCourseScheduleMatch($date, $courseId, $side, $detailsExist) {
-        $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist));
-        $query = vsprintf(self::ADD_SINGLE_COURSE_SCHEDULE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($date, $courseId, $side, $detailsExist));
+        $query = vsprintf(self::ADD_SINGLE_COURSE_SCHEDULE, $data);
         $result = @$db->query($query);
 
         if (!$result) {
@@ -756,9 +757,9 @@ class ScheduleDAO {
      * @return An instance of ScheduleDate if the match was found, otherwise NULL
      */
     public static function getCourseScheduleMatch($matchId) {
-        $data = DBUtils::escapeData(array($matchId));
-        $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($matchId));
+        $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE, $data);
         $result = @$db->query($query);
 
         $scheduleDate = null;
@@ -789,9 +790,9 @@ class ScheduleDAO {
      * @return An instance of ScheduleDate if the match was found, otherwise NULL
      */
     public static function getCourseScheduleMatchByDate($matchDate) {
-        $data = DBUtils::escapeData(array($matchDate));
-        $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE_BY_DATE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($matchDate));
+        $query = vsprintf(self::GET_SINGLE_COURSE_SCHEDULE_BY_DATE, $data);
         $result = @$db->query($query);
 
         $scheduleDate = null;
@@ -854,9 +855,9 @@ class ScheduleDAO {
      * @return A list of ScheduleDate objects
      */
     public static function getCourseScheduleMatches($startDate, $endDate) {
-        $data = DBUtils::escapeData(array($startDate, $endDate));
-        $query = vsprintf(self::GET_CURRENT_COURSE_SCHEDULE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($startDate, $endDate));
+        $query = vsprintf(self::GET_CURRENT_COURSE_SCHEDULE, $data);
         $result = @$db->query($query);
 
         $scheduleDates = array();
@@ -888,9 +889,9 @@ class ScheduleDAO {
      * @throws Exception If there is an issue updating the database
      */
     public static function updateCourseScheduleMatch($date, $courseId, $side, $detailsExist, $id) {
-        $data = DBUtils::escapeData(array($date, $courseId, $side, $detailsExist, $id));
-        $query = vsprintf(self::UPDATE_SINGLE_COURSE_SCHEDULE, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($date, $courseId, $side, $detailsExist, $id));
+        $query = vsprintf(self::UPDATE_SINGLE_COURSE_SCHEDULE, $data);
         $result = @$db->query($query);
 
         if (!$result) {
@@ -907,9 +908,9 @@ class ScheduleDAO {
      */
     public static function setCourseScheduleDetails($id, $detailsExist) {
         $detailsExist = ($detailsExist) ? 1 : 0;
-        $data = DBUtils::escapeData(array($detailsExist, $id));
-        $query = vsprintf(self::SET_COURSE_SCHEDULE_DETAILS, $data);
         $db = DBUtils::getInstance();
+        $data = $db->escapeData(array($detailsExist, $id));
+        $query = vsprintf(self::SET_COURSE_SCHEDULE_DETAILS, $data);
         $result = @$db->query($query);
 
         if (!$result) {
@@ -917,24 +918,24 @@ class ScheduleDAO {
         }
     }
 
-	/**
-	 * Delete the scheduled match given the match id
-	 *
-	 * @param Integer $matchId The match id to delete
-	 * @throws Exception if there is an issue deleting the match from the database
-	 */
+    /**
+     * Delete the scheduled match given the match id
+     *
+     * @param Integer $matchId The match id to delete
+     * @throws Exception if there is an issue deleting the match from the database
+     */
     public static function deleteCourseScheduleMatch($matchId) {
-    	// get a copy of the schedule
-    	$schedule = self::getCourseScheduleMatch($matchId);
-    	$data = DBUtils::escapeData(array($matchId));
-    	$query = vsprintf(self::REMOVE_SINGLE_COURSE_SCHEDULE, $data);
+        // get a copy of the schedule
+        $schedule = self::getCourseScheduleMatch($matchId);
         $db = DBUtils::getInstance();
-		$result = @$db->query($query);
+        $data = $db->escapeData(array($matchId));
+        $query = vsprintf(self::REMOVE_SINGLE_COURSE_SCHEDULE, $data);
+        $result = @$db->query($query);
 
-		if ($result) {
-			self::deleteNotesForDate($schedule->date);
-		} else {
-			throw new Exception("Unable to delete a scheduled date for the course - DB : " . $db->getError());
-		}
+        if ($result) {
+            self::deleteNotesForDate($schedule->date);
+        } else {
+            throw new Exception("Unable to delete a scheduled date for the course - DB : " . $db->getError());
+        }
     }
 }

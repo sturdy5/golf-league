@@ -89,7 +89,5 @@ include_once("../analyticstracking.php");
 <?php
     include("./../utilities.inc.php"); 
 ?>
-
-<?php 
-include("./../footer.inc.php");
-?>
+</body>
+</html>
