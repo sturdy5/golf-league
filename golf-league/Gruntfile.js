@@ -166,6 +166,12 @@ module.exports = function(grunt) {
         },
         {
           expand: true,
+          cwd: '<%= config.app %>/cms/',
+          src: ['**/*.*'],
+          dest: '<%= config.dist %>/cms/'
+        },
+        {
+          expand: true,
           cwd: '<%= config.app %>/config/',
           src: ['**/*.*'],
           dest: '<%= config.dist %>/'
