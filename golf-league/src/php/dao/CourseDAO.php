@@ -8,7 +8,33 @@ class CourseDAO {
 	const GET_TEES_SQL = "select * from tees where course = %s";
 	const GET_TEE_BY_ID_SQL = "select * from tees where id = %s";
 	const GET_COURSE_SIDES_SQL = "select * from course_sides where courseId = %s";
+	const ADD_COURSE_SQL = "insert into courses(name) values ('%s')";
+	const ADD_COURSE_SIDE = "insert into course_sides(courseId, name) values (%s, '%s')";
 	
+	/**
+	 * Save a course and it's sides to the database.
+	 *
+	 * @param $courseName The name of the course to add.
+	 * @param $sides An array of the names of the sides associated with the course.
+	 */
+	public static function saveCourse($courseName, $sides) {
+		$db = DBUtils::getInstance();
+		$courseData = $db->escapeData(array($courseName));
+		$query = vsprintf(self::ADD_COURSE_SQL, $courseData);
+		$result = $db->query($query);
+		if ($result) {
+			// get the id of the course that was just added
+			$courseId = $db->getLastInsertId();
+			foreach ($sides as $sideName) {
+				$data = $db->escapeData(array($courseId, $sideName));
+				$query = vsprintf(self::ADD_COURSE_SIDE, $data);
+				$db->query($query);
+			}
+		} else {
+			throw new Exception("DB : " . $db->getError());
+		}
+	}
+
 	public static function getCourseSides($courseId) {
 		$db = DBUtils::getInstance();
 		$data = $db->escapeData(array($courseId));

@@ -776,7 +776,7 @@ class ScheduleDAO {
                 $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
-            throw new Exception("Unable to get the scheduled match for the id given - DB : " . $db->getError());
+            throw new Exception("Unable to get the scheduled match for the id given (" . $matchId . ") - DB : " . $db->getError());
         }
 
         return $scheduleDate;

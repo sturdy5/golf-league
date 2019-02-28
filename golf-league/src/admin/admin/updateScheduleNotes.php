@@ -95,9 +95,12 @@ include_once("../analyticstracking.php");
 <?php
                         // if the number of courses is 1, it is read only
                         if ($singleCourse) {
+                            foreach($courses as $id => $course) {
 ?>
-                            <?=array_pop($courses)->name?>
+                                <?=$course->name?>
+                                <input type="hidden" id="course" name="course" value="<?= $id ?>"/>
 <?php
+                            }
                         } else {
 ?>
                             <select id="course" name="course">
