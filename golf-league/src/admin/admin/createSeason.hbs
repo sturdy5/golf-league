@@ -79,18 +79,11 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
+        Enter the name of the course. When you are done, click "Next" to add the sides.
         <div class="form-group">
-            <label for="course-name">Course Name</label>
+            <label for="courseName">Course Name</label>
             <input type="text" class="form-control" name="courseName" id="courseName"/>
         </div>
-        <div class="side-list">
-        </div>
-        <div class="side-controls">
-            <div class="form-group">
-                <button type="button" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a Side
-                </button>
-            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -98,6 +91,27 @@
       </div>
     </div>
   </div>
+</div>
+<!-- Modal for a Side -->
+<div class="modal fade" id="sideModal" tabindex="-1" role="dialog" aria-labelledby="sideModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            Enter the name of the side. When you are done, click "Next" to add more sides or "Done" to finish the course creation.
+            <div class="form-group">
+                <label for="sideName">Side Name</label>
+                <input type="text" class="form-control" name="sideName" id="sideName"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="sideDoneButton">Done</button>
+            <button type="button" class="btn btn-primary" id="sideNextButton">Next</button>
+          </div>
+        </div>
+    </div>
 </div>
 
 <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
@@ -118,7 +132,28 @@
       var courseName = $('#courseName').val();
       // fire off the call to add the course to the database
       // $.get('service/BlogService.php?operation=delete&postId=' + postId + '&timestamp=' + new Date().getTime());
+        // TODO when this is complete, hide the modal and then show the side modal. Save the courseId created somewhere
+      
       // hide the modal
       $('#courseModal').modal('hide');
+      // show the side modal
+      $('#sideModal').modal();
+    });
+
+    $('#sideModal').on('click', '#sideDoneButton', function(e) {
+        // save this side
+        var sideName = $('#sideName').val();
+        // $.get('service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName);
+            // TODO when this is complete, hide the modal
+        // hide the modal
+        $('#sideModal').modal('hide');
+    });
+
+    $('#sideModal').on('click', '#sideNextButton', function(e) {
+        var sideName = $('#sideName').val();
+        // $.get('service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName);
+            // TODO when this is complete, clear out the modal
+        // clear out the modal
+        $('#sideName').val('');
     });
 </script>
