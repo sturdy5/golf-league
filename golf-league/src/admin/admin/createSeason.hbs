@@ -79,6 +79,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
+        <div class="message text-success"></div>
         Enter the name of the course. When you are done, click "Next" to add the sides.
         <div class="form-group">
             <label for="courseName">Course Name</label>
@@ -100,10 +101,12 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body">
+            <div class="message text-success"></div>
             Enter the name of the side. When you are done, click "Next" to add more sides or "Done" to finish the course creation.
             <div class="form-group">
                 <label for="sideName">Side Name</label>
                 <input type="text" class="form-control" name="sideName" id="sideName"/>
+                <input type="hidden" class="hidden" name="courseId" id="courseId"/>
             </div>
           </div>
           <div class="modal-footer">
@@ -128,32 +131,56 @@
     });
 
     $('#courseModal').on('click', '#courseNameNext', function(e) {
-      // get the course name
-      var courseName = $('#courseName').val();
-      // fire off the call to add the course to the database
-      // $.get('service/BlogService.php?operation=delete&postId=' + postId + '&timestamp=' + new Date().getTime());
-        // TODO when this is complete, hide the modal and then show the side modal. Save the courseId created somewhere
-      
-      // hide the modal
-      $('#courseModal').modal('hide');
-      // show the side modal
-      $('#sideModal').modal();
+        // set the icon to a refresh icon
+        $('#courseNameNext').html('<i class="glyphicon glyphicon-refresh"></i>');
+        // get the course name
+        var courseName = $('#courseName').val();
+        // fire off the call to add the course to the database
+        $.get('../service/CourseService.php?operation=add&courseName=' + courseName, function(data) {
+            // hide the modal
+            $('#courseModal').modal('hide');
+            // clear out the course name for future use
+            $('#courseName').val('');
+            // reset the next button text
+            $('#courseNameNext').html('Next');
+            $('#sideModal .message').html('Successfully created the course ' + courseName);
+            $('#sideModal #courseId').val(data);
+            // show the side modal
+            $('#sideModal').modal();
+        });
     });
 
     $('#sideModal').on('click', '#sideDoneButton', function(e) {
+        // set the icon to refresh icon
+        $('#sideNextButton').html('<i class="glyphicon glyphicon-refresh"></i>');
+        // clear out the message
+        $('#sideModal .message').html('');
         // save this side
         var sideName = $('#sideName').val();
-        // $.get('service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName);
-            // TODO when this is complete, hide the modal
-        // hide the modal
-        $('#sideModal').modal('hide');
+        var courseId = $('#courseId').val();
+        $.get('../service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName, function(data) {
+            // hide the modal
+            $('#sideModal').modal('hide');
+            // clear out the side name for future use
+            $('#sideName').val('');
+            // reset the next button text
+            $('#sideNextButton').html('Next');
+        });
     });
 
     $('#sideModal').on('click', '#sideNextButton', function(e) {
+        // set the icon to refresh icon
+        $('#sideNextButton').html('<i class="glyphicon glyphicon-refresh"></i>');
+        // clear out the message
+        $('#sideModal .message').html('');
         var sideName = $('#sideName').val();
-        // $.get('service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName);
-            // TODO when this is complete, clear out the modal
-        // clear out the modal
-        $('#sideName').val('');
+        var courseId = $('#courseId').val();
+        $.get('../service/CourseService.php?operation=saveSide&courseId=' + courseId + '&sideName=' + sideName, function(data) {
+            // clear out the modal
+            $('#sideName').val('');
+            $('#sideModal .message').html('Successfully added side - ' + sideName);
+            // reset the next button text
+            $('#sideNextButton').html('Next');
+        });
     });
 </script>
