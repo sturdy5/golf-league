@@ -114,12 +114,12 @@ class ScheduleDAO {
         foreach($scheduleDays as $scheduleDay) {
             // create a match date
             // TODO None of this works because the variables $sides and $numberOfSides doesn't exist
-            $side = $sides[$sideIndex];
-            $sideIndex++;
-            if ($sideIndex >= $numberOfSides) {
-                $sideIndex = 0;
-            }
-            self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
+            // $side = $sides[$sideIndex];
+            // $sideIndex++;
+            // if ($sideIndex >= $numberOfSides) {
+            //     $sideIndex = 0;
+            // }
+            // self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
         }
 
         return $seasonId;
