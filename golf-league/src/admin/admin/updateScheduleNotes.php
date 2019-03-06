@@ -20,7 +20,7 @@ include('./../navigation.inc.php');
         for (var i in events) {
             goBackToSchedule(events[i]);
         }
-    }    
+    }
     </script>
 </head>
 <body onload="fireEvents()">
@@ -30,15 +30,15 @@ include_once("../analyticstracking.php");
 <div class="content">
 <?php
     if (isset($_POST["oldDate"]) && isset($_POST["newDate"]) && isset($_POST["alreadyExists"]) && isset($_POST["side"]) && isset($_POST["course"]) && isset($_POST["detailsExist"]) && isset($_POST["matchId"])) {
-    	$oldDate = $_POST["oldDate"];
-    	$newDate = $_POST["newDate"];
-    	$updateDate = false;
-    	if ($oldDate != $newDate) {
-    		$updateDate = true;
-    	}
+        $oldDate = $_POST["oldDate"];
+        $newDate = $_POST["newDate"];
+        $updateDate = false;
+        if ($oldDate != $newDate) {
+            $updateDate = true;
+        }
         ScheduleDAO::setNotesForDate($oldDate, $_POST["notes"], $_POST["alreadyExists"] == "true");
         if ($updateDate) {
-        	ScheduleDAO::moveScheduledDate($oldDate, $newDate);
+            ScheduleDAO::moveScheduledDate($oldDate, $newDate);
         }
 
         // now set the course and the side
@@ -53,6 +53,9 @@ include_once("../analyticstracking.php");
         </script>
 <?php
     } else {
+?>
+        <script>
+<?php
         $notes = ScheduleDAO::getNotesForDate($_GET["date"]);
         $match = ScheduleDAO::getCourseScheduleMatch($_GET["matchId"]);
         $alreadyExists = "true";
@@ -63,10 +66,20 @@ include_once("../analyticstracking.php");
         foreach($courseIds as $courseId) {
             $courses[$courseId] = CourseDAO::getCourseById($courseId);
         }
-
+?>
+        var sides = new Array();
+<?php
         // get the sides for each of the courses
         foreach($courseIds as $courseId) {
+?>
+            sides['<?=$courseId?>'] = new Array();
+<?php
             $sides[$courseId] = CourseDAO::getCourseSides($courseId);
+            foreach($sides[$courseId] as $sideName) {
+?>
+                sides['<?=$courseId?>'].push('<?=$sideName?>');
+<?php
+            }
         }
 
         $singleCourse = (count($courses) == 1);
@@ -77,6 +90,7 @@ include_once("../analyticstracking.php");
             $alreadyExists = "false";
         }
 ?>
+        </script>
             <fieldset class="scheduleNotes">
                 <form action="updateScheduleNotes.php" method="post" name="scheduleNotes" id="scheduleNotes" title="Schedule Notes Form">
                 <p>
@@ -123,8 +137,7 @@ include_once("../analyticstracking.php");
                     <span class="textbox">
                         <!-- TODO add the side drop down for the course. If there is only one side then this should be readonly -->
                         <select name="side" id="side">
-                            <option value="front">front</option>
-                            <option value="back">back</option>
+                            
                         </select>
                     </span>
                 </p>
@@ -150,6 +163,30 @@ include_once("../analyticstracking.php");
     <input type="hidden" name="matchDate" value=""/>
 </form>
 </div>
+
+<script>
+    $(function() {
+        // hook up the sides drop down to the course that is selected
+        $('#course').on('change', function() {
+            // get the course id
+            var courseId = $(this).val();
+            // get the sides associated with the course
+            var courseSides = sides[courseId];
+            // check to see if there are any sides - if not, then let's add some defaults
+            if (!(courseSides && courseSides.length > 0)) {
+                courseSides = new Array();
+                courseSides.push('front');
+                courseSides.push('back');
+            }
+            // empty out the side select
+            $('#side').empty();
+            // add the sides
+            $.each(courseSides, function(key, value) {
+                $('#side').append($('<option></option>').attr('value', value).text(value));
+            });
+        });
+    });
+</script>
 
 <?php
     include("./../utilities.inc.php"); 
