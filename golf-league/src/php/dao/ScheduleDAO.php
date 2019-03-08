@@ -119,7 +119,7 @@ class ScheduleDAO {
             // if ($sideIndex >= $numberOfSides) {
             //     $sideIndex = 0;
             // }
-            // self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
+            self::addCourseScheduleMatch($scheduleDay, $courseId, null, 0);
         }
 
         return $seasonId;

@@ -6,14 +6,10 @@ class DBUtils {
 
     private function __construct() {
         // database configuration
-        // $db_server = "107.180.51.10";
-        // $db_user = "bcbsscgl";
-        // $db_password = "hnTCZXEN2Ab6tb";
-        // $db_database = "bcbsscgl";
-        $db_server = "localhost";
-        $db_user = "bctngl";
-        $db_password = "bctngl";
-        $db_database = "bctngl";
+        $db_server = "107.180.51.10";
+        $db_user = "bcbsscgl";
+        $db_password = "hnTCZXEN2Ab6tb";
+        $db_database = "bcbsscgl";
 
         // setup the database
         $this->link = mysqli_connect($db_server, $db_user, $db_password) or die ("Could not connect to the database");

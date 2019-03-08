@@ -2,7 +2,7 @@
 
 class CourseDAO {
     //  select b.*, a.* from courses a inner join holes b on a.id = b.courseId where a.id = %s;
-    const GET_COURSE_SQL = "select * from bctngl.courses a where a.id = %s;";
+    const GET_COURSE_SQL = "select * from courses a where a.id = %s;";
     const GET_ALL_COURSES_SQL = "select * from courses";
     const GET_HOLES_SQL = "select * from holes where courseId = %s and side = '%s' order by number asc";
     const GET_TEES_SQL = "select * from tees where course = %s";
