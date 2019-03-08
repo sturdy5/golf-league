@@ -2,7 +2,7 @@
 
 class CourseDAO {
     //  select b.*, a.* from courses a inner join holes b on a.id = b.courseId where a.id = %s;
-    const GET_COURSE_SQL = "select b.*, a.* from courses a inner join holes b on a.id = b.courseId where a.id = %s;";
+    const GET_COURSE_SQL = "select * from bctngl.courses a where a.id = %s;";
     const GET_ALL_COURSES_SQL = "select * from courses";
     const GET_HOLES_SQL = "select * from holes where courseId = %s and side = '%s' order by number asc";
     const GET_TEES_SQL = "select * from tees where course = %s";
@@ -74,15 +74,17 @@ class CourseDAO {
             $count = $db->getRowCount($result);
             for ($i = 0; $i < $count; $i++) {
                 $row = $db->getRow($result);
-                $course->id = $row["courseId"];
-                $course->name = $row["name"]; 
-                $hole = new Hole();
-                $hole->number = $row["number"];
-                $hole->par = $row["par"];
-                $hole->mensHandicap = $row["mens_handicap"];
-                $hole->womensHandicap = $row["womens_handicap"];
-                $hole->side = $row["side"];
-                array_push($course->holes, $hole);
+                $course->id = $row["id"];
+                $course->name = $row["name"];
+                if (array_key_exists("number", $row)) {
+                    $hole = new Hole();
+                    $hole->number = $row["number"];
+                    $hole->par = $row["par"];
+                    $hole->mensHandicap = $row["mens_handicap"];
+                    $hole->womensHandicap = $row["womens_handicap"];
+                    $hole->side = $row["side"];
+                    array_push($course->holes, $hole);
+                }
             }
         }
         

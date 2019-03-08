@@ -163,13 +163,23 @@ include_once("../analyticstracking.php");
     <input type="hidden" name="matchDate" value=""/>
 </form>
 </div>
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
     $(function() {
+<?php
+        if (!$singleCourse) {
+?>
         // hook up the sides drop down to the course that is selected
         $('#course').on('change', function() {
             // get the course id
             var courseId = $(this).val();
+<?php
+        } else {
+?>
+            var courseId = $('#course').val();
+<?php
+        }
+?>
             // get the sides associated with the course
             var courseSides = sides[courseId];
             // check to see if there are any sides - if not, then let's add some defaults
@@ -184,7 +194,13 @@ include_once("../analyticstracking.php");
             $.each(courseSides, function(key, value) {
                 $('#side').append($('<option></option>').attr('value', value).text(value));
             });
+<?php
+        if (!$singleCourse) {
+?>
         });
+<?php
+        }
+?>
     });
 </script>
 
