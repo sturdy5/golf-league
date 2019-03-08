@@ -33,7 +33,17 @@ module.exports = function(grunt) {
           ext: ".php"
         },
         files: {
-          '<%= config.dist %>/': ['<%= config.app %>/admin/**/*.hbs']
+          '<%= config.dist %>/': ['<%= config.app %>/admin/*.hbs']
+        }
+      },
+      assembleAdminAdmin: {
+        options: {
+          layout: "<%= config.app %>/layouts/php/admin/admin.hbs",
+          flatten: true,
+          ext: ".php"
+        },
+        files : {
+          '<%= config.dist %>/admin/': ['<%= config.app %>/admin/admin/*.hbs']
         }
       },
       assembleMember: {

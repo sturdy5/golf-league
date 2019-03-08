@@ -114,12 +114,12 @@ class ScheduleDAO {
         foreach($scheduleDays as $scheduleDay) {
             // create a match date
             // TODO None of this works because the variables $sides and $numberOfSides doesn't exist
-            $side = $sides[$sideIndex];
-            $sideIndex++;
-            if ($sideIndex >= $numberOfSides) {
-                $sideIndex = 0;
-            }
-            self::addCourseScheduleMatch($scheduleDay, $courseId, $sides[$sideIndex], 0);
+            // $side = $sides[$sideIndex];
+            // $sideIndex++;
+            // if ($sideIndex >= $numberOfSides) {
+            //     $sideIndex = 0;
+            // }
+            self::addCourseScheduleMatch($scheduleDay, $courseId, null, 0);
         }
 
         return $seasonId;
@@ -776,7 +776,7 @@ class ScheduleDAO {
                 $scheduleDate->detailsExist = $row["details_exist"];
             }
         } else {
-            throw new Exception("Unable to get the scheduled match for the id given - DB : " . $db->getError());
+            throw new Exception("Unable to get the scheduled match for the id given (" . $matchId . ") - DB : " . $db->getError());
         }
 
         return $scheduleDate;
