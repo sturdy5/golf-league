@@ -1,3 +1,5 @@
+# This repo is no longer maintained and is archived
+
 [ ![Codeship Status for jsturdevant/golf-league](https://app.codeship.com/projects/865f3620-c46f-0136-7e40-5e5b655f6c4d/status?branch=master)](https://app.codeship.com/projects/314137)
 
 Overview
